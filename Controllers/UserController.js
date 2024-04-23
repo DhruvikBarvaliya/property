@@ -1,27 +1,30 @@
 const UserModel = require("../Models/UserModel");
+const { jwt_key } = require("../Config/Config");
+const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 module.exports = {
   addUser: async (req, res) => {
     try {
-      const { role, email, password } =
+      const { role, email } =
         req.body;
-      if (!role) {
-        return res
+        if (!role) {
+          return res
           .status(400)
           .json({ status: false, message: "role is Required" });
-      }
-      if (!email) {
-        return res
+        }
+        if (!email) {
+          return res
           .status(400)
           .json({ status: false, message: "email is Required" });
       }
-      if (!password) {
+      if (!req.body.password) {
         return res
-          .status(400)
-          .json({ status: false, message: "password is Required" });
+        .status(400)
+        .json({ status: false, message: "password is Required" });
       }
-
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(req.body.password, salt);
 
       const user = await UserModel.findOne({ email: email });
 
@@ -53,7 +56,7 @@ module.exports = {
   },
   getAllUser: async (req, res) => {
     try {
-      let allUser = await UserModel.find().sort({ percentage: -1 });
+      let allUser = await UserModel.find().sort({ percentage: -1 }).select("-password");
       allUser = allUser.filter((user) => user.role != "SUPER_ADMIN");
 
       if (allUser.length == 0) {
@@ -79,7 +82,7 @@ module.exports = {
   getUserById: async (req, res) => {
     try {
       const { user_id } = req.params;
-      const user = await UserModel.findById({ _id: user_id });
+      const user = await UserModel.findById({ _id: user_id }).select("-password");
       if (user == null) {
         return res.status(404).json({
           status: false,
@@ -100,7 +103,7 @@ module.exports = {
   getUserByRole: async (req, res) => {
     try {
       const { role } = req.params;
-      const user = await UserModel.find({ role: role });
+      const user = await UserModel.find({ role: role }).select("-password");
       if (user == null) {
         return res.status(404).json({
           status: false,

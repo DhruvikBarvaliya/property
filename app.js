@@ -38,6 +38,6 @@ app.listen(port, () => {
   if (env == "development") {
     console.log(`Server is Running on Port No :- http://localhost:${port}`);
   } else {
-    console.log(`Server is Running on :- https://snehmilan.onrender.com`);
+    console.log(`Server is Running on :- https://property-gtp6.onrender.com/`);
   }
 });

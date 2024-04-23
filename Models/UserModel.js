@@ -53,9 +53,9 @@ const UserSchema = new Schema(
       trim: true,
     },
     password: { type: String, trim: true },
-    is_verified: { type: Boolean, default: false },
+    is_verified: { type: Boolean, default: true },
     status: { type: String, trim: true },
-    is_active: { type: Boolean, default: false },
+    is_active: { type: Boolean, default: true },
     last_login: { type: Date },
   },
   { versionKey: false, timestamps: true }
