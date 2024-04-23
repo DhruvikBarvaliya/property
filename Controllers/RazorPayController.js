@@ -45,7 +45,6 @@ module.exports = {
                     .json({ status: false, message: `RazorPay Not Found In Database` });
             }
 
-
             return res.status(200).json({
                 status: true,
                 message: "Student Get Successfully",
@@ -111,7 +110,7 @@ module.exports = {
         try {
             const { razorpay_id, is_active } = req.params;
             const razorpay = await RazorPayModel.findByIdAndUpdate(
-                razorpay_id,
+                { _id: razorpay_id },
                 { $set: { is_active: is_active } },
                 { new: true }
             );
@@ -138,7 +137,7 @@ module.exports = {
         try {
             const { razorpay_id } = req.params;
             const razorpay = await RazorPayModel.findByIdAndUpdate(
-                razorpay_id,
+                { _id: razorpay_id },
                 { $set: { is_active: false } },
                 { new: true }
             );

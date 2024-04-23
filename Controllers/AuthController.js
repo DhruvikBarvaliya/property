@@ -61,7 +61,7 @@ module.exports = {
 
       if (user.email == email && bcrypt.compare(password, user.password)) {
         const user = await UserModel.findOneAndUpdate(
-          {email},
+          { email },
           { $set: { password: updatedPassword } },
           { new: true }
         );
@@ -103,12 +103,12 @@ module.exports = {
       else {
         let purpose = ""
         if (for_forgot) {
-          const user = await UserModel.findOneAndUpdate({email},
+          const user = await UserModel.findOneAndUpdate({ email },
             { $set: { forgot_otp: otp } },
             { new: true });
           purpose = "Forgot Password"
         } else {
-          const user = await UserModel.findOneAndUpdate({email},
+          const user = await UserModel.findOneAndUpdate({ email },
             { $set: { otp: otp } },
             { new: true });
           purpose = "Verify Email"
@@ -135,15 +135,15 @@ module.exports = {
           .json({ status: false, message: `User Not Found With Email :- ${email} ` });
       } else {
         if (user.otp == otp) {
-          const user = await UserModel.findOneAndUpdate({email},
+          const user = await UserModel.findOneAndUpdate({ email },
             { $set: { is_verified: true, is_active: true } },
             { new: true });
-            const payload = { id: user._id, email: email, role: user.role };
-            const expiresIn = "8d";
+          const payload = { id: user._id, email: email, role: user.role };
+          const expiresIn = "8d";
           const token = jsonwebtoken.sign(payload, jwt_secret_key, { expiresIn });
           return res
             .status(200)
-            .json({ status: true, message: `Varification SuccessFully For Email :- ${email} `,token });
+            .json({ status: true, message: `Varification SuccessFully For Email :- ${email} `, token });
         } else {
           return res
             .status(404)
@@ -168,16 +168,16 @@ module.exports = {
           .json({ status: false, message: `User Not Found With Email :- ${email} ` });
       }
       if (user.email == email && user.forgot_otp == otp) {
-        const user = await UserModel.findOneAndUpdate({email},
+        const user = await UserModel.findOneAndUpdate({ email },
           { $set: { password: updatedPassword } },
           { new: true });
-          const payload = { id: user._id, email: email, role: user.role };
-          const expiresIn = "8d";
-          const token = jsonwebtoken.sign(payload, jwt_secret_key, { expiresIn });
+        const payload = { id: user._id, email: email, role: user.role };
+        const expiresIn = "8d";
+        const token = jsonwebtoken.sign(payload, jwt_secret_key, { expiresIn });
         // return res.status(200).json({ email, token });
         return res
           .status(200)
-          .json({ status: true, message: `Password Updated Successfully For Email :- ${email} `,token });
+          .json({ status: true, message: `Password Updated Successfully For Email :- ${email} `, token });
       } else {
         return res
           .status(401)

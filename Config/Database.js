@@ -19,13 +19,8 @@ module.exports = function () {
           is_verified: true,
           is_active: true,
           role: "SUPER_ADMIN",
-          first_name: "super",
-          last_name: "admin",
-          full_name: "super admin",
-          phone: "9998867024",
-          marks: 1000,
-          total_marks: 1000,
-          std: "1st",
+          name: "super",
+          phone: "9998867024"
         });
         userData
           .save()

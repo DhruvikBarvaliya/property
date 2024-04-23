@@ -112,7 +112,7 @@ module.exports = {
         try {
             const { subscriptionplan_id, is_active } = req.params;
             const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
-                subscriptionplan_id,
+                { _id: subscriptionplan_id },
                 { $set: { is_active: is_active } },
                 { new: true }
             );
@@ -139,7 +139,7 @@ module.exports = {
         try {
             const { subscriptionplan_id } = req.params;
             const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
-                subscriptionplan_id,
+                { _id: subscriptionplan_id },
                 { $set: { is_active: false } },
                 { new: true }
             );

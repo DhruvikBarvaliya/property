@@ -10,6 +10,6 @@ router.get("/", (req, res) => {
   res.send(`Welcome To Property Portal With Version V1`);
 });
 
-router.use("/v1", AuthRoute, UserRoute,PropertyRoute,RazorPayRoute,SubscriptionPlanRoute);
+router.use("/v1", AuthRoute, UserRoute, PropertyRoute, RazorPayRoute, SubscriptionPlanRoute);
 
 module.exports = router;

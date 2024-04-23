@@ -8,7 +8,7 @@ router.post(
   "/subscription",
   SubscriptionPlanController.addSubscriptionPlan
 );
-router.get("/subscription",authorize(), SubscriptionPlanController.getAllSubscriptionPlan);
+router.get("/subscription", authorize(), SubscriptionPlanController.getAllSubscriptionPlan);
 router.get(
   "/subscription/bySubscriptionPlanId/:subscription_id",
   authorize(),

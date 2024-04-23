@@ -8,7 +8,7 @@ router.post(
   "/user",
   UserController.addUser
 );
-router.get("/user",authorize(), UserController.getAllUser);
+router.get("/user", authorize(), UserController.getAllUser);
 router.get(
   "/user/byUserId/:user_id",
   authorize(),
@@ -33,6 +33,11 @@ router.put(
   "/user/:user_id/:status",
   authorize(),
   UserController.updateUserStatus
+);
+router.put(
+  "/user/updateNoOfReport/:user_id/:no_of_report",
+  authorize(),
+  UserController.updateNoOfReport
 );
 router.delete(
   "/user/:user_id",

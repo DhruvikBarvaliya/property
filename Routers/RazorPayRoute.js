@@ -8,7 +8,7 @@ router.post(
   "/razorpay",
   RazorPayController.addRazorPay
 );
-router.get("/razorpay",authorize(), RazorPayController.getAllRazorPay);
+router.get("/razorpay", authorize(), RazorPayController.getAllRazorPay);
 router.get(
   "/razorpay/byRazorPayId/:razorpay_id",
   authorize(),

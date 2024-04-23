@@ -14,11 +14,11 @@ router.post(
 );
 
 router.post(
-  "/upload",upload.single('file'),
+  "/upload", upload.single('file'),
   PropertyController.addManyProperty
 );
 
-router.get("/property",authorize(), PropertyController.getAllProperty);
+router.get("/property", authorize(), PropertyController.getAllProperty);
 router.get(
   "/property/byPropertyId/:property_id",
   authorize(),

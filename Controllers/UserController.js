@@ -1,6 +1,4 @@
 const UserModel = require("../Models/UserModel");
-const { jwt_key } = require("../Config/Config");
-const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../Helpers/email")
 
@@ -142,23 +140,23 @@ module.exports = {
     try {
       UserModel.aggregate([
         {
-            $group: {
-                _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
-                count: { $sum: 1 }
-            }
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
+            count: { $sum: 1 }
+          }
         },
         {
-            $sort: { _id: 1 }
+          $sort: { _id: 1 }
         }
-    ]).exec((err, result) => {
+      ]).exec((err, result) => {
         if (err) {
-            console.error(err);
-            return;
+          console.error(err);
+          return;
         }
         return res
-        .status(200)
-        .json({ status: true, message: "No Of User Get Successfully", result });
-    });
+          .status(200)
+          .json({ status: true, message: "No Of User Get Successfully", result });
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -198,7 +196,7 @@ module.exports = {
     try {
       const { user_id, is_active } = req.params;
       const user = await UserModel.findByIdAndUpdate(
-        user_id,
+        { _id: user_id },
         { $set: { is_active: is_active } },
         { new: true }
       );
@@ -221,11 +219,38 @@ module.exports = {
       });
     }
   },
+  updateNoOfReport: async (req, res) => {
+    try {
+      const { user_id, no_of_report } = req.params;
+      const user = await UserModel.findByIdAndUpdate(
+        { _id: user_id },
+        { $set: { no_of_report: no_of_report } },
+        { new: true }
+      );
+      if (user == null) {
+        return res.status(404).json({
+          status: false,
+          message: `User Not Found With ID :- ${user_id} `,
+        });
+      }
+      return res.status(200).json({
+        status: true,
+        message: "User NoOfReport Updated Successfully",
+        user,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   deleteUser: async (req, res) => {
     try {
       const { user_id } = req.params;
       const user = await UserModel.findByIdAndUpdate(
-        user_id,
+        { _id: user_id },
         { $set: { is_active: false } },
         { new: true }
       );

@@ -4,7 +4,7 @@ mongoose.pluralize(null);
 
 const RazorPaySchema = new Schema(
     {
-        user_id: {type: Schema.Types.ObjectId, ref: "user"  },
+        user_id: { type: Schema.Types.ObjectId, ref: "user" },
         razor_pay_response: { type: Object },
         status: { type: String, trim: true },
         is_active: { type: Boolean, default: true },

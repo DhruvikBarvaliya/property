@@ -137,13 +137,13 @@ module.exports = {
   searchProperty: async (req, res) => {
     try {
 
-        const { title } = req.params;
-    const properties = await PropertyModel.find({
-      postal_address_of_the_property: { $regex: title, $options: 'i' } // Case-insensitive search using regular expression
-    });
+      const { title } = req.params;
+      const properties = await PropertyModel.find({
+        postal_address_of_the_property: { $regex: title, $options: 'i' } // Case-insensitive search using regular expression
+      });
 
-    res.json(properties);     
-     
+      res.json(properties);
+
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -185,7 +185,7 @@ module.exports = {
     try {
       const { property_id, is_active } = req.params;
       const property = await PropertyModel.findByIdAndUpdate(
-        property_id,
+        { _id: property_id },
         { $set: { is_active: is_active } },
         { new: true }
       );
@@ -212,7 +212,7 @@ module.exports = {
     try {
       const { property_id } = req.params;
       const property = await PropertyModel.findByIdAndUpdate(
-        property_id,
+        { _id: property_id },
         { $set: { is_active: false } },
         { new: true }
       );
