@@ -116,7 +116,7 @@ module.exports = {
         }
         sendMail(email, otp)
         return res
-          .status(401)
+          .status(200)
           .json({ status: true, message: `Otp Sent Successfully on ${email} for ${purpose}, Please Check and Verify ✔` });
       }
     } catch (err) {
