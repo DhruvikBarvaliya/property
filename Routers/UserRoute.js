@@ -6,33 +6,32 @@ const UserController = require("../Controllers/UserController");
 
 router.post(
   "/user",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
   UserController.addUser
 );
-router.get("/user", UserController.getAllUser);
+router.get("/user",authorize(), UserController.getAllUser);
 router.get(
   "/user/byUserId/:user_id",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   UserController.getUserById
 );
 router.get(
   "/user/byRole/:role",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   UserController.getUserByRole
 );
 router.put(
   "/user/:user_id",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   UserController.updateUser
 );
 router.put(
   "/user/:user_id/:status",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   UserController.updateUserStatus
 );
 router.delete(
   "/user/:user_id",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   UserController.deleteUser
 );
 

@@ -9,9 +9,20 @@ const UserSchema = new Schema(
       enum: ["SUPER_ADMIN", "ADMIN", "BANKER", "VALUER", "INDIVIDUAL", "BROKER"],
       default: "BANKER",
     },
+    name: { type: String, trim: true },
+    phone: {
+      type: String,
+      unique: true,
+      match: [
+        /^(\+\d{1,3}[- ]?)?\d{10}$/,
+        "Please fill a valid telephone number",
+      ],
+      trim: true,
+    },
     banker_role_value: {
       type: String,
       enum: [
+        "",
         "Axis Bank",
         "Bank of Baroda",
         "Baroda Gujarat Gramin Bank",
@@ -53,9 +64,11 @@ const UserSchema = new Schema(
       trim: true,
     },
     password: { type: String, trim: true },
-    is_verified: { type: Boolean, default: true },
+    otp: { type: Number },
+    forgot_otp: { type: Number },
+    is_verified: { type: Boolean, default: false },
     status: { type: String, trim: true },
-    is_active: { type: Boolean, default: true },
+    is_active: { type: Boolean, default: false },
     last_login: { type: Date },
   },
   { versionKey: false, timestamps: true }

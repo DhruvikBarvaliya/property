@@ -9,7 +9,7 @@ const upload = multer({ storage: storage });
 
 router.post(
   "/property",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   PropertyController.addProperty
 );
 
@@ -18,35 +18,35 @@ router.post(
   PropertyController.addManyProperty
 );
 
-router.get("/property", PropertyController.getAllProperty);
+router.get("/property",authorize(), PropertyController.getAllProperty);
 router.get(
   "/property/byPropertyId/:property_id",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN, Role.EMPLOYEE]),
+  authorize(),
   PropertyController.getPropertyById
 );
 router.get(
   "/property/byRole/:role",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN, Role.EMPLOYEE]),
+  authorize(),
   PropertyController.getPropertyById
 );
 router.get(
   "/property/searchProperty/:title",
-  // authorize([Role.ADMIN, Role.SUPER_ADMIN, Role.EMPLOYEE]),
+  authorize(),
   PropertyController.searchProperty
 );
 router.put(
   "/property/:property_id",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN, Role.EMPLOYEE]),
+  authorize(),
   PropertyController.updateProperty
 );
 router.put(
   "/property/:property_id/:status",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   PropertyController.updatePropertyStatus
 );
 router.delete(
   "/property/:property_id",
-  authorize([Role.ADMIN, Role.SUPER_ADMIN]),
+  authorize(),
   PropertyController.deleteProperty
 );
 
