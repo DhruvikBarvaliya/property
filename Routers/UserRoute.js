@@ -19,6 +19,11 @@ router.get(
   authorize(),
   UserController.getUserByRole
 );
+router.get(
+  "/user/noOfUser",
+  // authorize(),
+  UserController.getNoOfUser
+);
 router.put(
   "/user/:user_id",
   authorize(),

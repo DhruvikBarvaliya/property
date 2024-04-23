@@ -137,6 +137,36 @@ module.exports = {
       });
     }
   },
+
+  getNoOfUser: async (req, res) => {
+    try {
+      UserModel.aggregate([
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $sort: { _id: 1 }
+        }
+    ]).exec((err, result) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        return res
+        .status(200)
+        .json({ status: true, message: "No Of User Get Successfully", result });
+    });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   updateUser: async (req, res) => {
     try {
       const { user_id } = req.params;

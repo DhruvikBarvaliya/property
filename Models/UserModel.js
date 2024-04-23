@@ -12,7 +12,7 @@ const UserSchema = new Schema(
     name: { type: String, trim: true },
     phone: {
       type: String,
-      unique: true,
+      // unique: true,
       match: [
         /^(\+\d{1,3}[- ]?)?\d{10}$/,
         "Please fill a valid telephone number",
