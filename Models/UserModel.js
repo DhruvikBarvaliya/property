@@ -13,10 +13,10 @@ const UserSchema = new Schema(
     phone: {
       type: String,
       // unique: true,
-      match: [
-        /^(\+\d{1,3}[- ]?)?\d{10}$/,
-        "Please fill a valid telephone number",
-      ],
+      // match: [
+      //   /^(\+\d{1,3}[- ]?)?\d{10}$/,
+      //   "Please fill a valid telephone number",
+      // ],
       trim: true,
     },
     banker_role_value: {
