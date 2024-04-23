@@ -1,0 +1,8 @@
+module.exports = {
+  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
+  BANKER: "BANKER",
+  VALUER: "VALUER",
+  INDIVIDUAL: "INDIVIDUAL",
+  BROKER: "BROKER"
+};
