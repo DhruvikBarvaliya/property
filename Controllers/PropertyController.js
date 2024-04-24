@@ -91,7 +91,11 @@ module.exports = {
 
   getAllProperty: async (req, res) => {
     try {
-      let allProperty = await PropertyModel.find().sort({ percentage: -1 });
+      const limit = parseInt(req.query.limit || 10);
+      const skip = parseInt(req.query.skip || 0)
+      let allProperty = await PropertyModel.find().sort({ percentage: -1 }).limit(limit).skip(skip);
+      const total = await PropertyModel.find().count();
+
 
       if (allProperty.length == 0) {
         return res
@@ -100,7 +104,7 @@ module.exports = {
       }
 
       return res.status(200).json({
-        status: true,
+        status: true, total, length: allProperty.length,
         message: "Property Get Successfully",
         allProperty,
       });
@@ -136,13 +140,21 @@ module.exports = {
 
   searchProperty: async (req, res) => {
     try {
-
+      const limit = parseInt(req.query.limit || 10);
+      const skip = parseInt(req.query.skip || 0)
       const { title } = req.params;
       const properties = await PropertyModel.find({
         postal_address_of_the_property: { $regex: title, $options: 'i' } // Case-insensitive search using regular expression
-      });
+      }).limit(limit).skip(skip);
+      const total = await PropertyModel.find({
+        postal_address_of_the_property: { $regex: title, $options: 'i' } // Case-insensitive search using regular expression
+      }).count();
 
-      res.json(properties);
+      return res.status(200).json({
+        status: true, total, length: properties.length,
+        message: "Property Get Successfully",
+        properties,
+      });
 
     } catch (err) {
       return res.status(500).json({

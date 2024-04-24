@@ -39,7 +39,11 @@ module.exports = {
     },
     getAllSubscriptionPlan: async (req, res) => {
         try {
-            let allSubscriptionPlan = await SubscriptionPlanModel.find().sort({ percentage: -1 });
+            const limit = parseInt(req.query.limit || 10);
+            const skip = parseInt(req.query.skip || 0)
+            let allSubscriptionPlan = await SubscriptionPlanModel.find().sort({ percentage: -1 }).limit(limit).skip(skip);
+            const total = await SubscriptionPlanModel.find().count();
+
 
             if (allSubscriptionPlan.length == 0) {
                 return res
@@ -48,7 +52,7 @@ module.exports = {
             }
 
             return res.status(200).json({
-                status: true,
+                status: true, total, length: allSubscriptionPlan.length,
                 message: "Student Get Successfully",
                 allSubscriptionPlan,
             });

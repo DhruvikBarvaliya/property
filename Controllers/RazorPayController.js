@@ -37,7 +37,11 @@ module.exports = {
     },
     getAllRazorPay: async (req, res) => {
         try {
-            let allRazorPay = await RazorPayModel.find().sort({ percentage: -1 });
+            const limit = parseInt(req.query.limit || 10);
+            const skip = parseInt(req.query.skip || 0)
+            let allRazorPay = await RazorPayModel.find().sort({ percentage: -1 }).limit(limit).skip(skip);
+            const total = await RazorPayModel.find().count();
+
 
             if (allRazorPay.length == 0) {
                 return res
@@ -46,7 +50,7 @@ module.exports = {
             }
 
             return res.status(200).json({
-                status: true,
+                status: true, total, length: allRazorPay.length,
                 message: "Student Get Successfully",
                 allRazorPay,
             });

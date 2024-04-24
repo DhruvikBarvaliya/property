@@ -70,9 +70,12 @@ module.exports = {
   },
   getAllUser: async (req, res) => {
     try {
-      let allUser = await UserModel.find().sort({ percentage: -1 }).select("-password");
-      allUser = allUser.filter((user) => user.role != "SUPER_ADMIN");
-
+      const limit = parseInt(req.query.limit || 10);
+      const skip = parseInt(req.query.skip || 0)
+      let allUser = await UserModel.find().sort({ percentage: -1 }).select("-password").limit(limit).skip(skip);
+      const total = await UserModel.find().count();
+      // allUser = allUser.filter((user) => user.role != "SUPER_ADMIN");
+      console.log(allUser);
       if (allUser.length == 0) {
         return res
           .status(404)
@@ -81,7 +84,7 @@ module.exports = {
 
 
       return res.status(200).json({
-        status: true,
+        status: true, total, length: allUser.length,
         message: "Student Get Successfully",
         allUser,
       });
@@ -117,7 +120,11 @@ module.exports = {
   getUserByRole: async (req, res) => {
     try {
       const { role } = req.params;
-      const user = await UserModel.find({ role: role }).select("-password");
+      const limit = parseInt(req.query.limit || 10);
+      const skip = parseInt(req.query.skip || 0)
+      const user = await UserModel.find({ role: role }).select("-password").limit(limit).skip(skip);
+      const total = await UserModel.find().count();
+
       if (user == null) {
         return res.status(404).json({
           status: false,
@@ -126,7 +133,7 @@ module.exports = {
       }
       return res
         .status(200)
-        .json({ status: true, message: "User Get Successfully", user });
+        .json({ status: true, total, length: user.length, message: "User Get Successfully", user });
     } catch (err) {
       return res.status(500).json({
         status: false,
