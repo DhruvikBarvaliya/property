@@ -138,25 +138,27 @@ module.exports = {
 
   getNoOfUser: async (req, res) => {
     try {
-      UserModel.aggregate([
+      let { date } = req.params
+      const result = await UserModel.aggregate([
         {
-          $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
-            count: { $sum: 1 }
+          $match: {
+            createdAt: {
+              $gte: new Date(date),
+              $lt: new Date(new Date(date).setDate(new Date(date).getDate() + 1))
+            }
           }
         },
         {
-          $sort: { _id: 1 }
+          $group: {
+            _id: null,
+            count: { $sum: 1 }
+          }
         }
-      ]).exec((err, result) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        return res
-          .status(200)
-          .json({ status: true, message: "No Of User Get Successfully", result });
-      });
+      ]);
+
+      return res
+        .status(200)
+        .json({ status: true, message: `Count of User Get Successfully for Date :- ${date} `, count: result.length > 0 ? result[0].count : 0 });
     } catch (err) {
       return res.status(500).json({
         status: false,

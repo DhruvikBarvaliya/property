@@ -20,7 +20,7 @@ router.get(
   UserController.getUserByRole
 );
 router.get(
-  "/user/noOfUser",
+  "/user/noOfUser/:date",
   // authorize(),
   UserController.getNoOfUser
 );
