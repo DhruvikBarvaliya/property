@@ -62,6 +62,8 @@ const UserSchema = new Schema(
     forgot_otp: { type: Number },
     is_paid: { type: Boolean, default: false },
     no_of_report: { type: Number, default: 0 },
+    login_attempts: { type: Number, default: 0 },
+    no_of_pdf: { type: Number, default: 0 },
     is_verified: { type: Boolean, default: false },
     status: { type: String, trim: true },
     is_active: { type: Boolean, default: false },

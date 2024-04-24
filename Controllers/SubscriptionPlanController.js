@@ -3,24 +3,44 @@ const SubscriptionPlanModel = require("../Models/SubscriptionPlanModel");
 module.exports = {
     addSubscriptionPlan: async (req, res) => {
         try {
-            const { plan_name,
+           
+            let { plan_no,
+                plan_name,
                 no_of_report,
-                price } =
+                price,
+                discount,
+                final_price } =
                 req.body;
+            if (!plan_no) {
+                return res
+                    .status(400)
+                    .json({ status: false, message: "plan_no is Required" });
+            }
             if (!plan_name) {
                 return res
                     .status(400)
                     .json({ status: false, message: "plan_name is Required" });
+            }
+            if (!no_of_report) {
+                return res
+                    .status(400)
+                    .json({ status: false, message: "no_of_report is Required" });
             }
             if (!price) {
                 return res
                     .status(400)
                     .json({ status: false, message: "price is Required" });
             }
+            if (!final_price && discount) {
+                final_price = price * (100-discount)/100
+            }
             const subscriptionplanData = new SubscriptionPlanModel({
+                plan_no,
                 plan_name,
                 no_of_report,
-                price
+                price,
+                discount,
+                final_price
             });
             subscriptionplanData
                 .save()
