@@ -230,7 +230,9 @@ module.exports = {
   },
   updateNoOfReport: async (req, res) => {
     try {
-      const { user_id, no_of_report } = req.params;
+      let { user_id, no_of_report } = req.params;
+      const userNoOfReport = await UserModel.findById({ _id: user_id }).select("no_of_report");
+      no_of_report = parseInt(userNoOfReport.no_of_report) + parseInt(no_of_report)
       const user = await UserModel.findByIdAndUpdate(
         { _id: user_id },
         { $set: { no_of_report: no_of_report } },
