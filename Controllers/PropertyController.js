@@ -140,18 +140,13 @@ module.exports = {
 
   searchProperty: async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit || 10);
-      const skip = parseInt(req.query.skip || 0)
       const { title } = req.params;
       const properties = await PropertyModel.find({
         postal_address_of_the_property: { $regex: title, $options: 'i' } // Case-insensitive search using regular expression
-      }).limit(limit).skip(skip);
-      const total = await PropertyModel.find({
-        postal_address_of_the_property: { $regex: title, $options: 'i' } // Case-insensitive search using regular expression
-      }).count();
+      })
 
       return res.status(200).json({
-        status: true, total, length: properties.length,
+        status: true,
         message: "Property Get Successfully",
         properties,
       });
