@@ -3,18 +3,15 @@ const router = express.Router();
 const authorize = require("../Middleware/auth");
 const Role = require("../Helpers/role");
 const PropertyController = require("../Controllers/PropertyController");
-const multer = require('multer');
+const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post(
-  "/property",
-  authorize(),
-  PropertyController.addProperty
-);
+router.post("/property", authorize(), PropertyController.addProperty);
 
 router.post(
-  "/upload", upload.single('file'),
+  "/upload",
+  upload.single("file"),
   PropertyController.addManyProperty
 );
 
@@ -23,6 +20,11 @@ router.get(
   "/property/byPropertyId/:property_id",
   authorize(),
   PropertyController.getPropertyById
+);
+router.post(
+  "/property/nearest-property/:latitude/:longitude",
+  authorize(),
+  PropertyController.getNearestProperty
 );
 router.get(
   "/property/byRole/:role",

@@ -1,16 +1,11 @@
 const UserModel = require("../Models/UserModel");
 const bcrypt = require("bcryptjs");
-const { sendMail } = require("../Helpers/email")
+const { sendMail } = require("../Helpers/email");
 
 module.exports = {
   addUser: async (req, res) => {
     try {
-      const { role,
-        banker_role_value,
-        email,
-        name,
-        phone } =
-        req.body;
+      const { role, banker_role_value, email, name, phone } = req.body;
       if (!role) {
         return res
           .status(400)
@@ -45,20 +40,20 @@ module.exports = {
           password,
         });
         const otp = Math.floor(Math.random() * 9000 + 1000);
-        await sendMail(email, otp)
+        await sendMail(email, otp);
         console.log(email, otp);
 
-
-        userData
-          .save()
-          .then(async (data) => {
-            await UserModel.findOneAndUpdate({ email },
-              { $set: { otp: otp } },
-              { new: true });
-            return res
-              .status(201)
-              .json({ message: "User registered Successfully ,Please check your Email we sent you OTP for verify that mail" });
-          })
+        userData.save().then(async (data) => {
+          await UserModel.findOneAndUpdate(
+            { email },
+            { $set: { otp: otp } },
+            { new: true }
+          );
+          return res.status(201).json({
+            message:
+              "User registered Successfully ,Please check your Email we sent you OTP for verify that mail",
+          });
+        });
       }
     } catch (err) {
       return res.status(500).json({
@@ -71,8 +66,12 @@ module.exports = {
   getAllUser: async (req, res) => {
     try {
       const limit = parseInt(req.query.limit || 10);
-      const skip = parseInt(req.query.skip || 0)
-      let allUser = await UserModel.find().sort({ percentage: -1 }).select("-password").limit(limit).skip(skip);
+      const skip = parseInt(req.query.skip || 0);
+      let allUser = await UserModel.find()
+        .sort({ percentage: -1 })
+        .select("-password")
+        .limit(limit)
+        .skip(skip);
       const total = await UserModel.find().count();
       // allUser = allUser.filter((user) => user.role != "SUPER_ADMIN");
       console.log(allUser);
@@ -82,9 +81,10 @@ module.exports = {
           .json({ status: false, message: `User Not Found In Database` });
       }
 
-
       return res.status(200).json({
-        status: true, total, length: allUser.length,
+        status: true,
+        total,
+        length: allUser.length,
         message: "Student Get Successfully",
         allUser,
       });
@@ -99,7 +99,9 @@ module.exports = {
   getUserById: async (req, res) => {
     try {
       const { user_id } = req.params;
-      const user = await UserModel.findById({ _id: user_id }).select("-password");
+      const user = await UserModel.findById({ _id: user_id }).select(
+        "-password"
+      );
       if (user == null) {
         return res.status(404).json({
           status: false,
@@ -121,8 +123,11 @@ module.exports = {
     try {
       const { role } = req.params;
       const limit = parseInt(req.query.limit || 10);
-      const skip = parseInt(req.query.skip || 0)
-      const user = await UserModel.find({ role: role }).select("-password").limit(limit).skip(skip);
+      const skip = parseInt(req.query.skip || 0);
+      const user = await UserModel.find({ role: role })
+        .select("-password")
+        .limit(limit)
+        .skip(skip);
       const total = await UserModel.find().count();
 
       if (user == null) {
@@ -131,9 +136,13 @@ module.exports = {
           message: `User Not Found With ID :- ${role} `,
         });
       }
-      return res
-        .status(200)
-        .json({ status: true, total, length: user.length, message: "User Get Successfully", user });
+      return res.status(200).json({
+        status: true,
+        total,
+        length: user.length,
+        message: "User Get Successfully",
+        user,
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -145,27 +154,31 @@ module.exports = {
 
   getNoOfUser: async (req, res) => {
     try {
-      let { date } = req.params
+      let { date } = req.params;
       const result = await UserModel.aggregate([
         {
           $match: {
             createdAt: {
               $gte: new Date(date),
-              $lt: new Date(new Date(date).setDate(new Date(date).getDate() + 1))
-            }
-          }
+              $lt: new Date(
+                new Date(date).setDate(new Date(date).getDate() + 1)
+              ),
+            },
+          },
         },
         {
           $group: {
             _id: null,
-            count: { $sum: 1 }
-          }
-        }
+            count: { $sum: 1 },
+          },
+        },
       ]);
 
-      return res
-        .status(200)
-        .json({ status: true, message: `Count of User Get Successfully for Date :- ${date} `, count: result.length > 0 ? result[0].count : 0 });
+      return res.status(200).json({
+        status: true,
+        message: `Count of User Get Successfully for Date :- ${date} `,
+        count: result.length > 0 ? result[0].count : 0,
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -231,8 +244,11 @@ module.exports = {
   updateNoOfReport: async (req, res) => {
     try {
       let { user_id, no_of_report } = req.params;
-      const userNoOfReport = await UserModel.findById({ _id: user_id }).select("no_of_report");
-      no_of_report = parseInt(userNoOfReport.no_of_report) + parseInt(no_of_report)
+      const userNoOfReport = await UserModel.findById({ _id: user_id }).select(
+        "no_of_report"
+      );
+      no_of_report =
+        parseInt(userNoOfReport.no_of_report) + parseInt(no_of_report);
       const user = await UserModel.findByIdAndUpdate(
         { _id: user_id },
         { $set: { no_of_report: no_of_report } },
