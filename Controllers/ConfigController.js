@@ -3,14 +3,14 @@ const ConfigModel = require("../Models/ConfigModel");
 module.exports = {
   addConfig: async (req, res) => {
     try {
-      const { config_id, config_response } = req.body;
-      if (!config_id || !config_response) {
+      const { razorpay_api_key } = req.body;
+      if (!razorpay_api_key) {
         return res.status(400).json({
           status: false,
           message: `config_${!config_id ? "id" : "response"} is Required`,
         });
       }
-      const configData = new ConfigModel({ config_id, config_response });
+      const configData = new ConfigModel({ razorpay_api_key });
       await configData.save();
       return res
         .status(201)
@@ -54,13 +54,11 @@ module.exports = {
           message: `Config Not Found With ID: ${config_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({
-          status: true,
-          message: "Config Retrieved Successfully",
-          config,
-        });
+      return res.status(200).json({
+        status: true,
+        message: "Config Retrieved Successfully",
+        config,
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,

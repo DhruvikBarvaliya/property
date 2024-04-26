@@ -3,15 +3,15 @@ const RazorPayModel = require("../Models/RazorPayModel");
 module.exports = {
   addRazorPay: async (req, res) => {
     try {
-      const { razorpay_id, razor_pay_response } = req.body;
-      if (!razorpay_id || !razor_pay_response) {
+      const { user_id, razor_pay_response } = req.body;
+      if (!user_id || !razor_pay_response) {
         return res.status(400).json({
           status: false,
-          message: `razorpay_${!razorpay_id ? "id" : "response"} is Required`,
+          message: `razorpay_${!user_id ? "id" : "response"} is Required`,
         });
       }
       const razorpayData = new RazorPayModel({
-        razorpay_id,
+        user_id,
         razor_pay_response,
       });
       await razorpayData.save();

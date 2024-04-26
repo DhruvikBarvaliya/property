@@ -9,6 +9,7 @@ const routes = {
   RazorPayRoute: require("./RazorPayRoute"),
   SubscriptionPlanRoute: require("./SubscriptionPlanRoute"),
   ConfigRoute: require("./ConfigRoute"),
+  ReportRoute: require("./ReportRoute"),
 };
 
 router.get("/", (req, res) => {
