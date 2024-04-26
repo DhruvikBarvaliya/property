@@ -49,7 +49,7 @@ module.exports = {
     try {
       const { limit = 10, skip = 0 } = req.query;
       const allProperty = await PropertyModel.find()
-        .sort({ percentage: -1 })
+        .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
       const total = await PropertyModel.countDocuments();
@@ -78,7 +78,10 @@ module.exports = {
 
   getPropertyById: async (req, res) => {
     try {
-      const property = await PropertyModel.findById(req.params.property_id);
+      const property = await PropertyModel.findOne({
+        _id: req.params.property_id,
+        is_active: true,
+      });
       if (!property) {
         return res.status(404).json({
           status: false,
@@ -193,7 +196,7 @@ module.exports = {
     try {
       const property = await PropertyModel.findByIdAndUpdate(
         req.params.property_id,
-        { is_active: req.params.is_active },
+        { is_active: req.params.status },
         { new: true }
       );
       if (!property) {

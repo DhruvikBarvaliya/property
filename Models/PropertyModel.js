@@ -24,9 +24,9 @@ const PropertySchema = new Schema(
     area_rate_considered_on: { type: String },
     construction_area_sq_ft_super_built_area: { type: String },
     construction_area_sq_ft_row_1: { type: String },
-    is_verified: { type: Boolean, default: false },
+    is_verified: { type: Boolean, default: true },
     status: { type: String, trim: true },
-    is_active: { type: Boolean, default: false },
+    is_active: { type: Boolean, default: true },
     last_login: { type: Date },
   },
   { versionKey: false, timestamps: true }

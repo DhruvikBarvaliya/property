@@ -25,7 +25,9 @@ module.exports = {
   },
   getAllConfig: async (req, res) => {
     try {
-      const allConfig = await ConfigModel.find().sort({ percentage: -1 });
+      const allConfig = await ConfigModel.find({ is_active: true }).sort({
+        createdAt: 1,
+      });
       if (!allConfig.length) {
         return res
           .status(404)
@@ -47,7 +49,10 @@ module.exports = {
   getConfigById: async (req, res) => {
     try {
       const { config_id } = req.params;
-      const config = await ConfigModel.findById(config_id);
+      const config = await ConfigModel.findOne({
+        _id: config_id,
+        is_active: true,
+      });
       if (!config) {
         return res.status(404).json({
           status: false,
@@ -92,10 +97,10 @@ module.exports = {
   },
   updateConfigStatus: async (req, res) => {
     try {
-      const { config_id, is_active } = req.params;
+      const { config_id, status } = req.params;
       const config = await ConfigModel.findByIdAndUpdate(
         config_id,
-        { is_active },
+        { is_active: status },
         { new: true }
       );
       if (!config) {

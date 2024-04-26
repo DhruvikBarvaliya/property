@@ -66,18 +66,18 @@ module.exports = {
   },
   addReport: async (req, res) => {
     try {
-      const { report_id, report_response } = req.body;
-      if (!report_id || !report_response) {
+      const { report } = req.body;
+      if (!report) {
         return res.status(400).json({
           status: false,
-          message: `report_${!report_id ? "id" : "response"} is Required`,
+          message: `Report Object is Required`,
         });
       }
-      const reportData = new ReportModel({ report_id, report_response });
+      const reportData = new ReportModel({ report });
       await reportData.save();
       return res
         .status(201)
-        .json({ message: "Report response added Successfully" });
+        .json({ message: "Report Object added Successfully" });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -88,7 +88,7 @@ module.exports = {
   },
   getAllReport: async (req, res) => {
     try {
-      const allReport = await ReportModel.find().sort({ percentage: -1 });
+      const allReport = await ReportModel.find().sort({ createdAt: -1 });
       if (!allReport.length) {
         return res
           .status(404)
@@ -155,10 +155,10 @@ module.exports = {
   },
   updateReportStatus: async (req, res) => {
     try {
-      const { report_id, is_active } = req.params;
+      const { report_id, status } = req.params;
       const report = await ReportModel.findByIdAndUpdate(
         report_id,
-        { is_active },
+        { is_active: status },
         { new: true }
       );
       if (!report) {

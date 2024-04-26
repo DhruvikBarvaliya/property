@@ -31,7 +31,10 @@ module.exports = {
       const limit = parseInt(req.query.limit || 10);
       const skip = parseInt(req.query.skip || 0);
       const [allRazorPay, total] = await Promise.all([
-        RazorPayModel.find().sort({ percentage: -1 }).limit(limit).skip(skip),
+        RazorPayModel.find({ is_active: true })
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .skip(skip),
         RazorPayModel.countDocuments(),
       ]);
 
@@ -59,7 +62,10 @@ module.exports = {
   getRazorPayById: async (req, res) => {
     try {
       const { razorpay_id } = req.params;
-      const razorpay = await RazorPayModel.findById(razorpay_id);
+      const razorpay = await RazorPayModel.findOne({
+        _id: razorpay_id,
+        is_active: true,
+      });
       if (!razorpay) {
         return res.status(404).json({
           status: false,
@@ -104,10 +110,10 @@ module.exports = {
   },
   updateRazorPayStatus: async (req, res) => {
     try {
-      const { razorpay_id, is_active } = req.params;
+      const { razorpay_id, status } = req.params;
       const razorpay = await RazorPayModel.findByIdAndUpdate(
         razorpay_id,
-        { is_active },
+        { is_active: status },
         { new: true }
       );
       if (!razorpay) {

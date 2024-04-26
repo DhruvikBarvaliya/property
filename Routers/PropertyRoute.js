@@ -25,7 +25,7 @@ router
   .delete(authorize(), PropertyController.deleteProperty);
 
 router.put(
-  "/property/:property_id/status",
+  "/property/:property_id/:status",
   authorize(),
   PropertyController.updatePropertyStatus
 );

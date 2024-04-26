@@ -37,19 +37,19 @@ module.exports = {
     try {
       const limit = parseInt(req.query.limit || 10);
       const skip = parseInt(req.query.skip || 0);
-      const allSubscriptionPlan = await SubscriptionPlanModel.find()
-        .sort({ percentage: -1 })
+      const allSubscriptionPlan = await SubscriptionPlanModel.find({
+        is_active: true,
+      })
+        .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip);
       const total = await SubscriptionPlanModel.countDocuments();
 
       if (!allSubscriptionPlan.length) {
-        return res
-          .status(404)
-          .json({
-            status: false,
-            message: "SubscriptionPlan Not Found In Database",
-          });
+        return res.status(404).json({
+          status: false,
+          message: "SubscriptionPlan Not Found In Database",
+        });
       }
 
       return res.status(200).json({
@@ -69,23 +69,22 @@ module.exports = {
   },
   getSubscriptionPlanById: async (req, res) => {
     try {
-      const { subscriptionplan_id } = req.params;
-      const subscriptionplan = await SubscriptionPlanModel.findById(
-        subscriptionplan_id
-      );
+      const { subscription_id } = req.params;
+      const subscriptionplan = await SubscriptionPlanModel.findOne({
+        _id: subscription_id,
+        is_active: true,
+      });
       if (!subscriptionplan) {
         return res.status(404).json({
           status: false,
-          message: `SubscriptionPlan Not Found With ID: ${subscriptionplan_id}`,
+          message: `SubscriptionPlan Not Found With ID: ${subscription_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({
-          status: true,
-          message: "SubscriptionPlan Retrieved Successfully",
-          subscriptionplan,
-        });
+      return res.status(200).json({
+        status: true,
+        message: "SubscriptionPlan Retrieved Successfully",
+        subscriptionplan,
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -96,24 +95,22 @@ module.exports = {
   },
   updateSubscriptionPlan: async (req, res) => {
     try {
-      const { subscriptionplan_id } = req.params;
+      const { subscription_id } = req.params;
       const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
-        subscriptionplan_id,
+        subscription_id,
         req.body,
         { new: true }
       );
       if (!subscriptionplan) {
         return res.status(404).json({
           status: false,
-          message: `SubscriptionPlan Not Found With ID: ${subscriptionplan_id}`,
+          message: `SubscriptionPlan Not Found With ID: ${subscription_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({
-          status: true,
-          message: "SubscriptionPlan Updated Successfully",
-        });
+      return res.status(200).json({
+        status: true,
+        message: "SubscriptionPlan Updated Successfully",
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -124,16 +121,16 @@ module.exports = {
   },
   updateSubscriptionPlanStatus: async (req, res) => {
     try {
-      const { subscriptionplan_id, is_active } = req.params;
+      const { subscription_id, status } = req.params;
       const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
-        subscriptionplan_id,
-        { is_active },
+        subscription_id,
+        { is_active: status },
         { new: true }
       );
       if (!subscriptionplan) {
         return res.status(404).json({
           status: false,
-          message: `SubscriptionPlan Not Found With ID: ${subscriptionplan_id}`,
+          message: `SubscriptionPlan Not Found With ID: ${subscription_id}`,
         });
       }
       return res.status(200).json({
@@ -151,24 +148,22 @@ module.exports = {
   },
   deleteSubscriptionPlan: async (req, res) => {
     try {
-      const { subscriptionplan_id } = req.params;
+      const { subscription_id } = req.params;
       const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
-        subscriptionplan_id,
+        subscription_id,
         { is_active: false },
         { new: true }
       );
       if (!subscriptionplan) {
         return res.status(404).json({
           status: false,
-          message: `SubscriptionPlan Not Found With ID: ${subscriptionplan_id}`,
+          message: `SubscriptionPlan Not Found With ID: ${subscription_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({
-          status: true,
-          message: "SubscriptionPlan Deleted Successfully",
-        });
+      return res.status(200).json({
+        status: true,
+        message: "SubscriptionPlan Deleted Successfully",
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,

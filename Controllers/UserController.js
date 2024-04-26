@@ -62,8 +62,8 @@ module.exports = {
     const skip = parseInt(req.query.skip || 0);
 
     try {
-      const users = await UserModel.find()
-        .sort({ percentage: -1 })
+      const users = await UserModel.find({ is_active: true })
+        .sort({ createdAt: -1 })
         .select("-password")
         .limit(limit)
         .skip(skip);
@@ -94,7 +94,10 @@ module.exports = {
     const { user_id } = req.params;
 
     try {
-      const user = await UserModel.findById(user_id).select("-password");
+      const user = await UserModel.findOne({
+        _id: user_id,
+        is_active: true,
+      }).select("-password");
 
       if (!user) {
         return res.status(404).json({
@@ -131,7 +134,7 @@ module.exports = {
       if (!users.length) {
         return res.status(404).json({
           status: false,
-          message: `No users found with role: ${role}`,
+          message: "No users found with role",
         });
       }
 
@@ -215,12 +218,12 @@ module.exports = {
     }
   },
   updateUserStatus: async (req, res) => {
-    const { user_id, is_active } = req.params;
+    const { user_id, status } = req.params;
 
     try {
       const updatedUser = await UserModel.findByIdAndUpdate(
         user_id,
-        { is_active },
+        { is_active: status },
         { new: true }
       );
 
