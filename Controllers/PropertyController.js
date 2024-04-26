@@ -6,9 +6,9 @@ module.exports = {
     try {
       const propertyData = new PropertyModel(req.body);
       await propertyData.save();
-      return res.status(201).json({ message: "Property Added Successfully" });
+      res.status(201).json({ message: "Property Added Successfully" });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),
@@ -17,11 +17,11 @@ module.exports = {
   },
 
   addManyProperty: async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded" });
-      }
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
+    try {
       const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
@@ -30,7 +30,7 @@ module.exports = {
       const properties = data.map((item) => ({
         ...item,
         location: {
-          type: 'Point',
+          type: "Point",
           coordinates: [item.longitude, item.latitude],
         },
       }));
@@ -38,24 +38,21 @@ module.exports = {
       await PropertyModel.insertMany(properties);
       res.status(200).json({ message: "Properties inserted successfully" });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          error: "An error occurred while inserting data",
-          details: err.message,
-        });
+      res.status(500).json({
+        error: "An error occurred while inserting data",
+        details: err.message,
+      });
     }
   },
 
   getAllProperty: async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit || 10);
-      const skip = parseInt(req.query.skip || 0);
+      const { limit = 10, skip = 0 } = req.query;
       const allProperty = await PropertyModel.find()
         .sort({ percentage: -1 })
-        .limit(limit)
-        .skip(skip);
-      const total = await PropertyModel.count();
+        .limit(Number(limit))
+        .skip(Number(skip));
+      const total = await PropertyModel.countDocuments();
 
       if (!allProperty.length) {
         return res
@@ -63,7 +60,7 @@ module.exports = {
           .json({ status: false, message: "Property Not Found In Database" });
       }
 
-      return res.status(200).json({
+      res.status(200).json({
         status: true,
         total,
         length: allProperty.length,
@@ -71,7 +68,7 @@ module.exports = {
         allProperty,
       });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),
@@ -88,11 +85,11 @@ module.exports = {
           message: `Property Not Found With ID :- ${req.params.property_id}`,
         });
       }
-      return res
+      res
         .status(200)
         .json({ status: true, message: "Property Get Successfully", property });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),
@@ -101,27 +98,27 @@ module.exports = {
   },
 
   getNearestProperty: async (req, res) => {
-    try {
-      const { latitude, longitude } = req.params;
-      const lat = parseFloat(latitude);
-      const long = parseFloat(longitude);
-      if (isNaN(lat) || isNaN(long)) {
-        return res
-          .status(400)
-          .json({ error: "Invalid latitude or longitude provided" });
-      }
+    const { latitude, longitude } = req.params;
+    const lat = parseFloat(latitude);
+    const long = parseFloat(longitude);
+    if (isNaN(lat) || isNaN(long)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid latitude or longitude provided" });
+    }
 
+    try {
       const nearestProperties = await PropertyModel.find({
         location: {
           $near: {
-              $maxDistance: 100,
-              $minDistance: 0,
-              $geometry: {
-                  type: "Point",
-                  coordinates: [lat, long]
-              }
-          }
-      }
+            $maxDistance: 100,
+            $minDistance: 0,
+            $geometry: {
+              type: "Point",
+              coordinates: [lat, long],
+            },
+          },
+        },
       });
 
       if (!nearestProperties.length) {
@@ -130,21 +127,17 @@ module.exports = {
           .json({ message: "No properties found within the specified range" });
       }
 
-      res
-        .status(200)
-        .json({
-          status: true,
-          message: "Nearest properties fetched successfully",
-          nearestProperties,
-        });
+      res.status(200).json({
+        status: true,
+        message: "Nearest properties fetched successfully",
+        nearestProperties,
+      });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          status: false,
-          error: "An error occurred while fetching nearest properties",
-          details: err.message,
-        });
+      res.status(500).json({
+        status: false,
+        error: "An error occurred while fetching nearest properties",
+        details: err.message,
+      });
     }
   },
 
@@ -157,13 +150,13 @@ module.exports = {
         },
       });
 
-      return res.status(200).json({
+      res.status(200).json({
         status: true,
         message: "Property Get Successfully",
         properties,
       });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),
@@ -184,11 +177,11 @@ module.exports = {
           message: `Property Not Found With ID :- ${req.params.property_id}`,
         });
       }
-      return res
+      res
         .status(200)
         .json({ status: true, message: "Property Updated Successfully" });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),
@@ -209,13 +202,13 @@ module.exports = {
           message: `Property Not Found With ID :- ${req.params.property_id}`,
         });
       }
-      return res.status(200).json({
+      res.status(200).json({
         status: true,
         message: "Property Status Updated Successfully",
         property,
       });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),
@@ -236,11 +229,11 @@ module.exports = {
           message: `Property Not Found With ID :- ${req.params.property_id}`,
         });
       }
-      return res
+      res
         .status(200)
         .json({ status: true, message: "Property Deleted Successfully" });
     } catch (err) {
-      return res.status(500).json({
+      res.status(500).json({
         status: false,
         message: "Server Error",
         error: err.message || err.toString(),

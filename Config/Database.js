@@ -3,36 +3,35 @@ const { mongo_uri } = require("../Config/Config");
 const UserModel = require("../Models/UserModel");
 const bcrypt = require("bcryptjs");
 
-module.exports = function () {
+module.exports = async function () {
   mongoose.set("strictQuery", false);
-  mongoose.connect(mongo_uri, { useNewUrlParser: true });
-
-  mongoose.connection.on("connected", async () => {
-    console.log("Database Successfully Connected");
-    UserModel.findOne({ role: "SUPER_ADMIN" }, async function (err, data) {
-      if (!data) {
-        const salt = await bcrypt.genSalt(10);
-        const password = await bcrypt.hash("superadmin", salt);
-        const userData = new UserModel({
-          email: "superadmin@gmail.com",
-          password: password,
-          is_verified: true,
-          is_active: true,
-          role: "SUPER_ADMIN",
-          name: "super",
-          phone: "9998867024"
-        });
-        userData
-          .save()
-          .then((adminData) => {
-            console.log(
-              `Super Admin Created Successfully with Email "superadmin@gmail.com" witj Password "superadmin" And id ${adminData._id}`
-            );
-          })
-          .catch((error) => {
-            console.log(error.message);
-          });
-      }
-    });
+  await mongoose.connect(mongo_uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   });
+
+  console.log("Database Successfully Connected");
+  const adminExists = await UserModel.exists({ role: "SUPER_ADMIN" });
+
+  if (!adminExists) {
+    const password = await bcrypt.hash("superadmin", 10);
+    const userData = new UserModel({
+      email: "superadmin@gmail.com",
+      password: password,
+      is_verified: true,
+      is_active: true,
+      role: "SUPER_ADMIN",
+      name: "super",
+      phone: "9998867024",
+    });
+
+    try {
+      const adminData = await userData.save();
+      console.log(
+        `Super Admin Created Successfully with Email "superadmin@gmail.com" and ID ${adminData._id}`
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 };

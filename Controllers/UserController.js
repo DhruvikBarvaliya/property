@@ -4,57 +4,51 @@ const { sendMail } = require("../Helpers/email");
 
 module.exports = {
   addUser: async (req, res) => {
+    const { role, banker_role_value, email, name, phone, password } = req.body;
+
+    // Validate required fields
+    if (!role || !email || !password) {
+      return res.status(400).json({
+        status: false,
+        message: `${
+          !role ? "role" : !email ? "email" : "password"
+        } is Required`,
+      });
+    }
+
     try {
-      const { role, banker_role_value, email, name, phone } = req.body;
-      if (!role) {
-        return res
-          .status(400)
-          .json({ status: false, message: "role is Required" });
-      }
-      if (!email) {
-        return res
-          .status(400)
-          .json({ status: false, message: "email is Required" });
-      }
-      if (!req.body.password) {
-        return res
-          .status(400)
-          .json({ status: false, message: "password is Required" });
-      }
-      const salt = await bcrypt.genSalt(10);
-      const password = await bcrypt.hash(req.body.password, salt);
+      const userExists = await UserModel.findOne({ email });
 
-      const user = await UserModel.findOne({ email: email });
-
-      if (user) {
+      if (userExists) {
         return res
           .status(400)
           .json({ status: true, message: "User already registered" });
-      } else {
-        const userData = new UserModel({
-          role,
-          banker_role_value,
-          email,
-          name,
-          phone,
-          password,
-        });
-        const otp = Math.floor(Math.random() * 9000 + 1000);
-        await sendMail(email, otp);
-        console.log(email, otp);
-
-        userData.save().then(async (data) => {
-          await UserModel.findOneAndUpdate(
-            { email },
-            { $set: { otp: otp } },
-            { new: true }
-          );
-          return res.status(201).json({
-            message:
-              "User registered Successfully ,Please check your Email we sent you OTP for verify that mail",
-          });
-        });
       }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const otp = Math.floor(Math.random() * 9000 + 1000);
+
+      const userData = new UserModel({
+        role,
+        banker_role_value,
+        email,
+        name,
+        phone,
+        password: hashedPassword,
+        otp,
+      });
+
+      await sendMail(email, otp);
+      console.log(email, otp);
+
+      await userData.save();
+      await UserModel.updateOne({ email }, { $set: { otp } });
+
+      return res.status(201).json({
+        message:
+          "User registered Successfully, please check your email for OTP verification.",
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -64,29 +58,29 @@ module.exports = {
     }
   },
   getAllUser: async (req, res) => {
+    const limit = parseInt(req.query.limit || 10);
+    const skip = parseInt(req.query.skip || 0);
+
     try {
-      const limit = parseInt(req.query.limit || 10);
-      const skip = parseInt(req.query.skip || 0);
-      let allUser = await UserModel.find()
+      const users = await UserModel.find()
         .sort({ percentage: -1 })
         .select("-password")
         .limit(limit)
         .skip(skip);
-      const total = await UserModel.find().count();
-      // allUser = allUser.filter((user) => user.role != "SUPER_ADMIN");
-      console.log(allUser);
-      if (allUser.length == 0) {
+      const total = await UserModel.countDocuments();
+
+      if (!users.length) {
         return res
           .status(404)
-          .json({ status: false, message: `User Not Found In Database` });
+          .json({ status: false, message: "No users found." });
       }
 
       return res.status(200).json({
         status: true,
         total,
-        length: allUser.length,
-        message: "Student Get Successfully",
-        allUser,
+        length: users.length,
+        message: "Users retrieved successfully.",
+        users,
       });
     } catch (err) {
       return res.status(500).json({
@@ -97,20 +91,23 @@ module.exports = {
     }
   },
   getUserById: async (req, res) => {
+    const { user_id } = req.params;
+
     try {
-      const { user_id } = req.params;
-      const user = await UserModel.findById({ _id: user_id }).select(
-        "-password"
-      );
-      if (user == null) {
+      const user = await UserModel.findById(user_id).select("-password");
+
+      if (!user) {
         return res.status(404).json({
           status: false,
-          message: `User Not Found With ID :- ${user_id} `,
+          message: `User not found with ID: ${user_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({ status: true, message: "User Get Successfully", user });
+
+      return res.status(200).json({
+        status: true,
+        message: "User retrieved successfully.",
+        user,
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -120,28 +117,30 @@ module.exports = {
     }
   },
   getUserByRole: async (req, res) => {
+    const { role } = req.params;
+    const limit = parseInt(req.query.limit || 10);
+    const skip = parseInt(req.query.skip || 0);
+
     try {
-      const { role } = req.params;
-      const limit = parseInt(req.query.limit || 10);
-      const skip = parseInt(req.query.skip || 0);
-      const user = await UserModel.find({ role: role })
+      const users = await UserModel.find({ role })
         .select("-password")
         .limit(limit)
         .skip(skip);
-      const total = await UserModel.find().count();
+      const total = await UserModel.countDocuments({ role });
 
-      if (user == null) {
+      if (!users.length) {
         return res.status(404).json({
           status: false,
-          message: `User Not Found With ID :- ${role} `,
+          message: `No users found with role: ${role}`,
         });
       }
+
       return res.status(200).json({
         status: true,
         total,
-        length: user.length,
-        message: "User Get Successfully",
-        user,
+        length: users.length,
+        message: "Users retrieved successfully.",
+        users,
       });
     } catch (err) {
       return res.status(500).json({
@@ -153,8 +152,9 @@ module.exports = {
   },
 
   getNoOfUser: async (req, res) => {
+    const { date } = req.params;
+
     try {
-      let { date } = req.params;
       const result = await UserModel.aggregate([
         {
           $match: {
@@ -176,8 +176,8 @@ module.exports = {
 
       return res.status(200).json({
         status: true,
-        message: `Count of User Get Successfully for Date :- ${date} `,
-        count: result.length > 0 ? result[0].count : 0,
+        message: `Count of users for date: ${date}`,
+        count: result.length ? result[0].count : 0,
       });
     } catch (err) {
       return res.status(500).json({
@@ -188,24 +188,24 @@ module.exports = {
     }
   },
   updateUser: async (req, res) => {
-    try {
-      const { user_id } = req.params;
+    const { user_id } = req.params;
 
-      const user = await UserModel.findByIdAndUpdate(
-        { _id: user_id },
-        req.body,
-        { new: true }
-      );
-      if (user == null) {
+    try {
+      const updatedUser = await UserModel.findByIdAndUpdate(user_id, req.body, {
+        new: true,
+      });
+
+      if (!updatedUser) {
         return res.status(404).json({
           status: false,
-          message: `User Not Found With ID :- ${user_id} `,
-          user,
+          message: `User not found with ID: ${user_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({ status: true, message: "User Updated Successfully" });
+
+      return res.status(200).json({
+        status: true,
+        message: "User updated successfully.",
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
@@ -215,23 +215,26 @@ module.exports = {
     }
   },
   updateUserStatus: async (req, res) => {
+    const { user_id, is_active } = req.params;
+
     try {
-      const { user_id, is_active } = req.params;
-      const user = await UserModel.findByIdAndUpdate(
-        { _id: user_id },
-        { $set: { is_active: is_active } },
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        user_id,
+        { is_active },
         { new: true }
       );
-      if (user == null) {
+
+      if (!updatedUser) {
         return res.status(404).json({
           status: false,
-          message: `User Not Found With ID :- ${user_id} `,
+          message: `User not found with ID: ${user_id}`,
         });
       }
+
       return res.status(200).json({
         status: true,
-        message: "User Status Updated Successfully",
-        user,
+        message: "User status updated successfully.",
+        user: updatedUser,
       });
     } catch (err) {
       return res.status(500).json({
@@ -242,28 +245,29 @@ module.exports = {
     }
   },
   updateNoOfReport: async (req, res) => {
+    const { user_id, no_of_report } = req.params;
+
     try {
-      let { user_id, no_of_report } = req.params;
-      const userNoOfReport = await UserModel.findById({ _id: user_id }).select(
-        "no_of_report"
-      );
-      no_of_report =
-        parseInt(userNoOfReport.no_of_report) + parseInt(no_of_report);
-      const user = await UserModel.findByIdAndUpdate(
-        { _id: user_id },
-        { $set: { no_of_report: no_of_report } },
-        { new: true }
-      );
-      if (user == null) {
+      const user = await UserModel.findById(user_id).select("no_of_report");
+
+      if (!user) {
         return res.status(404).json({
           status: false,
-          message: `User Not Found With ID :- ${user_id} `,
+          message: `User not found with ID: ${user_id}`,
         });
       }
+
+      const updatedNoOfReport =
+        parseInt(user.no_of_report) + parseInt(no_of_report);
+      await UserModel.findByIdAndUpdate(
+        user_id,
+        { no_of_report: updatedNoOfReport },
+        { new: true }
+      );
+
       return res.status(200).json({
         status: true,
-        message: "User NoOfReport Updated Successfully",
-        user,
+        message: "Number of reports updated successfully.",
       });
     } catch (err) {
       return res.status(500).json({
@@ -274,22 +278,26 @@ module.exports = {
     }
   },
   deleteUser: async (req, res) => {
+    const { user_id } = req.params;
+
     try {
-      const { user_id } = req.params;
       const user = await UserModel.findByIdAndUpdate(
-        { _id: user_id },
-        { $set: { is_active: false } },
+        user_id,
+        { is_active: false },
         { new: true }
       );
-      if (user == null) {
+
+      if (!user) {
         return res.status(404).json({
           status: false,
-          message: `User Not Found With ID :- ${user_id} `,
+          message: `User not found with ID: ${user_id}`,
         });
       }
-      return res
-        .status(200)
-        .json({ status: true, message: "User Deleted Successfully" });
+
+      return res.status(200).json({
+        status: true,
+        message: "User deleted successfully.",
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,

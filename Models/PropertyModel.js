@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 mongoose.pluralize(null);
 
 const PropertySchema = new Schema(
@@ -22,10 +22,8 @@ const PropertySchema = new Schema(
     super_built_up_area: String,
     carpet_area: String,
     area_rate_considered_on: String,
-    construction_area_sq_ft_super_uilt_area: String,
+    construction_area_sq_ft_super_built_area: String,
     construction_area_sq_ft_row_1: String,
-    construction_area_sq_ft_built_up_area: String,
-    construction_area_sq_ft_super_built_up_area: String,
     is_verified: { type: Boolean, default: false },
     status: { type: String, trim: true },
     is_active: { type: Boolean, default: false },

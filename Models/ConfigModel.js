@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-mongoose.pluralize(null);
 
-const ConfigSchema = new Schema(
+const ConfigSchema = new mongoose.Schema(
   {
     razorpay_api_key: { type: String, trim: true },
     is_verified: { type: Boolean, default: true },
@@ -12,4 +10,5 @@ const ConfigSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
+mongoose.pluralize(null);
 module.exports = mongoose.model("config", ConfigSchema);

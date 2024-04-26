@@ -1,8 +1,10 @@
-module.exports = {
+const Roles = {
   SUPER_ADMIN: "SUPER_ADMIN",
   ADMIN: "ADMIN",
   BANKER: "BANKER",
   VALUER: "VALUER",
   INDIVIDUAL: "INDIVIDUAL",
-  BROKER: "BROKER"
+  BROKER: "BROKER",
 };
+
+module.exports = Roles;
