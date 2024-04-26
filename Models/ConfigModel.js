@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 mongoose.pluralize(null);
 
 const ConfigSchema = new Schema(

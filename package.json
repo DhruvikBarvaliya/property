@@ -7,7 +7,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "keywords": [],
+  "keywords": ["real estate", "property management", "web app"],
   "author": "Dhruvik Barvaliya",
   "license": "ISC",
   "dependencies": {

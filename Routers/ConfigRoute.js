@@ -4,31 +4,31 @@ const authorize = require("../Middleware/auth");
 const Role = require("../Helpers/role");
 const ConfigController = require("../Controllers/ConfigController");
 
-router.post(
-  "/config", authorize(),
-  ConfigController.addConfig
-);
-router.get("/config", authorize(), ConfigController.getAllConfig);
-router.get(
-  "/config/byConfigId/:config_id",
-  authorize(),
-  ConfigController.getConfigById
-);
+// Simplify route definitions by using route chaining
+router
+  .route("/config")
+  .post(authorize([Role.SUPER_ADMIN, Role.ADMIN]), ConfigController.addConfig)
+  .get(
+    authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+    ConfigController.getAllConfig
+  );
+
+router
+  .route("/config/:config_id")
+  .get(
+    authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+    ConfigController.getConfigById
+  )
+  .put(authorize([Role.SUPER_ADMIN, Role.ADMIN]), ConfigController.updateConfig)
+  .delete(
+    authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+    ConfigController.deleteConfig
+  );
 
 router.put(
-  "/config/:config_id",
-  authorize(),
-  ConfigController.updateConfig
-);
-router.put(
   "/config/:config_id/:status",
-  authorize(),
+  authorize([Role.SUPER_ADMIN, Role.ADMIN]),
   ConfigController.updateConfigStatus
-);
-router.delete(
-  "/config/:config_id",
-  authorize(),
-  ConfigController.deleteConfig
 );
 
 module.exports = router;

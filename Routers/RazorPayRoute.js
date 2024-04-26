@@ -1,34 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const authorize = require("../Middleware/auth");
-const Role = require("../Helpers/role");
 const RazorPayController = require("../Controllers/RazorPayController");
 
-router.post(
-  "/razorpay",
-  RazorPayController.addRazorPay
-);
-router.get("/razorpay", authorize(), RazorPayController.getAllRazorPay);
-router.get(
-  "/razorpay/byRazorPayId/:razorpay_id",
-  authorize(),
-  RazorPayController.getRazorPayById
-);
+// Simplify route definitions by using route chaining
+router
+  .route("/razorpay")
+  .post(RazorPayController.addRazorPay)
+  .get(authorize(), RazorPayController.getAllRazorPay);
 
-router.put(
-  "/razorpay/:razorpay_id",
-  authorize(),
-  RazorPayController.updateRazorPay
-);
+router
+  .route("/razorpay/:razorpay_id")
+  .get(authorize(), RazorPayController.getRazorPayById)
+  .put(authorize(), RazorPayController.updateRazorPay)
+  .delete(authorize(), RazorPayController.deleteRazorPay);
+
 router.put(
   "/razorpay/:razorpay_id/:status",
   authorize(),
   RazorPayController.updateRazorPayStatus
-);
-router.delete(
-  "/razorpay/:razorpay_id",
-  authorize(),
-  RazorPayController.deleteRazorPay
 );
 
 module.exports = router;

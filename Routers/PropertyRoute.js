@@ -1,55 +1,45 @@
 const express = require("express");
 const router = express.Router();
 const authorize = require("../Middleware/auth");
-const Role = require("../Helpers/role");
 const PropertyController = require("../Controllers/PropertyController");
 const multer = require("multer");
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
-router.post("/property", authorize(), PropertyController.addProperty);
-
+// Simplify route definitions by grouping similar routes
 router.post(
   "/upload",
   upload.single("file"),
   PropertyController.addManyProperty
 );
 
-router.get("/property", authorize(), PropertyController.getAllProperty);
-router.get(
-  "/property/byPropertyId/:property_id",
-  authorize(),
-  PropertyController.getPropertyById
-);
-router.post(
-  "/property/nearest-property/:latitude/:longitude",
-  authorize(),
-  PropertyController.getNearestProperty
-);
-router.get(
-  "/property/byRole/:role",
-  authorize(),
-  PropertyController.getPropertyById
-);
-router.get(
-  "/property/searchProperty/:title",
-  authorize(),
-  PropertyController.searchProperty
-);
-router.put(
-  "/property/:property_id",
-  authorize(),
-  PropertyController.updateProperty
-);
+// Property CRUD operations
+router
+  .route("/property")
+  .post(authorize(), PropertyController.addProperty)
+  .get(authorize(), PropertyController.getAllProperty);
+
+router
+  .route("/property/:property_id")
+  .get(authorize(), PropertyController.getPropertyById)
+  .put(authorize(), PropertyController.updateProperty)
+  .delete(authorize(), PropertyController.deleteProperty);
+
 router.put(
   "/property/:property_id/:status",
   authorize(),
   PropertyController.updatePropertyStatus
 );
-router.delete(
-  "/property/:property_id",
+
+router.post(
+  "/property/nearest/:latitude/:longitude",
   authorize(),
-  PropertyController.deleteProperty
+  PropertyController.getNearestProperty
+);
+
+router.get(
+  "/property/search/:title",
+  authorize(),
+  PropertyController.searchProperty
 );
 
 module.exports = router;
