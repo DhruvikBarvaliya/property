@@ -16,7 +16,7 @@ router
   .delete(authorize(), UserController.deleteUser);
 
 router.get("/user/byRole/:role", authorize(), UserController.getUserByRole);
-router.get("/user/noOfUser/:date", UserController.getNoOfUser); // Note: Authorization removed as per original code
+router.get("/user/noOfUser/:date", authorize(), UserController.getNoOfUser);
 
 router.put(
   "/user/:user_id/:status",
