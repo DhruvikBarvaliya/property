@@ -44,13 +44,28 @@ module.exports = {
     let MaxDistance = distance || maxDistance;
     const currentDate = new Date();
     const reportDate = await formatDate(currentDate);
-    console.log(MaxDistance);
+    console.log("MaxDistance", MaxDistance);
     const lat = parseFloat(latitude);
     const long = parseFloat(longitude);
     const usarData = await UserModel.findOne({
       _id: user_id,
       is_active: true,
-    }).select(["-password","-module","-is_verified","-is_active","-login_attempts","-no_of_report","-is_paid","-no_of_pdf","-createdAt","-updatedAt"]);
+    }).select([
+      "-password",
+      "-module",
+      "-is_verified",
+      "-is_active",
+      "-login_attempts",
+      "-is_paid",
+      "-no_of_pdf",
+      "-createdAt",
+      "-updatedAt",
+    ]);
+    console.log("no_of_report ", usarData.no_of_report);
+    let noOfReport = usarData.no_of_report - 1;
+    if (noOfReport <= 0) {
+      return res.status(400).json({ error: "Please Pay for Ganarate Report" });
+    }
     if (isNaN(lat) || isNaN(long)) {
       return res
         .status(400)
@@ -100,6 +115,36 @@ module.exports = {
         const area_per_sq_ft = sum / top5.length;
         market_area = carpet_area || super_built_up_area * area_per_sq_ft;
         const amountInWords = await numberToWords(market_area);
+        const report = await ReportModel.findOne({
+          type_of_property,
+          carpet_area,
+        });
+        if (report == null) {
+          if (noOfReport <= 0) {
+            return res
+              .status(400)
+              .json({ error: "Please Pay for Ganarate Report" });
+          }
+          const updatedUser = await UserModel.findByIdAndUpdate(
+            user_id,
+            { no_of_report: noOfReport },
+            { new: true }
+          );
+        }
+        const reportData = new ReportModel({
+          user_id,
+          latitude,
+          longitude,
+          distance,
+          type_of_property,
+          carpet_area,
+          super_built_up_area,
+          plot_area,
+          construction_area,
+          age_of_property,
+          type,
+        });
+        await reportData.save();
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
@@ -109,7 +154,7 @@ module.exports = {
           amountInWords,
           usarData,
           reportDate,
-          type_of_property
+          type_of_property,
         });
       } else if (type_of_property == "Independent") {
         if (!age_of_property || !construction_area || !type || !plot_area) {
@@ -125,22 +170,31 @@ module.exports = {
             parseInt(a.land_rate_per_sq_mtr_Sq_yard)
         );
         top5 = nearestProperties.slice(0, 5);
-        console.log(top5);
+        console.log("top5", top5);
         sum = top5.reduce(
           (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
           0
         );
-        console.log(sum);
+        console.log("sum", sum);
         const plot_land_rate = sum / top5.length;
-        console.log(construction_area, construction_rate);
+        console.log(
+          "construction_area ",
+          construction_area,
+          "construction_rate ",
+          construction_rate
+        );
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
         const depreciation =
           (construction_cost * age_of_property * 0.9) / typeValue;
         console.log(
+          "construction_cost ",
           construction_cost,
+          "age_of_property ",
           age_of_property,
+          "typeValue ",
           typeValue,
+          "depreciation ",
           depreciation
         );
         console.log(plot_area, plot_land_rate, depreciation);
@@ -148,6 +202,36 @@ module.exports = {
         market_area = plot_area * plot_land_rate + depreciation;
 
         const amountInWords = await numberToWords(market_area);
+        const report = await ReportModel.findOne({
+          type_of_property,
+          carpet_area,
+        });
+        if (report == null) {
+          if (noOfReport <= 0) {
+            return res
+              .status(400)
+              .json({ error: "Please Pay for Ganarate Report" });
+          }
+          const updatedUser = await UserModel.findByIdAndUpdate(
+            user_id,
+            { no_of_report: noOfReport },
+            { new: true }
+          );
+        }
+        const reportData = new ReportModel({
+          user_id,
+          latitude,
+          longitude,
+          distance,
+          type_of_property,
+          carpet_area,
+          super_built_up_area,
+          plot_area,
+          construction_area,
+          age_of_property,
+          type,
+        });
+        await reportData.save();
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
@@ -159,7 +243,7 @@ module.exports = {
           amountInWords,
           usarData,
           reportDate,
-          type_of_property
+          type_of_property,
         });
       } else if (type_of_property == "Land") {
         if (!plot_area) {
@@ -173,19 +257,56 @@ module.exports = {
             parseInt(a.land_rate_per_sq_mtr_Sq_yard)
         );
         top5 = nearestProperties.slice(0, 5);
-        console.log(top5);
+        console.log("top5", top5);
         sum = top5.reduce(
           (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
           0
         );
-        console.log(sum);
+        console.log("sum", sum);
 
         const average = sum / top5.length;
-        console.log(average);
+        console.log("average", average);
 
         market_area = plot_area * average;
-        console.log(plot_area, average, market_area);
+        console.log(
+          "plot_area",
+          plot_area,
+          "average",
+          average,
+          "market_area",
+          market_area
+        );
         const amountInWords = await numberToWords(market_area);
+        const report = await ReportModel.findOne({
+          type_of_property,
+          carpet_area,
+        });
+        if (report == null) {
+          if (noOfReport <= 0) {
+            return res
+              .status(400)
+              .json({ error: "Please Pay for Ganarate Report" });
+          }
+          const updatedUser = await UserModel.findByIdAndUpdate(
+            user_id,
+            { no_of_report: noOfReport },
+            { new: true }
+          );
+        }
+        const reportData = new ReportModel({
+          user_id,
+          latitude,
+          longitude,
+          distance,
+          type_of_property,
+          carpet_area,
+          super_built_up_area,
+          plot_area,
+          construction_area,
+          age_of_property,
+          type,
+        });
+        await reportData.save();
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
@@ -195,7 +316,7 @@ module.exports = {
           average,
           usarData,
           reportDate,
-          type_of_property
+          type_of_property,
         });
       } else {
         return res.status(404).json({
@@ -210,7 +331,7 @@ module.exports = {
         Land: "Land",
       };
 
-      console.log(propertyType[type_of_property]);
+      console.log("type_of_property", propertyType[type_of_property]);
 
       // res.status(200).json({
       //   status: true,

@@ -614,6 +614,44 @@
 					"response": []
 				},
 				{
+					"name": "Get All Staff",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/staff?limit=2&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"staff"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get No Of User",
 					"request": {
 						"auth": {

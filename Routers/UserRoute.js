@@ -9,6 +9,8 @@ router
   .post(UserController.addUser)
   .get(authorize(), UserController.getAllUser);
 
+router.route("/user/staff").get(authorize(), UserController.getAllStaff);
+
 router
   .route("/user/:user_id")
   .get(authorize(), UserController.getUserById)
@@ -17,7 +19,11 @@ router
 
 router.get("/user/byRole/:role", authorize(), UserController.getUserByRole);
 router.get("/user/noOfUser/:date", authorize(), UserController.getNoOfUser);
-router.get("/user/listOfModule/:user_id", authorize(), UserController.getModuleByUserId);
+router.get(
+  "/user/listOfModule/:user_id",
+  authorize(),
+  UserController.getModuleByUserId
+);
 
 router.put(
   "/user/:user_id/:status",

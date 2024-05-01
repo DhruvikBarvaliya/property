@@ -90,6 +90,39 @@ module.exports = {
       });
     }
   },
+  getAllStaff: async (req, res) => {
+    const limit = parseInt(req.query.limit || 10);
+    const skip = parseInt(req.query.skip || 0);
+
+    try {
+      const users = await UserModel.find({ is_active: true, role: "ADMIN" })
+        .sort({ createdAt: -1 })
+        .select("-password")
+        .limit(limit)
+        .skip(skip);
+      const total = await UserModel.countDocuments();
+
+      if (!users.length) {
+        return res
+          .status(404)
+          .json({ status: false, message: "No staff found." });
+      }
+
+      return res.status(200).json({
+        status: true,
+        total,
+        length: users.length,
+        message: "Staff retrieved successfully.",
+        users,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   getUserById: async (req, res) => {
     const { user_id } = req.params;
 
