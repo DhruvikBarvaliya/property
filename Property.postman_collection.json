@@ -1,0 +1,1853 @@
+{
+	"info": {
+		"_postman_id": "6ff428d1-d07c-4a14-b001-3835e24418de",
+		"name": "Property",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19223942"
+	},
+	"item": [
+		{
+			"name": "Property",
+			"item": [
+				{
+					"name": "Add Property",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"time\": \"45139.7138181713\",\r\n    \"type_of_property\": \"Residential\",\r\n    \"postal_address_of_the_property\": \"Flat no.202,2nd floor, C-building,Sun Valley,Govind Park Road,Nana Varachha Road ,Surat\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [\r\n            10.94987,\r\n            21.45679\r\n        ]\r\n    },\r\n    \"property_sub_classification\": \"Residential Plot\",\r\n    \"age_of_the_property\": \"8\",\r\n    \"type_of_construction\": \"RCC\",\r\n    \"land_area_sq_mtr_sq_yrd\": \"48.17 sq.mtr\",\r\n    \"land_rate_per_sq_mtr_Sq_yard\": \"0\",\r\n    \"area_rate_considered_per_sq_ft\": \"3000\",\r\n    \"built_up_area\": \"868.63 sq.ft\",\r\n    \"super_built_up_area\": \"1357.00 sq.ft\",\r\n    \"carpet_area\": \"768.12 sq ft\",\r\n    \"area_rate_considered_on\": \"Super Built-up Area\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/property",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Many Property",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/EV/Downloads/modified_excel_file (2).xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/upload",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Property",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property?limit=10&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/:property_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								":property_id"
+							],
+							"variable": [
+								{
+									"key": "property_id",
+									"value": "662b92dead5d92e18673a3c3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Nearest Property By Lat Long",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/nearest/:latitude/:longitude",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								"nearest",
+								":latitude",
+								":longitude"
+							],
+							"variable": [
+								{
+									"key": "latitude",
+									"value": "72.940623"
+								},
+								{
+									"key": "longitude",
+									"value": "21.25909"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Property",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/search/:title",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								"search",
+								":title"
+							],
+							"variable": [
+								{
+									"key": "title",
+									"value": "amrut"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Property By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"time\": \"45139.7138181713\",\r\n    \"type_of_property\": \"Residential\",\r\n    \"postal_address_of_the_property\": \"Flat no.202,2nd floor, C-building,Sun Valley,Govind Park Road,Nana Varachha Road ,Surat\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [\r\n            72.9401,\r\n            21.251\r\n        ]\r\n    },\r\n    \"property_sub_classification\": \"Residential Plot\",\r\n    \"age_of_the_property\": \"8\",\r\n    \"type_of_construction\": \"RCC\",\r\n    \"land_area_sq_mtr_sq_yrd\": \"48.17 sq.mtr\",\r\n    \"land_rate_per_sq_mtr_Sq_yard\": \"0\",\r\n    \"area_rate_considered_per_sq_ft\": \"3000\",\r\n    \"built_up_area\": \"868.63 sq.ft\",\r\n    \"super_built_up_area\": \"1357.00 sq.ft\",\r\n    \"carpet_area\": \"768.12 sq ft\",\r\n    \"area_rate_considered_on\": \"Super Built-up Area\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/property/:property_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								":property_id"
+							],
+							"variable": [
+								{
+									"key": "property_id",
+									"value": "662b92dead5d92e18673a3c3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Property Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/:property_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								":property_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "property_id",
+									"value": "662b92dead5d92e18673a3c3"
+								},
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Property By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/:property_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								":property_id"
+							],
+							"variable": [
+								{
+									"key": "property_id",
+									"value": "662b92dead5d92e18673a3c3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json()",
+									"pm.environment.set(\"token\", response.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"superadmin@gmail.com\",\r\n    \"password\": \"superadmin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"email\": \"yash.s@5datainc.com\",\r\n    \"for_forgot\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/send-otp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"send-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yash.s@5datainc.com\",\r\n    \"otp\": 3266\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"yash.s@5datainc.com\",\r\n    \"password\":\"asd123\",\r\n    \"newPassword\":\"test123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/change-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"email\": \"yash.s@5datainc.com\",\r\n    \"otp\":9140,\r\n    \"newPassword\":\"asd123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/forgot-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"BANKER\",\r\n    \"banker_role_value\": \"UCO Bank\",\r\n    \"email\": \"yash.s@5datainc.com\",\r\n    \"name\": \"bala\",\r\n    \"phone\": \"9876543250\",\r\n    \"password\": \"asd123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user?limit=2&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get No Of User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/noOfUser/:date",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"noOfUser",
+								":date"
+							],
+							"variable": [
+								{
+									"key": "date",
+									"value": "2024-04-26"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/:user_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "662b9673f05ddda0f4a66571"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Of Module By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/listOfModule/:user_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"listOfModule",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "662fa439841c05d4291d7796"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/byRole/:role?limit=2&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"byRole",
+								":role"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							],
+							"variable": [
+								{
+									"key": "role",
+									"value": "SUPER_ADMIN"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"BANKER\",\r\n    \"banker_role_value\": \"UCO Bank\",\r\n    \"email\": \"yash.s@5datainc.com\",\r\n    \"name\": \"bala\",\r\n    \"phone\": \"9876543250\",\r\n    \"password\": \"asd123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/:user_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "662b9673f05ddda0f4a66571"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/:user_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								":user_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "662b9673f05ddda0f4a66571"
+								},
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update No Of Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/updateNoOfReport/:user_id/:no_of_report",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"updateNoOfReport",
+								":user_id",
+								":no_of_report"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "662b9673f05ddda0f4a66571"
+								},
+								{
+									"key": "no_of_report",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/:user_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "662b9673f05ddda0f4a66571"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Razor Pay",
+			"item": [
+				{
+					"name": "Add Razor Pay",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"662b9673f05ddda0f4a66571\",\r\n    \"razor_pay_response\": \"asd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/razorpay",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Razor Pay",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/razorpay?limit=2&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Razor Pay By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/razorpay/:razorpay_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay",
+								":razorpay_id"
+							],
+							"variable": [
+								{
+									"key": "razorpay_id",
+									"value": "662b9a17efa33f7174a19355"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Razor Pay By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"razor_pay_response\": \"aaaaa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/razorpay/:razorpay_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay",
+								":razorpay_id"
+							],
+							"variable": [
+								{
+									"key": "razorpay_id",
+									"value": "662b9a17efa33f7174a19355"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Razor Pay Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/razorpay/:razorpay_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay",
+								":razorpay_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "razorpay_id",
+									"value": "662b9a17efa33f7174a19355"
+								},
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Razor Pay By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/razorpay/:razorpay_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay",
+								":razorpay_id"
+							],
+							"variable": [
+								{
+									"key": "razorpay_id",
+									"value": "662b9a17efa33f7174a19355"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Config",
+			"item": [
+				{
+					"name": "Add Config",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"razorpay_api_key\": \"ssss\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/config",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Config",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/config",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Config  By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/config/:config_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config",
+								":config_id"
+							],
+							"variable": [
+								{
+									"key": "config_id",
+									"value": "662ba0f8945925ed78697d85"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Config By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"razorpay_api_key\": \"ddddddd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/config/:config_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config",
+								":config_id"
+							],
+							"variable": [
+								{
+									"key": "config_id",
+									"value": "662ba0f8945925ed78697d85"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Config Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/config/:config_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config",
+								":config_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "config_id",
+									"value": "662ba0f8945925ed78697d85"
+								},
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Config By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/config/:config_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"config",
+								":config_id"
+							],
+							"variable": [
+								{
+									"key": "config_id",
+									"value": "662ba0f8945925ed78697d85"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "Add Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"report\": {\r\n        \"a\": 1,\r\n        \"b\": 2\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/report",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/report",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Report By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/report/:report_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report",
+								":report_id"
+							],
+							"variable": [
+								{
+									"key": "report_id",
+									"value": "662ba5a8fd5eb6301d6920a5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Report By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"report\": {\r\n        \"a\": 3,\r\n        \"b\": 4\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/report/:report_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report",
+								":report_id"
+							],
+							"variable": [
+								{
+									"key": "report_id",
+									"value": "662ba5a8fd5eb6301d6920a5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Report Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/report/:report_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report",
+								":report_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "report_id",
+									"value": "662ba5a8fd5eb6301d6920a5"
+								},
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Report By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/report/:report_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report",
+								":report_id"
+							],
+							"variable": [
+								{
+									"key": "report_id",
+									"value": "662ba5a8fd5eb6301d6920a5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Nearest Property By Lat Long Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 78.80900,\r\n    \"longitude\": 21.2355900,\r\n    \"distance\": 2000,\r\n    \"user_id\": \"662fa439841c05d4291d7796\",\r\n    \"type_of_property\": \"Apartment\",\r\n    \"carpet_area\": 2000,\r\n    \"age_of_property\": 17,\r\n    \"construction_area\": 4000,\r\n    \"type\": \"House\",\r\n    \"plot_area\": 4000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/report/nearestLocationReport",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report",
+								"nearestLocationReport"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription Plan",
+			"item": [
+				{
+					"name": "Add Subscription Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"plan_no\": 1,\r\n    \"plan_name\": \"Per Valuation Report\",\r\n    \"no_of_report\": 1,\r\n    \"price\": 1000,\r\n    \"discount\": 10\r\n    // \"final_price\":500\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/subscription",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Subscription Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subscription?limit=2&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subscription Plan By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subscription/:subscription_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription",
+								":subscription_id"
+							],
+							"variable": [
+								{
+									"key": "subscription_id",
+									"value": "662ba22f039122fea711cfb3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subscription Plan By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"plan_no\": 1,\r\n    \"plan_name\": \"Per Valuaddtion Report\",\r\n    \"no_of_report\": 1,\r\n    \"price\": 10000,\r\n    \"discount\": 10\r\n    // \"final_price\":500\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/subscription/:subscription_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription",
+								":subscription_id"
+							],
+							"variable": [
+								{
+									"key": "subscription_id",
+									"value": "662ba22f039122fea711cfb3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subscription Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subscription/:subscription_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription",
+								":subscription_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "subscription_id",
+									"value": "662ba22f039122fea711cfb3"
+								},
+								{
+									"key": "status",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Subscription Plan By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subscription/:subscription_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription",
+								":subscription_id"
+							],
+							"variable": [
+								{
+									"key": "subscription_id",
+									"value": "662ba22f039122fea711cfb3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
