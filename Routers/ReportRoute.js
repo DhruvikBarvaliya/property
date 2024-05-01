@@ -22,7 +22,7 @@ router.put(
 );
 
 router.post(
-  "/report/nearest/:latitude/:longitude",
+  "/report/nearestLocationReport",
   authorize(),
   ReportController.getNearestProperty
 );

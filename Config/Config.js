@@ -7,4 +7,6 @@ module.exports = {
   user: process.env.USER,
   password: process.env.PASSWORD,
   env: process.env.ENV,
+  maxDistance: process.env.MAX_DISTANCE,
+  minDistance: process.env.MIN_DISTANCE,
 };

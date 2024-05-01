@@ -58,6 +58,7 @@ const UserSchema = new Schema(
       trim: true,
     },
     password: { type: String, trim: true },
+    module: { type: Array },
     otp: { type: Number },
     forgot_otp: { type: Number },
     is_paid: { type: Boolean, default: false },

@@ -1,4 +1,4 @@
-const SubscriptionPlanModel = require("../Models/SubscriptionPlanModel");
+const SubscriptionModel = require("../Models/SubscriptionModel");
 
 module.exports = {
   addSubscriptionPlan: async (req, res) => {
@@ -16,7 +16,7 @@ module.exports = {
       let final_price =
         req.body.final_price || (price * (100 - (discount || 0))) / 100;
 
-      const subscriptionplanData = new SubscriptionPlanModel({
+      const subscriptionplanData = new SubscriptionModel({
         ...req.body,
         final_price,
       });
@@ -37,13 +37,13 @@ module.exports = {
     try {
       const limit = parseInt(req.query.limit || 10);
       const skip = parseInt(req.query.skip || 0);
-      const allSubscriptionPlan = await SubscriptionPlanModel.find({
+      const allSubscriptionPlan = await SubscriptionModel.find({
         is_active: true,
       })
         .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip);
-      const total = await SubscriptionPlanModel.countDocuments();
+      const total = await SubscriptionModel.countDocuments();
 
       if (!allSubscriptionPlan.length) {
         return res.status(404).json({
@@ -70,7 +70,7 @@ module.exports = {
   getSubscriptionPlanById: async (req, res) => {
     try {
       const { subscription_id } = req.params;
-      const subscriptionplan = await SubscriptionPlanModel.findOne({
+      const subscriptionplan = await SubscriptionModel.findOne({
         _id: subscription_id,
         is_active: true,
       });
@@ -96,7 +96,7 @@ module.exports = {
   updateSubscriptionPlan: async (req, res) => {
     try {
       const { subscription_id } = req.params;
-      const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
+      const subscriptionplan = await SubscriptionModel.findByIdAndUpdate(
         subscription_id,
         req.body,
         { new: true }
@@ -122,7 +122,7 @@ module.exports = {
   updateSubscriptionPlanStatus: async (req, res) => {
     try {
       const { subscription_id, status } = req.params;
-      const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
+      const subscriptionplan = await SubscriptionModel.findByIdAndUpdate(
         subscription_id,
         { is_active: status },
         { new: true }
@@ -149,7 +149,7 @@ module.exports = {
   deleteSubscriptionPlan: async (req, res) => {
     try {
       const { subscription_id } = req.params;
-      const subscriptionplan = await SubscriptionPlanModel.findByIdAndUpdate(
+      const subscriptionplan = await SubscriptionModel.findByIdAndUpdate(
         subscription_id,
         { is_active: false },
         { new: true }

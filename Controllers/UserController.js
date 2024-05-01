@@ -153,7 +153,35 @@ module.exports = {
       });
     }
   },
+  getModuleByUserId: async (req, res) => {
+    const { user_id } = req.params;
 
+    try {
+      const user = await UserModel.findOne({
+        _id: user_id,
+        is_active: true,
+      }).select("module");
+
+      if (!user) {
+        return res.status(404).json({
+          status: false,
+          message: `User not found with ID: ${user_id}`,
+        });
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "User Module retrieved successfully.",
+        user,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   getNoOfUser: async (req, res) => {
     const { date } = req.params;
 

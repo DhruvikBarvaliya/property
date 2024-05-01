@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose; // Destructure Schema directly from mongoose
 mongoose.pluralize(null);
 
-const SubscriptionPlanSchema = new Schema(
+const SubscriptionSchema = new Schema(
   {
     plan_no: Number,
     plan_name: { type: String, trim: true },
@@ -19,4 +19,4 @@ const SubscriptionPlanSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("subscriptionplan", SubscriptionPlanSchema);
+module.exports = mongoose.model("subscription", SubscriptionSchema);

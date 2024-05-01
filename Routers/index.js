@@ -7,7 +7,7 @@ const routes = {
   UserRoute: require("./UserRoute"),
   PropertyRoute: require("./PropertyRoute"),
   RazorPayRoute: require("./RazorPayRoute"),
-  SubscriptionPlanRoute: require("./SubscriptionPlanRoute"),
+  SubscriptionRoute: require("./SubscriptionRoute"),
   ConfigRoute: require("./ConfigRoute"),
   ReportRoute: require("./ReportRoute"),
 };

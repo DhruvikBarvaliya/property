@@ -23,6 +23,14 @@ module.exports = async function () {
       role: "SUPER_ADMIN",
       name: "super",
       phone: "9998867024",
+      module: [
+        "PROPERTY",
+        "USER",
+        "RAZORPAY",
+        "SUBSCRIPTION",
+        "REPORT",
+        "CONFIG",
+      ],
     });
 
     try {
