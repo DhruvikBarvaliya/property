@@ -25,6 +25,17 @@ module.exports = {
       const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
+      
+      // === If we added one row as hader ===
+
+      // delete sheet[XLSX.utils.encode_cell({ r: 0, c: 0 })];
+
+      // // Update the range of cells after deleting the first row
+      // sheet["!ref"] = XLSX.utils.encode_range(
+      //   { c: 0, r: 1 },
+      //   XLSX.utils.decode_range(sheet["!ref"]).e
+      // );
+
       const data = XLSX.utils.sheet_to_json(sheet);
 
       const properties = data.map((item) => ({

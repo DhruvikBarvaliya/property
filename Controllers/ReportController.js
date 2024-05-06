@@ -2,7 +2,13 @@ const ReportModel = require("../Models/ReportModel");
 const PropertyModel = require("../Models/PropertyModel");
 const UserModel = require("../Models/UserModel");
 const { numberToWords } = require("../Helpers/NumToWord");
+const path = require("path");
+
 let { maxDistance, minDistance } = require("../Config/Config");
+const {
+  replacePlaceholderInDocx,
+  convertDocxToPdf,
+} = require("../Helpers/convert");
 
 async function calculatePrice(years) {
   if (years >= 1 && years <= 10) {
@@ -28,6 +34,25 @@ async function formatDate(date) {
 
 module.exports = {
   getNearestProperty: async (req, res) => {
+    let reportObj = {
+      name_of_the_customers: "-",
+      report_date: "-",
+      case_ref_no: "-",
+      property_details: "-",
+      nearest_landmark: "-",
+      property_land_area: "-",
+      built_up_area_carpet_area_super_built_up_area: "-",
+      land_value: "-",
+      type_of_property: "-",
+      unit_rate_considered_for_land: "-",
+      unit_rate_considered_for_ca_bua_sba: "-",
+      building_value: "-",
+      final_valuation: "-",
+      final_valuation_in_word: "-",
+    };
+    const filePath = path.join(__dirname, "..", "Media", "demo.docx");
+
+    // replacePlaceholderInDocx(filePath, "{myname}", "Dynamic Value");
     const {
       user_id,
       latitude,
@@ -43,6 +68,13 @@ module.exports = {
     } = req.body;
     let MaxDistance = distance || maxDistance;
     const currentDate = new Date();
+    // const currentTimestamp = currentDate.getTime();
+
+    // console.log(
+    //   "Current Timestamp:",
+    //   req.body.user_id + "OF" + currentTimestamp
+    // );
+
     const reportDate = await formatDate(currentDate);
     console.log("MaxDistance", MaxDistance);
     const lat = parseFloat(latitude);
@@ -61,11 +93,18 @@ module.exports = {
       "-createdAt",
       "-updatedAt",
     ]);
+    if (!usarData) {
+      return res.status(404).json({
+        status: false,
+        message: `User not found with ID: ${user_id}`,
+      });
+    }
+    let name = usarData.name;
     console.log("no_of_report ", usarData.no_of_report);
     let noOfReport = usarData.no_of_report - 1;
-    if (noOfReport <= 0) {
-      return res.status(400).json({ error: "Please Pay for Ganarate Report" });
-    }
+    // if (noOfReport <= 0) {
+    //   return res.status(400).json({ error: "Please Pay for Ganarate Report" });
+    // }
     if (isNaN(lat) || isNaN(long)) {
       return res
         .status(400)
@@ -87,7 +126,7 @@ module.exports = {
       });
 
       if (!nearestProperties.length) {
-        return res.status(404).json({
+        return res.status(200).json({
           message: "No properties found within the specified range",
         });
       }
@@ -99,18 +138,21 @@ module.exports = {
             parseInt(a.area_rate_considered_per_sq_ft)
         )
         .slice(0, 5);
-
+      console.log("aaaaaaaaaaaaaaaaa", top5);
       let sum = top5.reduce(
         (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
         0
       );
+      console.log("bbbbbbbbbbbbbbbbbb", sum);
+
       let market_area;
 
       if (type_of_property == "Apartment") {
-        if (!carpet_area) {
-          return res
-            .status(404)
-            .json({ status: false, message: "carpet_area Not Found" });
+        if (!carpet_area && !super_built_up_area) {
+          return res.status(404).json({
+            status: false,
+            message: "carpet_area or super_built_up_area Not Found",
+          });
         }
         const area_per_sq_ft = sum / top5.length;
         market_area = carpet_area || super_built_up_area * area_per_sq_ft;
@@ -145,9 +187,36 @@ module.exports = {
           type,
         });
         await reportData.save();
+        let finalObj = {
+          ...reportObj,
+          name_of_the_customers: name,
+          report_date: reportDate,
+          case_ref_no: "asd",
+          property_details: "asd",
+          nearest_landmark: "asd",
+          property_land_area: "asd",
+          built_up_area_carpet_area_super_built_up_area: area_per_sq_ft,
+          land_value: "asd",
+          type_of_property: type_of_property,
+          unit_rate_considered_for_land: "asd",
+          unit_rate_considered_for_ca_bua_sba: "asd",
+          building_value: "asd",
+          final_valuation: market_area,
+          final_valuation_in_word: amountInWords,
+        };
+        const currentDate = new Date();
+        const currentTimestamp = currentDate.getTime();
+
+        console.log(
+          "Current Timestamp:",
+          req.body.user_id + "OF" + currentTimestamp
+        );
+        let file_name = req.body.user_id + "OF" + currentTimestamp;
+        // replacePlaceholderInDocx(filePath, finalObj, file_name);
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
+          name,
           market_area,
           area_per_sq_ft,
           area: carpet_area || super_built_up_area,
@@ -480,6 +549,33 @@ module.exports = {
       return res
         .status(200)
         .json({ status: true, message: "Report Deleted Successfully" });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  getIdAndTime: async (req, res) => {
+    try {
+      const { input_id } = req.params;
+
+      const delimiter = "OF";
+      const [id, timeWithExtension] = input_id.split(delimiter);
+
+      // Remove any leading/trailing spaces
+      const cleanedId = id.trim();
+
+      // Extract the time without the file extension
+      const time = timeWithExtension.replace(/\.(docx|pdf)$/i, "").trim();
+
+      return res.status(200).json({
+        status: true,
+        message: "Server Error",
+        id: cleanedId,
+        time: time,
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,

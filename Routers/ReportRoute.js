@@ -15,6 +15,10 @@ router
   .put(authorize(), ReportController.updateReport)
   .delete(authorize(), ReportController.deleteReport);
 
+router
+  .route("/report/input/:input_id")
+  .get(authorize(), ReportController.getIdAndTime);
+
 router.put(
   "/report/:report_id/:status",
   authorize(),

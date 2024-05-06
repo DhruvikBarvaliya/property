@@ -15,7 +15,10 @@
   "author": "Dhruvik Barvaliya",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
+    "child_process": "^1.0.2",
+    "convertapi": "^1.14.0",
     "cors": "^2.8.5",
     "docxtemplater": "^3.47.1",
     "dotenv": "^11.0.0",
