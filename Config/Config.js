@@ -9,4 +9,5 @@ module.exports = {
   env: process.env.ENV,
   maxDistance: process.env.MAX_DISTANCE,
   minDistance: process.env.MIN_DISTANCE,
+  convertApi: process.env.CONVERT_API,
 };

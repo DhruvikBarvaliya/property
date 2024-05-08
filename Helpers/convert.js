@@ -1,4 +1,6 @@
-var convertapi = require("convertapi")("5K0a6wUnoR18AlMt");
+const { convertApi } = require("../Config/Config");
+
+var convertapi = require("convertapi")(convertApi);
 
 async function replacePlaceholderInDocx(docxPath, obj, file_name) {
   try {
@@ -36,18 +38,18 @@ async function replacePlaceholderInDocx(docxPath, obj, file_name) {
 
     console.log("Placeholder replaced successfully.");
 
+    // const pdfFilePath = path.join(__dirname, "..", "Media", "pdf");
+    // console.log(pdfFilePath);
     // convertapi
     //   .convert(
     //     "pdf",
     //     {
-    //       File: "/Users/dhruvikbarvaliya/Dhruvik/Learning/Demo/Doc To Pdf/modified.docx",
+    //       File: filePath,
     //     },
     //     "docx"
     //   )
     //   .then(function (result) {
-    //     result.saveFiles(
-    //       "/Users/dhruvikbarvaliya/Dhruvik/Learning/Demo/Doc To Pdf/"
-    //     );
+    //     result.saveFiles(pdfFilePath);
     //   });
 
     convertDocxToPdf(filePath, file_name);
@@ -64,9 +66,9 @@ async function convertDocxToPdf(docxPath, pdfPath) {
   console.log(path.join(__dirname, "..", "Media", "pdf"));
 
   const filePath = path.join(__dirname, "..", "Media", "pdf", `${pdfPath}.pdf`);
-  console.log(filePath);
+  console.log("filePath >>>>>>>> ",filePath);
 
-  exec(`python convert.py ${docxPath} ${filePath}`, (error, stdout, stderr) => {
+  exec(`python C:/Users/EV/Desktop/Property/Helpers/convert.py ${docxPath} ${filePath}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return;
