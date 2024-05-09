@@ -24,6 +24,18 @@ async function calculatePrice(years) {
   }
 }
 
+async function generateUniqueID() {
+  const prefix = "EE/VAL/SRT/LB";
+  const yearRange =
+    new Date().getFullYear() +
+    "-" +
+    (new Date().getFullYear() + 1).toString().slice(-2);
+  const month = String(new Date().getMonth() + 1).padStart(2, "0");
+  const number = String(Math.floor(Math.random() * 9000) + 1000);
+
+  return `${prefix}/${yearRange}/${month}/${number}`;
+}
+
 async function formatDate(date) {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -53,7 +65,7 @@ module.exports = {
     const filePath = path.join(__dirname, "..", "Media", "demo.docx");
 
     // replacePlaceholderInDocx(filePath, "{myname}", "Dynamic Value");
-    const {
+    let {
       user_id,
       latitude,
       longitude,
@@ -69,6 +81,10 @@ module.exports = {
     } = req.body;
     let MaxDistance = distance || maxDistance;
     const currentDate = new Date();
+
+    let bb = address.split(" ");
+    let landmark = bb.slice(-3).join(" ");
+
     // const currentTimestamp = currentDate.getTime();
 
     // console.log(
@@ -83,17 +99,9 @@ module.exports = {
     const usarData = await UserModel.findOne({
       _id: user_id,
       is_active: true,
-    }).select([
-      "-password",
-      "-module",
-      "-is_verified",
-      "-is_active",
-      "-login_attempts",
-      "-is_paid",
-      "-no_of_pdf",
-      "-createdAt",
-      "-updatedAt",
-    ]);
+    }).select(
+      "-password -module -is_verified -is_active -login_attempts -is_paid -no_of_pdf -createdAt -updatedAt"
+    );
     if (!usarData) {
       return res.status(404).json({
         status: false,
@@ -111,10 +119,17 @@ module.exports = {
         .status(400)
         .json({ error: "Invalid latitude or longitude provided" });
     }
-
+    let propertyTypes = [];
+    if (type_of_property == "Apartment") {
+      propertyTypes.push("Commercial");
+    } else if (type_of_property == "Independent") {
+      propertyTypes.push("Residential", "Industrial");
+    } else {
+      propertyTypes.push("Agricultural", "Open Plot");
+    }
     try {
       const nearestProperties = await PropertyModel.find({
-        // type_of_property: type_of_property,
+        type_of_property: { $in: propertyTypes },
         location: {
           $near: {
             $maxDistance: MaxDistance,
@@ -217,10 +232,10 @@ module.exports = {
           ...reportObj,
           name_of_the_customers: name,
           report_date: reportDate,
-          case_ref_no: "asd",
+          case_ref_no: await generateUniqueID(),
           property_address: address,
-          nearest_landmark: "asd",
-          property_land_area: "asd",
+          nearest_landmark: landmark,
+          property_land_area: 0,
           built_up_area_carpet_area_super_built_up_area:
             carpet_area || super_built_up_area,
           land_value: /* final_valuation */ market_area - building_values, //building_value,
@@ -280,7 +295,6 @@ module.exports = {
           construction_rate
         );
 
-        //
         let top_area_rate = nearestProperties
           .sort(
             (a, b) =>
@@ -293,7 +307,12 @@ module.exports = {
           (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
           0
         );
-        console.log("bbbbbbbbbbbbbbbbbb", top_area_rate_sum);
+        console.log(
+          "bbbbbbbbbbbbbbbbbb",
+          top_area_rate_sum,
+          plot_land_rate,
+          land_area
+        );
 
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
@@ -346,9 +365,9 @@ module.exports = {
           ...reportObj,
           name_of_the_customers: name,
           report_date: reportDate,
-          case_ref_no: "asd",
+          case_ref_no: await generateUniqueID(),
           property_address: address,
-          nearest_landmark: "asd",
+          nearest_landmark: landmark,
           property_land_area: land_area,
           built_up_area_carpet_area_super_built_up_area: construction_area,
           // carpet_area || super_built_up_area,
@@ -446,9 +465,9 @@ module.exports = {
           ...reportObj,
           name_of_the_customers: name,
           report_date: reportDate,
-          case_ref_no: "asd",
+          case_ref_no: await generateUniqueID(),
           property_address: address,
-          nearest_landmark: "asd",
+          nearest_landmark: landmark,
           property_land_area: land_area,
           built_up_area_carpet_area_super_built_up_area: 0,
           // carpet_area || super_built_up_area,
