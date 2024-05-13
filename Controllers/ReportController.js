@@ -46,25 +46,6 @@ async function formatDate(date) {
 
 module.exports = {
   getNearestProperty: async (req, res) => {
-    let reportObj = {
-      name_of_the_customers: "-",
-      report_date: "-",
-      case_ref_no: "-",
-      property_address: "-",
-      nearest_landmark: "-",
-      property_land_area: "-",
-      built_up_area_carpet_area_super_built_up_area: "-",
-      land_value: "-",
-      type_of_property: "-",
-      unit_rate_considered_for_land: "-",
-      unit_rate_considered_for_ca_bua_sba: "-",
-      building_value: "-",
-      final_valuation: "-",
-      final_valuation_in_word: "-",
-    };
-    const filePath = path.join(__dirname, "..", "Media", "demo.docx");
-
-    // replacePlaceholderInDocx(filePath, "{myname}", "Dynamic Value");
     let {
       user_id,
       latitude,
@@ -79,21 +60,34 @@ module.exports = {
       age_of_property,
       type,
     } = req.body;
-    let MaxDistance = distance || maxDistance;
     const currentDate = new Date();
+    const reportDate = await formatDate(currentDate);
 
     let bb = address.split(" ");
     let landmark = bb.slice(-3).join(" ");
 
-    // const currentTimestamp = currentDate.getTime();
+    let reportObj = {
+      name_of_the_customers: "-",
+      report_date: reportDate,
+      case_ref_no: await generateUniqueID(),
+      property_address: address,
+      nearest_landmark: landmark,
+      property_land_area: "-",
+      built_up_area_carpet_area_super_built_up_area: "-",
+      land_value: "-",
+      type_of_property: "-",
+      unit_rate_considered_for_land: "-",
+      unit_rate_considered_for_ca_bua_sba: "-",
+      building_value: "-",
+      final_valuation: "-",
+      final_valuation_in_word: "-",
+    };
+    const filePath = path.join(__dirname, "..", "Media", "demo.docx");
 
-    // console.log(
-    //   "Current Timestamp:",
-    //   req.body.user_id + "OF" + currentTimestamp
-    // );
+    // replacePlaceholderInDocx(filePath, "{myname}", "Dynamic Value");
 
-    const reportDate = await formatDate(currentDate);
-    console.log("MaxDistance", MaxDistance);
+    let MaxDistance = distance || maxDistance;
+
     const lat = parseFloat(latitude);
     const long = parseFloat(longitude);
     const usarData = await UserModel.findOne({
@@ -109,11 +103,8 @@ module.exports = {
       });
     }
     let name = usarData.name;
-    console.log("no_of_report ", usarData.no_of_report);
     let noOfReport = usarData.no_of_report - 1;
-    // if (noOfReport <= 0) {
-    //   return res.status(400).json({ error: "Please Pay for Ganarate Report" });
-    // }
+
     if (isNaN(lat) || isNaN(long)) {
       return res
         .status(400)
@@ -155,12 +146,11 @@ module.exports = {
             parseInt(a.area_rate_considered_per_sq_ft)
         )
         .slice(0, 5);
-      console.log("aaaaaaaaaaaaaaaaa", top5);
+
       let sum = top5.reduce(
         (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
         0
       );
-      console.log("bbbbbbbbbbbbbbbbbb", sum);
 
       //area_rate_considered_per_sq_ft
       let top_area_rate = nearestProperties
@@ -170,12 +160,10 @@ module.exports = {
             parseInt(a.land_rate_per_sq_mtr_Sq_yard)
         )
         .slice(0, 5);
-      console.log("ccccccccccccccccccc", top_area_rate);
-      let top_area_rate_sum = top5.reduce(
+      let top_area_rate_sum = top_area_rate.reduce(
         (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
         0
       );
-      console.log("dddddddddddddddddddddd", top_area_rate_sum);
 
       let market_area;
 
@@ -205,7 +193,26 @@ module.exports = {
             { new: true }
           );
         }
+
+        let building_values =
+          top_area_rate_sum * (carpet_area || super_built_up_area);
+
+        let finalObj = {
+          ...reportObj,
+          name_of_the_customers: name,
+          property_land_area: 0,
+          built_up_area_carpet_area_super_built_up_area:
+            carpet_area || super_built_up_area,
+          land_value: 0,
+          type_of_property: type_of_property,
+          unit_rate_considered_for_land: 0,
+          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft, //area_rate_considered_per_sq_ft
+          building_value: building_values, // top_area_rate_sum * super_built_up_area,
+          final_valuation: market_area,
+          final_valuation_in_word: amountInWords,
+        };
         const reportData = new ReportModel({
+          ...finalObj,
           user_id,
           latitude,
           longitude,
@@ -219,45 +226,17 @@ module.exports = {
           age_of_property,
           type,
         });
-        console.log(
-          "#####################",
-          top_area_rate_sum,
-          super_built_up_area
-        );
 
-        let building_values = top_area_rate_sum * super_built_up_area;
-        console.log(">>>>>>>>>>>>>>>>>>>", building_values);
-        await reportData.save();
-        let finalObj = {
-          ...reportObj,
-          name_of_the_customers: name,
-          report_date: reportDate,
-          case_ref_no: await generateUniqueID(),
-          property_address: address,
-          nearest_landmark: landmark,
-          property_land_area: 0,
-          built_up_area_carpet_area_super_built_up_area:
-            carpet_area || super_built_up_area,
-          land_value: /* final_valuation */ market_area - building_values, //building_value,
-          type_of_property: type_of_property,
-          unit_rate_considered_for_land: top_area_rate_sum,
-          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft, //area_rate_considered_per_sq_ft
-          building_value: building_values, // top_area_rate_sum * super_built_up_area,
-          final_valuation: market_area,
-          final_valuation_in_word: amountInWords,
-        };
-        const currentDate = new Date();
-        const currentTimestamp = currentDate.getTime();
-
-        console.log(
-          "Current Timestamp:",
-          req.body.user_id + "OF" + currentTimestamp
-        );
-        let file_name = req.body.user_id + "OF" + currentTimestamp;
+        let ReportData = await reportData.save();
+        // const currentDate = new Date();
+        // const currentTimestamp = currentDate.getTime();
+        // let file_name = req.body.user_id + "OF" + currentTimestamp;
         // replacePlaceholderInDocx(filePath, finalObj, file_name);
+
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
+          report_id: ReportData._id,
           usarData,
           ...finalObj,
         });
@@ -275,44 +254,29 @@ module.exports = {
           });
         }
         const construction_rate = await calculatePrice(age_of_property);
-        nearestProperties.sort(
-          (a, b) =>
-            parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-            parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        );
-        top5 = nearestProperties.slice(0, 5);
-        console.log("top5", top5);
-        sum = top5.reduce(
-          (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-          0
-        );
-        console.log("sum", sum);
-        const plot_land_rate = sum / top5.length;
-        console.log(
-          "construction_area ",
-          construction_area,
-          "construction_rate ",
-          construction_rate
-        );
+        // nearestProperties.sort(
+        //   (a, b) =>
+        //     parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+        //     parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+        // );
+        // top5 = nearestProperties.slice(0, 5);
+        // sum = top5.reduce(
+        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+        //   0
+        // );
+        const plot_land_rate = top_area_rate_sum / top5.length;
 
-        let top_area_rate = nearestProperties
-          .sort(
-            (a, b) =>
-              parseInt(b.area_rate_considered_per_sq_ft) -
-              parseInt(a.area_rate_considered_per_sq_ft)
-          )
-          .slice(0, 5);
-        console.log("aaaaaaaaaaaaaaaaa", top_area_rate);
-        let top_area_rate_sum = top5.reduce(
-          (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
-          0
-        );
-        console.log(
-          "bbbbbbbbbbbbbbbbbb",
-          top_area_rate_sum,
-          plot_land_rate,
-          land_area
-        );
+        // let top_area_rate = nearestProperties
+        //   .sort(
+        //     (a, b) =>
+        //       parseInt(b.area_rate_considered_per_sq_ft) -
+        //       parseInt(a.area_rate_considered_per_sq_ft)
+        //   )
+        //   .slice(0, 5);
+        // let top_area_rate_sum = top5.reduce(
+        //   (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
+        //   0
+        // );
 
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
@@ -321,10 +285,8 @@ module.exports = {
           depreciation =
             (construction_cost * age_of_property * 0.9) / typeValue;
         } else {
-          depreciation =
-            construction_area * top_area_rate_sum + plot_land_rate * land_area;
+          depreciation = construction_area * sum + plot_land_rate * land_area;
         }
-        console.log(land_area, plot_land_rate, depreciation);
 
         market_area = land_area * plot_land_rate + depreciation;
 
@@ -345,7 +307,22 @@ module.exports = {
             { new: true }
           );
         }
+        let finalObj = {
+          ...reportObj,
+          name_of_the_customers: name,
+          property_land_area: land_area,
+          built_up_area_carpet_area_super_built_up_area: construction_area,
+          // carpet_area || super_built_up_area,
+          land_value: plot_land_rate * land_area,
+          type_of_property: type_of_property,
+          unit_rate_considered_for_land: plot_land_rate,
+          unit_rate_considered_for_ca_bua_sba: top_area_rate_sum, // area_rate_considered_per_sq_ft, //area_per_sq_ft,
+          building_value: depreciation, //construction_area*area_rate_considered_per_sq_ft+(land_rate_per_sq_mtr_Sq_yard*land_area)
+          final_valuation: market_area,
+          final_valuation_in_word: amountInWords,
+        };
         const reportData = new ReportModel({
+          ...finalObj,
           user_id,
           latitude,
           longitude,
@@ -359,38 +336,17 @@ module.exports = {
           age_of_property,
           type,
         });
-        await reportData.save();
+        let ReportData = await reportData.save();
 
-        let finalObj = {
-          ...reportObj,
-          name_of_the_customers: name,
-          report_date: reportDate,
-          case_ref_no: await generateUniqueID(),
-          property_address: address,
-          nearest_landmark: landmark,
-          property_land_area: land_area,
-          built_up_area_carpet_area_super_built_up_area: construction_area,
-          // carpet_area || super_built_up_area,
-          land_value: plot_land_rate * land_area,
-          type_of_property: type_of_property,
-          unit_rate_considered_for_land: plot_land_rate,
-          unit_rate_considered_for_ca_bua_sba: top_area_rate_sum, // area_rate_considered_per_sq_ft, //area_per_sq_ft,
-          building_value: depreciation, //construction_area*area_rate_considered_per_sq_ft+(land_rate_per_sq_mtr_Sq_yard*land_area)
-          final_valuation: market_area,
-          final_valuation_in_word: amountInWords,
-        };
-        const currentDate = new Date();
-        const currentTimestamp = currentDate.getTime();
-
-        console.log(
-          "Current Timestamp:",
-          req.body.user_id + "OF" + currentTimestamp
-        );
-        let file_name = req.body.user_id + "OF" + currentTimestamp;
+        // const currentDate = new Date();
+        // const currentTimestamp = currentDate.getTime();
+        // let file_name = req.body.user_id + "OF" + currentTimestamp;
         // replacePlaceholderInDocx(filePath, finalObj, file_name);
+
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
+          report_id: ReportData._id,
           usarData,
           land_area,
           plot_land_rate,
@@ -404,31 +360,21 @@ module.exports = {
             .status(404)
             .json({ status: false, message: "land_area Not Found" });
         }
-        nearestProperties.sort(
-          (a, b) =>
-            parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-            parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        );
-        top5 = nearestProperties.slice(0, 5);
-        console.log("top5", top5);
-        sum = top5.reduce(
-          (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-          0
-        );
-        console.log("sum", sum);
+        // nearestProperties.sort(
+        //   (a, b) =>
+        //     parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+        //     parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+        // );
+        // top5 = nearestProperties.slice(0, 5);
+        // sum = top5.reduce(
+        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+        //   0
+        // );
 
-        const average = sum / top5.length;
-        console.log("average", average);
+        const average = top_area_rate_sum / top5.length;
 
         market_area = land_area * average;
-        console.log(
-          "land_area",
-          land_area,
-          "average",
-          average,
-          "market_area",
-          market_area
-        );
+
         const amountInWords = await numberToWords(market_area);
         const report = await ReportModel.findOne({
           type_of_property,
@@ -446,7 +392,21 @@ module.exports = {
             { new: true }
           );
         }
+        let finalObj = {
+          ...reportObj,
+          name_of_the_customers: name,
+          property_land_area: land_area,
+          built_up_area_carpet_area_super_built_up_area: 0,
+          land_value: market_area,
+          type_of_property: type_of_property,
+          unit_rate_considered_for_land: average,
+          unit_rate_considered_for_ca_bua_sba: 0,
+          building_value: 0,
+          final_valuation: market_area,
+          final_valuation_in_word: amountInWords,
+        };
         const reportData = new ReportModel({
+          ...finalObj,
           user_id,
           latitude,
           longitude,
@@ -460,37 +420,17 @@ module.exports = {
           age_of_property,
           type,
         });
-        await reportData.save();
-        let finalObj = {
-          ...reportObj,
-          name_of_the_customers: name,
-          report_date: reportDate,
-          case_ref_no: await generateUniqueID(),
-          property_address: address,
-          nearest_landmark: landmark,
-          property_land_area: land_area,
-          built_up_area_carpet_area_super_built_up_area: 0,
-          // carpet_area || super_built_up_area,
-          land_value: market_area,
-          type_of_property: type_of_property,
-          unit_rate_considered_for_land: average,
-          unit_rate_considered_for_ca_bua_sba: 0, //area_per_sq_ft,
-          building_value: 0,
-          final_valuation: market_area,
-          final_valuation_in_word: amountInWords,
-        };
-        const currentDate = new Date();
-        const currentTimestamp = currentDate.getTime();
+        let ReportData = await reportData.save();
 
-        console.log(
-          "Current Timestamp:",
-          req.body.user_id + "OF" + currentTimestamp
-        );
-        let file_name = req.body.user_id + "OF" + currentTimestamp;
+        // const currentDate = new Date();
+        // const currentTimestamp = currentDate.getTime();
+        // let file_name = req.body.user_id + "OF" + currentTimestamp;
         // replacePlaceholderInDocx(filePath, finalObj, file_name);
+
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
+          report_id: ReportData._id,
           usarData,
           land_area,
           // plot_land_rate,
@@ -511,8 +451,6 @@ module.exports = {
         Independent: "Independent",
         Land: "Land",
       };
-
-      console.log("type_of_property", propertyType[type_of_property]);
 
       // res.status(200).json({
       //   status: true,
