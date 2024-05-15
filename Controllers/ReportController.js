@@ -2,13 +2,8 @@ const ReportModel = require("../Models/ReportModel");
 const PropertyModel = require("../Models/PropertyModel");
 const UserModel = require("../Models/UserModel");
 const { numberToWords } = require("../Helpers/NumToWord");
-const path = require("path");
 
 let { maxDistance, minDistance } = require("../Config/Config");
-const {
-  replacePlaceholderInDocx,
-  convertDocxToPdf,
-} = require("../Helpers/convert");
 
 async function calculatePrice(years) {
   if (years >= 1 && years <= 10) {
@@ -63,10 +58,13 @@ module.exports = {
     const currentDate = new Date();
     const reportDate = await formatDate(currentDate);
 
-    let bb = address.split(" ");
-    let landmark = bb.slice(-3).join(" ");
+    let splitAddtess = address.split(" ");
+    let landmark = splitAddtess.slice(-3).join(" ");
 
     let reportObj = {
+      latitude,
+      longitude,
+      distance,
       name_of_the_customers: "-",
       report_date: reportDate,
       case_ref_no: await generateUniqueID(),
@@ -82,9 +80,6 @@ module.exports = {
       final_valuation: "-",
       final_valuation_in_word: "-",
     };
-    const filePath = path.join(__dirname, "..", "Media", "demo.docx");
-
-    // replacePlaceholderInDocx(filePath, "{myname}", "Dynamic Value");
 
     let MaxDistance = distance || maxDistance;
 
@@ -112,11 +107,15 @@ module.exports = {
     }
     let propertyTypes = [];
     if (type_of_property == "Apartment") {
-      propertyTypes.push("Commercial");
+      propertyTypes.push("Residential Flat", "Commercial Shop", "Office");
     } else if (type_of_property == "Independent") {
-      propertyTypes.push("Residential", "Industrial");
+      propertyTypes.push(
+        "Residential Plot",
+        "Residential House",
+        "Industrial Plot"
+      );
     } else {
-      propertyTypes.push("Agricultural", "Open Plot");
+      propertyTypes.push("Agriculture", "Non Agriculture");
     }
     try {
       const nearestProperties = await PropertyModel.find({
@@ -139,28 +138,26 @@ module.exports = {
         });
       }
 
-      let top5 = nearestProperties
+      let top_area_rate = nearestProperties
         .sort(
           (a, b) =>
             parseInt(b.area_rate_considered_per_sq_ft) -
             parseInt(a.area_rate_considered_per_sq_ft)
         )
         .slice(0, 5);
-
-      let sum = top5.reduce(
+      let top_area_rate_sum = top_area_rate.reduce(
         (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
         0
       );
 
-      //area_rate_considered_per_sq_ft
-      let top_area_rate = nearestProperties
+      let top_area_rate1 = nearestProperties
         .sort(
           (a, b) =>
             parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
             parseInt(a.land_rate_per_sq_mtr_Sq_yard)
         )
         .slice(0, 5);
-      let top_area_rate_sum = top_area_rate.reduce(
+      let top_area_rate_sum1 = top_area_rate1.reduce(
         (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
         0
       );
@@ -174,9 +171,9 @@ module.exports = {
             message: "carpet_area or super_built_up_area And address Not Found",
           });
         }
-        const area_per_sq_ft = sum / top5.length;
+        const area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
         market_area = carpet_area || super_built_up_area * area_per_sq_ft;
-        const amountInWords = await numberToWords(market_area);
+        let amountInWords = await numberToWords(market_area);
         const report = await ReportModel.findOne({
           type_of_property,
           carpet_area,
@@ -194,8 +191,8 @@ module.exports = {
           );
         }
 
-        let building_values =
-          top_area_rate_sum * (carpet_area || super_built_up_area);
+        let building_values = top_area_rate_sum * carpet_area;
+        amountInWords = await numberToWords(building_values);
 
         let finalObj = {
           ...reportObj,
@@ -206,9 +203,9 @@ module.exports = {
           land_value: 0,
           type_of_property: type_of_property,
           unit_rate_considered_for_land: 0,
-          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft, //area_rate_considered_per_sq_ft
-          building_value: building_values, // top_area_rate_sum * super_built_up_area,
-          final_valuation: market_area,
+          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft,
+          building_value: building_values,
+          final_valuation: building_values,
           final_valuation_in_word: amountInWords,
         };
         const reportData = new ReportModel({
@@ -228,10 +225,6 @@ module.exports = {
         });
 
         let ReportData = await reportData.save();
-        // const currentDate = new Date();
-        // const currentTimestamp = currentDate.getTime();
-        // let file_name = req.body.user_id + "OF" + currentTimestamp;
-        // replacePlaceholderInDocx(filePath, finalObj, file_name);
 
         res.status(200).json({
           status: true,
@@ -254,29 +247,8 @@ module.exports = {
           });
         }
         const construction_rate = await calculatePrice(age_of_property);
-        // nearestProperties.sort(
-        //   (a, b) =>
-        //     parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-        //     parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        // );
-        // top5 = nearestProperties.slice(0, 5);
-        // sum = top5.reduce(
-        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-        //   0
-        // );
-        const plot_land_rate = top_area_rate_sum / top5.length;
 
-        // let top_area_rate = nearestProperties
-        //   .sort(
-        //     (a, b) =>
-        //       parseInt(b.area_rate_considered_per_sq_ft) -
-        //       parseInt(a.area_rate_considered_per_sq_ft)
-        //   )
-        //   .slice(0, 5);
-        // let top_area_rate_sum = top5.reduce(
-        //   (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
-        //   0
-        // );
+        const plot_land_rate = top_area_rate_sum1 / top_area_rate1.length;
 
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
@@ -285,12 +257,13 @@ module.exports = {
           depreciation =
             (construction_cost * age_of_property * 0.9) / typeValue;
         } else {
-          depreciation = construction_area * sum + plot_land_rate * land_area;
+          depreciation =
+            construction_area * top_area_rate_sum + plot_land_rate * land_area;
         }
-
+        let building_valuesS = construction_cost - depreciation;
         market_area = land_area * plot_land_rate + depreciation;
 
-        const amountInWords = await numberToWords(market_area);
+        let amountInWords = await numberToWords(market_area);
         const report = await ReportModel.findOne({
           type_of_property,
           carpet_area,
@@ -307,18 +280,20 @@ module.exports = {
             { new: true }
           );
         }
+        let final_value = building_valuesS + plot_land_rate * land_area;
+        amountInWords = await numberToWords(final_value);
+
         let finalObj = {
           ...reportObj,
           name_of_the_customers: name,
           property_land_area: land_area,
           built_up_area_carpet_area_super_built_up_area: construction_area,
-          // carpet_area || super_built_up_area,
           land_value: plot_land_rate * land_area,
           type_of_property: type_of_property,
           unit_rate_considered_for_land: plot_land_rate,
-          unit_rate_considered_for_ca_bua_sba: top_area_rate_sum, // area_rate_considered_per_sq_ft, //area_per_sq_ft,
-          building_value: depreciation, //construction_area*area_rate_considered_per_sq_ft+(land_rate_per_sq_mtr_Sq_yard*land_area)
-          final_valuation: market_area,
+          unit_rate_considered_for_ca_bua_sba: top_area_rate_sum1,
+          building_value: building_valuesS,
+          final_valuation: final_value,
           final_valuation_in_word: amountInWords,
         };
         const reportData = new ReportModel({
@@ -338,11 +313,6 @@ module.exports = {
         });
         let ReportData = await reportData.save();
 
-        // const currentDate = new Date();
-        // const currentTimestamp = currentDate.getTime();
-        // let file_name = req.body.user_id + "OF" + currentTimestamp;
-        // replacePlaceholderInDocx(filePath, finalObj, file_name);
-
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
@@ -360,18 +330,8 @@ module.exports = {
             .status(404)
             .json({ status: false, message: "land_area Not Found" });
         }
-        // nearestProperties.sort(
-        //   (a, b) =>
-        //     parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-        //     parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        // );
-        // top5 = nearestProperties.slice(0, 5);
-        // sum = top5.reduce(
-        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-        //   0
-        // );
 
-        const average = top_area_rate_sum / top5.length;
+        const average = top_area_rate_sum1 / top_area_rate1.length;
 
         market_area = land_area * average;
 
@@ -422,20 +382,12 @@ module.exports = {
         });
         let ReportData = await reportData.save();
 
-        // const currentDate = new Date();
-        // const currentTimestamp = currentDate.getTime();
-        // let file_name = req.body.user_id + "OF" + currentTimestamp;
-        // replacePlaceholderInDocx(filePath, finalObj, file_name);
-
         res.status(200).json({
           status: true,
           message: "Nearest properties fetched successfully",
           report_id: ReportData._id,
           usarData,
           land_area,
-          // plot_land_rate,
-          // construction_cost,
-          // depreciation,
           average,
           ...finalObj,
         });
@@ -445,19 +397,6 @@ module.exports = {
           message: "Please select a valid property type",
         });
       }
-
-      let propertyType = {
-        Apartment: "Apartment",
-        Independent: "Independent",
-        Land: "Land",
-      };
-
-      // res.status(200).json({
-      //   status: true,
-      //   message: "Nearest properties fetched successfully",
-      //   market_area,
-      //   usarData,
-      // });
     } catch (err) {
       res.status(500).json({
         status: false,
