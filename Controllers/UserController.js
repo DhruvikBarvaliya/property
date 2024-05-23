@@ -420,7 +420,7 @@ module.exports = {
       // const updatedNoOfPdf = parseInt(user.no_of_pdf) - 1;
       await UserModel.findByIdAndUpdate(
         user_id,
-        { subscriptions_id,no_of_pdf: subscription.no_of_pdf ,no_of_report: subscription.no_of_report},
+        { subscriptions_id,no_of_pdf: subscription.no_of_report ,no_of_report: subscription.no_of_report},
         { new: true }
       );
 
