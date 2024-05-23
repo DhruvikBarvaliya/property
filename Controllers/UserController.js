@@ -402,7 +402,7 @@ module.exports = {
         "no_of_pdf",
         // "no_of_report"
       );
-      // const subscription = await SubscriptionModel.findById(subscriptions_id);
+      const subscription = await SubscriptionModel.findById(subscriptions_id);
 
       if (!user) {
         return res.status(404).json({
@@ -420,7 +420,7 @@ module.exports = {
       // const updatedNoOfPdf = parseInt(user.no_of_pdf) - 1;
       await UserModel.findByIdAndUpdate(
         user_id,
-        { subscriptions_id },
+        { subscriptions_id,no_of_pdf: subscription.no_of_pdf ,no_of_report: subscription.no_of_report},
         { new: true }
       );
 
