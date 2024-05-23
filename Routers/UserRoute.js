@@ -35,5 +35,15 @@ router.put(
   authorize(),
   UserController.updateNoOfReport
 );
+router.patch(
+  "/user/download/:user_id",
+  authorize(),
+  UserController.downloadNoPdf
+);
+router.patch(
+  "/user/updateNoOfPdf/:user_id/:subscriptions_id",
+  authorize(),
+  UserController.updateNoOfPdf
+);
 
 module.exports = router;

@@ -47,6 +47,8 @@ const UserSchema = new Schema(
     name: { type: String, trim: true },
     phone: { type: String },
     banker_role_value: { type: String, enum: bankerRoles },
+    // subscriptions: [{ type: Schema.Types.ObjectId, ref: 'subscription' }],
+    subscriptions_id: { type: Schema.Types.ObjectId, ref: "subscription" },
     email: {
       type: String,
       unique: true,

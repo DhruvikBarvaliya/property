@@ -4,6 +4,7 @@ mongoose.pluralize(null);
 
 const SubscriptionSchema = new Schema(
   {
+    // user_id: { type: Schema.Types.ObjectId, ref: "user" },
     plan_no: Number,
     plan_name: { type: String, trim: true },
     no_of_report: Number,

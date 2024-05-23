@@ -1,4 +1,6 @@
 const UserModel = require("../Models/UserModel");
+const SubscriptionModel = require("../Models/SubscriptionModel");
+
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../Helpers/email");
 
@@ -130,7 +132,18 @@ module.exports = {
       const user = await UserModel.findOne({
         _id: user_id,
         is_active: true,
-      }).select("-password");
+      }).select("-password").populate("subscriptions_id");
+
+      // .select("-password").populate({
+      //   path: 'subscriptions_id',
+      //   select: '-__v -createdAt -updatedAt',
+      //   as: 'subscription'
+      // });
+
+      // let subscription = await SubscriptionModel.findOne({
+      //   user_id: user_id,
+      //   is_active: true,
+      // });
 
       if (!user) {
         return res.status(404).json({
@@ -143,6 +156,7 @@ module.exports = {
         status: true,
         message: "User retrieved successfully.",
         user,
+        // subscription: subscription || false,
       });
     } catch (err) {
       return res.status(500).json({
@@ -334,6 +348,88 @@ module.exports = {
         message: "Number of reports updated successfully.",
       });
     } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  downloadNoPdf: async (req, res) => {
+    const { user_id } = req.params;
+
+    try {
+      const user = await UserModel.findById(user_id).select("no_of_pdf");
+
+      if (!user) {
+        return res.status(404).json({
+          status: false,
+          message: `User not found with ID: ${user_id}`,
+        });
+      }
+      if (user.no_of_pdf <= 0) {
+        return res.status(404).json({
+          status: false,
+          message: `User Can not Downlod Pdf,Please Buy Plan : ${user.no_of_pdf}`,
+        });
+      }
+
+      const updatedNoOfPdf = parseInt(user.no_of_pdf) - 1;
+      await UserModel.findByIdAndUpdate(
+        user_id,
+        { no_of_pdf: updatedNoOfPdf },
+        { new: true }
+      );
+
+      return res.status(200).json({
+        status: true,
+        message: "Number of Pdf updated successfully.",
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  updateNoOfPdf: async (req, res) => {
+    const { user_id, subscriptions_id } = req.params;
+
+    try {
+      const user = await UserModel.findById(user_id).select(
+        "no_of_pdf",
+        // "no_of_report"
+      );
+      // const subscription = await SubscriptionModel.findById(subscriptions_id);
+
+      if (!user) {
+        return res.status(404).json({
+          status: false,
+          message: `User not found with ID: ${user_id}`,
+        });
+      }
+      // if (user.no_of_pdf <= 0) {
+      //   return res.status(404).json({
+      //     status: false,
+      //     message: `User Can not Downlod Pdf,Please Buy Plan : ${user.no_of_pdf}`,
+      //   });
+      // }
+
+      // const updatedNoOfPdf = parseInt(user.no_of_pdf) - 1;
+      await UserModel.findByIdAndUpdate(
+        user_id,
+        { subscriptions_id },
+        { new: true }
+      );
+
+      return res.status(200).json({
+        status: true,
+        message: "Number of Pdf updated successfully.",
+      });
+    } catch (err) {
+      console.log(err);
       return res.status(500).json({
         status: false,
         message: "Server Error",
