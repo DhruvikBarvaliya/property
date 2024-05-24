@@ -132,7 +132,9 @@ module.exports = {
       const user = await UserModel.findOne({
         _id: user_id,
         is_active: true,
-      }).select("-password").populate("subscriptions_id");
+      })
+        .select("-password")
+        .populate("subscriptions_id");
 
       // .select("-password").populate({
       //   path: 'subscriptions_id',
@@ -399,7 +401,7 @@ module.exports = {
 
     try {
       const user = await UserModel.findById(user_id).select(
-        "no_of_pdf",
+        "no_of_pdf"
         // "no_of_report"
       );
       const subscription = await SubscriptionModel.findById(subscriptions_id);
@@ -420,7 +422,12 @@ module.exports = {
       // const updatedNoOfPdf = parseInt(user.no_of_pdf) - 1;
       await UserModel.findByIdAndUpdate(
         user_id,
-        { subscriptions_id,no_of_pdf: subscription.no_of_report ,no_of_report: subscription.no_of_report},
+        {
+          subscriptions_id,
+          no_of_pdf: subscription.no_of_report,
+          no_of_report: subscription.no_of_report,
+          is_paid: true,
+        },
         { new: true }
       );
 
