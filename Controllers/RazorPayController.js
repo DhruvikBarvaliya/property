@@ -1,6 +1,7 @@
 const RazorPayModel = require("../Models/RazorPayModel");
 const UserModel = require("../Models/UserModel");
 const SubscriptionModel = require("../Models/SubscriptionModel");
+const SubscriptionHistoryModel = require("../Models/SubscriptionHistoryModel");
 
 module.exports = {
   addRazorPay: async (req, res) => {
@@ -46,6 +47,11 @@ module.exports = {
         },
         { new: true }
       );
+      const SubscriptionHistory = new SubscriptionHistoryModel({
+        user_id,
+        subscriptions_id,
+      });
+      await SubscriptionHistory.save();
 
       return res
         .status(201)
