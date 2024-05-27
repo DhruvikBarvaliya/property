@@ -382,6 +382,13 @@ module.exports = {
         { no_of_pdf: updatedNoOfPdf },
         { new: true }
       );
+      if (updatedNoOfPdf <= 0) {
+        await UserModel.findByIdAndUpdate(
+          user_id,
+          { is_paid: false },
+          { new: true }
+        );
+      }
 
       return res.status(200).json({
         status: true,
