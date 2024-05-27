@@ -1,20 +1,52 @@
 const RazorPayModel = require("../Models/RazorPayModel");
+const UserModel = require("../Models/UserModel");
+const SubscriptionModel = require("../Models/SubscriptionModel");
 
 module.exports = {
   addRazorPay: async (req, res) => {
     try {
-      const { user_id, razor_pay_response } = req.body;
-      if (!user_id || !razor_pay_response) {
+      const { user_id, razor_pay_response, subscriptions_id } = req.body;
+      if (!user_id || !razor_pay_response || !subscriptions_id) {
         return res.status(400).json({
           status: false,
-          message: `razorpay_${!user_id ? "id" : "response"} is Required`,
+          message: `razorpay_${
+            !user_id ? "id" : "razor_pay_response and subscriptions_id"
+          } is Required`,
         });
       }
+      const user = await UserModel.findById(user_id).select("no_of_report");
+      if (!user) {
+        return res.status(404).json({
+          status: false,
+          message: `User not found with ID: ${user_id}`,
+        });
+      }
+      const subscription = await SubscriptionModel.findById(subscriptions_id);
+      if (!subscription) {
+        return res.status(404).json({
+          status: false,
+          message: `Subscription not found with ID: ${subscriptions_id}`,
+        });
+      }
+
       const razorpayData = new RazorPayModel({
         user_id,
         razor_pay_response,
+        subscriptions_id,
       });
       await razorpayData.save();
+
+      await UserModel.findByIdAndUpdate(
+        user_id,
+        {
+          subscriptions_id,
+          no_of_pdf: subscription.no_of_report,
+          no_of_report: subscription.no_of_report,
+          is_paid: true,
+        },
+        { new: true }
+      );
+
       return res
         .status(201)
         .json({ message: "RazorPay response added Successfully" });

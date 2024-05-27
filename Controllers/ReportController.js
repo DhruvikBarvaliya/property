@@ -189,6 +189,13 @@ module.exports = {
             { no_of_report: noOfReport },
             { new: true }
           );
+          if (updatedUser.no_of_report <= 0) {
+            await UserModel.findByIdAndUpdate(
+              user_id,
+              { is_paid: false, $unset: { subscriptions_id: "" } },
+              { new: true }
+            );
+          }
         }
 
         let building_values = top_area_rate_sum * carpet_area;
@@ -266,7 +273,8 @@ module.exports = {
         let amountInWords = await numberToWords(market_area);
         const report = await ReportModel.findOne({
           type_of_property,
-          carpet_area,
+          property_land_area: land_area,
+          construction_area,
         });
         if (report == null) {
           if (noOfReport <= 0) {
@@ -279,6 +287,13 @@ module.exports = {
             { no_of_report: noOfReport },
             { new: true }
           );
+          if (updatedUser.no_of_report <= 0) {
+            await UserModel.findByIdAndUpdate(
+              user_id,
+              { is_paid: false, $unset: { subscriptions_id: "" } },
+              { new: true }
+            );
+          }
         }
         let final_value = building_valuesS + plot_land_rate * land_area;
         amountInWords = await numberToWords(final_value);
@@ -338,10 +353,10 @@ module.exports = {
         const amountInWords = await numberToWords(market_area);
         const report = await ReportModel.findOne({
           type_of_property,
-          carpet_area,
+          property_land_area: land_area,
         });
         if (report == null) {
-          if (noOfReport <= 0) {
+          if (noOfReport < 0) {
             return res
               .status(400)
               .json({ error: "Please Pay for Ganarate Report" });
@@ -351,6 +366,13 @@ module.exports = {
             { no_of_report: noOfReport },
             { new: true }
           );
+          if (updatedUser.no_of_report <= 0) {
+            await UserModel.findByIdAndUpdate(
+              user_id,
+              { is_paid: false, $unset: { subscriptions_id: "" } },
+              { new: true }
+            );
+          }
         }
         let finalObj = {
           ...reportObj,
