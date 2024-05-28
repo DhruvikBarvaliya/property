@@ -225,10 +225,6 @@ module.exports = {
           type_of_property,
           carpet_area,
           super_built_up_area,
-          land_area,
-          construction_area,
-          age_of_property,
-          type,
         });
 
         let ReportData = await reportData.save();
@@ -319,8 +315,6 @@ module.exports = {
           distance,
           address,
           type_of_property,
-          carpet_area,
-          super_built_up_area,
           land_area,
           construction_area,
           age_of_property,
@@ -395,12 +389,7 @@ module.exports = {
           distance,
           address,
           type_of_property,
-          carpet_area,
-          super_built_up_area,
           land_area,
-          construction_area,
-          age_of_property,
-          type,
         });
         let ReportData = await reportData.save();
 
