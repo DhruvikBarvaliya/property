@@ -493,6 +493,31 @@ module.exports = {
       });
     }
   },
+  getReportByUserId: async (req, res) => {
+    try {
+      const { user_id } = req.params;
+      console.log(user_id);
+      const report = await ReportModel.find({ user_id: user_id });
+      console.log(report);
+      if (report.length == 0) {
+        return res.status(404).json({
+          status: false,
+          message: `Report Not Found For User ID: ${user_id}`,
+        });
+      }
+      return res.status(200).json({
+        status: true,
+        message: "Report Retrieved Successfully",
+        report,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   updateReport: async (req, res) => {
     try {
       const { report_id } = req.params;

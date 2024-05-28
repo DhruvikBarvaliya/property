@@ -19,6 +19,10 @@ router
   .route("/report/input/:input_id")
   .get(authorize(), ReportController.getIdAndTime);
 
+router
+  .route("/report/byUser/:user_id")
+  .get(authorize(), ReportController.getReportByUserId);  
+
 router.put(
   "/report/:report_id/:status",
   authorize(),
