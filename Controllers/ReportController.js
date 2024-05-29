@@ -485,8 +485,11 @@ module.exports = {
   getReportByUserId: async (req, res) => {
     try {
       const { user_id } = req.params;
-      console.log(user_id);
-      const report = await ReportModel.find({ user_id: user_id });
+      const { limit = 10, skip = 0 } = req.query;
+      const report = await ReportModel.find({ user_id: user_id })
+        .sort({ createdAt: -1 })
+        .limit(Number(limit))
+        .skip(Number(skip));
       console.log(report);
       if (report.length == 0) {
         return res.status(404).json({
