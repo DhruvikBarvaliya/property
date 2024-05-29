@@ -490,6 +490,8 @@ module.exports = {
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
+      const total = await ReportModel.find({ user_id: user_id }).countDocuments();
+
       console.log(report);
       if (report.length == 0) {
         return res.status(404).json({
@@ -500,6 +502,8 @@ module.exports = {
       return res.status(200).json({
         status: true,
         message: "Report Retrieved Successfully",
+        length: report.length,
+        total,
         report,
       });
     } catch (err) {
