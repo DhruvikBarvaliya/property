@@ -121,7 +121,7 @@ module.exports = {
     try {
       const users = await UserModel.find({ is_active: true })
         .sort({ createdAt: -1 })
-        .select("-password")
+        .select("-password -otp -forgot_otp")
         .limit(limit)
         .skip(skip);
       const total = await UserModel.countDocuments();
@@ -157,7 +157,7 @@ module.exports = {
         role: { $in: ["BANKER", "VALUER"] },
       })
         .sort({ createdAt: -1 })
-        .select("-password")
+        .select("-password -otp -forgot_otp")
         .limit(limit)
         .skip(skip);
       const total = await UserModel.countDocuments();
@@ -191,7 +191,7 @@ module.exports = {
         _id: user_id,
         is_active: true,
       })
-        .select("-password")
+      .select("-password -otp -forgot_otp")
         .populate("subscriptions_id");
 
       // .select("-password").populate({
@@ -233,7 +233,7 @@ module.exports = {
 
     try {
       const users = await UserModel.find({ role })
-        .select("-password")
+      .select("-password -otp -forgot_otp")
         .limit(limit)
         .skip(skip);
       const total = await UserModel.countDocuments({ role });
