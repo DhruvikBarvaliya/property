@@ -6,7 +6,7 @@ const PropertySchema = new Schema(
   {
     time: { type: String },
     type_of_property: { type: String },
-    postal_address_of_the_property: { type: String },
+    address: { type: String },
     location: {
       type: { type: String, default: "Point" },
       coordinates: { type: [Number], default: [0, 0] },

@@ -131,7 +131,7 @@ module.exports = {
           },
         },
       });
-
+      
       if (!nearestProperties.length) {
         return res.status(200).json({
           message: "No properties found within the specified range",
@@ -261,7 +261,7 @@ module.exports = {
             (construction_cost * age_of_property * 0.9) / typeValue;
         } else {
           depreciation =
-            construction_area * top_area_rate_sum + plot_land_rate * land_area;
+            construction_area * top_area_rate_sum1 + plot_land_rate * land_area;
         }
         let building_valuesS = construction_cost - depreciation;
         market_area = land_area * plot_land_rate + depreciation;

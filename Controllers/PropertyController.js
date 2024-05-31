@@ -158,7 +158,7 @@ module.exports = {
   searchProperty: async (req, res) => {
     try {
       const properties = await PropertyModel.find({
-        postal_address_of_the_property: {
+        address: {
           $regex: req.params.title,
           $options: "i",
         },
