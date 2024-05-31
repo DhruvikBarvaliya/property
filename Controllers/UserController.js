@@ -152,7 +152,10 @@ module.exports = {
     const skip = parseInt(req.query.skip || 0);
 
     try {
-      const users = await UserModel.find({ is_active: true, role: "ADMIN" })
+      const users = await UserModel.find({
+        is_active: true,
+        role: { $in: ["BANKER", "VALUER"] },
+      })
         .sort({ createdAt: -1 })
         .select("-password")
         .limit(limit)
