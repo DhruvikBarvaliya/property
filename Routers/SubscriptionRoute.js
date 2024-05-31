@@ -7,7 +7,7 @@ const SubscriptionController = require("../Controllers/SubscriptionController");
 router
   .route("/subscription")
   .post(SubscriptionController.addSubscriptionPlan)
-  .get(authorize(), SubscriptionController.getAllSubscriptionPlan);
+  .get(SubscriptionController.getAllSubscriptionPlan);
 
 router
   .route("/subscription/:subscription_id")
