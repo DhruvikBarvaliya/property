@@ -59,7 +59,7 @@ module.exports = {
   getAllProperty: async (req, res) => {
     try {
       const { limit = 10, skip = 0 } = req.query;
-      const allProperty = await PropertyModel.find()
+      const allProperty = await PropertyModel.find({ is_active: true })
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
