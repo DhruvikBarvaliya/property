@@ -80,7 +80,6 @@ module.exports = {
       final_valuation: "-",
       final_valuation_in_word: "-",
     };
-
     let MaxDistance = distance || maxDistance;
 
     const lat = parseFloat(latitude);
@@ -107,16 +106,17 @@ module.exports = {
     }
     let propertyTypes = [];
     if (type_of_property == "Apartment") {
-      propertyTypes.push("Residential Flat", "Commercial Shop", "Office");
+      propertyTypes.push("Residential Flat ", "Commercial Shop ", "Office ");
     } else if (type_of_property == "Independent") {
       propertyTypes.push(
-        "Residential Plot",
-        "Residential House",
-        "Industrial Plot"
+        "Residential Plot ",
+        "Residential House ",
+        "Industrial Plot "
       );
     } else {
-      propertyTypes.push("Agriculture", "Non Agriculture");
+      propertyTypes.push("Agricultural Land ", "NA Land ");
     }
+
     try {
       const nearestProperties = await PropertyModel.find({
         type_of_property: { $in: propertyTypes },
@@ -490,7 +490,9 @@ module.exports = {
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
-      const total = await ReportModel.find({ user_id: user_id }).countDocuments();
+      const total = await ReportModel.find({
+        user_id: user_id,
+      }).countDocuments();
 
       console.log(report);
       if (report.length == 0) {

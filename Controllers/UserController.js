@@ -59,6 +59,61 @@ module.exports = {
       });
     }
   },
+  addStaff: async (req, res) => {
+    const { role, banker_role_value, email, name, phone, password } = req.body;
+
+    // Validate required fields
+    if (!role || !email || !password) {
+      return res.status(400).json({
+        status: false,
+        message: `${
+          !role ? "role" : !email ? "email" : "password"
+        } is Required`,
+      });
+    }
+
+    try {
+      const userExists = await UserModel.findOne({ email });
+
+      if (userExists) {
+        return res
+          .status(400)
+          .json({ status: true, message: "User already registered" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      // const otp = Math.floor(Math.random() * 9000 + 1000);
+
+      const userData = new UserModel({
+        role,
+        banker_role_value,
+        email,
+        name,
+        phone,
+        password: hashedPassword,
+        // otp,
+        is_verified: true,
+        is_active: true,
+      });
+
+      // await sendMail(email, otp);
+      // console.log(email, otp);
+
+      await userData.save();
+      // await UserModel.updateOne({ email }, { $set: { otp } });
+
+      return res.status(201).json({
+        message: `Staff registered Successfully, with email :- ${email} and password :- ${password}`,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   getAllUser: async (req, res) => {
     const limit = parseInt(req.query.limit || 10);
     const skip = parseInt(req.query.skip || 0);

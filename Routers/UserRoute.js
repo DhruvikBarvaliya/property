@@ -2,12 +2,19 @@ const express = require("express");
 const router = express.Router();
 const authorize = require("../Middleware/auth");
 const UserController = require("../Controllers/UserController");
+const Role = require("../Helpers/role");
 
 // Simplify route definitions by using route chaining
 router
   .route("/user")
   .post(UserController.addUser)
   .get(authorize(), UserController.getAllUser);
+
+router.post(
+  "/user/staff",
+  authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+  UserController.addStaff
+);
 
 router.route("/user/staff").get(authorize(), UserController.getAllStaff);
 
