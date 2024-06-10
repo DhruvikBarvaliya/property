@@ -131,40 +131,51 @@ module.exports = {
           },
         },
       });
-      
+
       if (!nearestProperties.length) {
         return res.status(200).json({
           message: "No properties found within the specified range",
         });
       }
 
-      let top_area_rate = nearestProperties
-        .sort(
-          (a, b) =>
-            parseInt(b.area_rate_considered_per_sq_ft) -
-            parseInt(a.area_rate_considered_per_sq_ft)
-        )
-        .slice(0, 5);
-      let top_area_rate_sum = top_area_rate.reduce(
-        (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
-        0
-      );
+      // let top_area_rate = nearestProperties
+      //   .sort(
+      //     (a, b) =>
+      //       parseInt(b.area_rate_considered_per_sq_ft) -
+      //       parseInt(a.area_rate_considered_per_sq_ft)
+      //   )
+      //   .slice(0, 5);
+      // let top_area_rate_sum = top_area_rate.reduce(
+      //   (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
+      //   0
+      // );
 
-      let top_area_rate1 = nearestProperties
-        .sort(
-          (a, b) =>
-            parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-            parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        )
-        .slice(0, 5);
-      let top_area_rate_sum1 = top_area_rate1.reduce(
-        (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-        0
-      );
+      // let top_area_rate1 = nearestProperties
+      //   .sort(
+      //     (a, b) =>
+      //       parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+      //       parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+      //   )
+      //   .slice(0, 5);
+      // let top_area_rate_sum1 = top_area_rate1.reduce(
+      //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+      //   0
+      // );
 
       let market_area;
 
       if (type_of_property == "Apartment") {
+        let top_area_rate = nearestProperties
+          .toSorted(
+            (a, b) =>
+              parseInt(b.area_rate_considered_per_sq_ft) -
+              parseInt(a.area_rate_considered_per_sq_ft)
+          )
+          .slice(0, 5);
+        let top_area_rate_sum = top_area_rate.reduce(
+          (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
+          0
+        );
         if ((!carpet_area && !super_built_up_area) || !address) {
           return res.status(404).json({
             status: false,
@@ -172,8 +183,8 @@ module.exports = {
           });
         }
         const area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
-        market_area = carpet_area || super_built_up_area * area_per_sq_ft;
-        let amountInWords = await numberToWords(market_area);
+        // market_area = carpet_area || super_built_up_area * area_per_sq_ft;
+        // let amountInWords = await numberToWords(market_area);
         const report = await ReportModel.findOne({
           type_of_property,
           carpet_area,
@@ -199,7 +210,7 @@ module.exports = {
         }
 
         let building_values = top_area_rate_sum * carpet_area;
-        amountInWords = await numberToWords(building_values);
+        let amountInWords = await numberToWords(building_values);
 
         let finalObj = {
           ...reportObj,
@@ -237,6 +248,17 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Independent") {
+        let top_area_rate1 = nearestProperties
+          .toSorted(
+            (a, b) =>
+              parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+              parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+          )
+          .slice(0, 5);
+        let top_area_rate_sum1 = top_area_rate1.reduce(
+          (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+          0
+        );
         if (
           !age_of_property ||
           !construction_area ||
@@ -302,7 +324,8 @@ module.exports = {
           land_value: plot_land_rate * land_area,
           type_of_property: type_of_property,
           unit_rate_considered_for_land: plot_land_rate,
-          unit_rate_considered_for_ca_bua_sba: top_area_rate_sum1,
+          // unit_rate_considered_for_ca_bua_sba: top_area_rate_sum1,
+          unit_rate_considered_for_ca_bua_sba: 0,
           building_value: building_valuesS,
           final_valuation: final_value,
           final_valuation_in_word: amountInWords,
@@ -334,6 +357,17 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Land") {
+        let top_area_rate1 = nearestProperties
+          .toSorted(
+            (a, b) =>
+              parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+              parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+          )
+          .slice(0, 5);
+        let top_area_rate_sum1 = top_area_rate1.reduce(
+          (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+          0
+        );
         if (!land_area) {
           return res
             .status(404)
