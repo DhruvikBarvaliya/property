@@ -259,6 +259,8 @@ module.exports = {
           (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
           0
         );
+        // console.log(top_area_rate1);
+        // console.log(top_area_rate_sum1);
         if (
           !age_of_property ||
           !construction_area ||
@@ -278,14 +280,20 @@ module.exports = {
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
         let depreciation;
+        let building_valuesS;
         if (age_of_property > 5) {
           depreciation =
             (construction_cost * age_of_property * 0.9) / typeValue;
+         
+          let aa = construction_cost - depreciation
+          building_valuesS = aa +(plot_land_rate * land_area);
         } else {
           depreciation =
-            construction_area * top_area_rate_sum1 + plot_land_rate * land_area;
+          construction_cost + plot_land_rate * land_area;
+          building_valuesS = depreciation;
         }
-        let building_valuesS = construction_cost - depreciation;
+        // building_valuesS = construction_cost - depreciation;
+
         market_area = land_area * plot_land_rate + depreciation;
 
         let amountInWords = await numberToWords(market_area);
@@ -313,7 +321,7 @@ module.exports = {
             );
           }
         }
-        let final_value = building_valuesS + plot_land_rate * land_area;
+        let final_value = building_valuesS //+ plot_land_rate * land_area;
         amountInWords = await numberToWords(final_value);
 
         let finalObj = {
