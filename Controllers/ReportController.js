@@ -189,7 +189,7 @@ module.exports = {
           type_of_property,
           carpet_area,
         });
-        if (report == null) {
+        // if (report == null) {
           if (noOfReport <= 0) {
             return res
               .status(400)
@@ -207,7 +207,7 @@ module.exports = {
               { new: true }
             );
           }
-        }
+        // }
 
         let building_values = top_area_rate_sum * carpet_area;
         let amountInWords = await numberToWords(building_values);
@@ -302,7 +302,7 @@ module.exports = {
           property_land_area: land_area,
           construction_area,
         });
-        if (report == null) {
+        // if (report == null) {
           if (noOfReport <= 0) {
             return res
               .status(400)
@@ -320,7 +320,7 @@ module.exports = {
               { new: true }
             );
           }
-        }
+        // }
         let final_value = building_valuesS //+ plot_land_rate * land_area;
         amountInWords = await numberToWords(final_value);
 
@@ -391,7 +391,7 @@ module.exports = {
           type_of_property,
           property_land_area: land_area,
         });
-        if (report == null) {
+        // if (report == null) {
           if (noOfReport < 0) {
             return res
               .status(400)
@@ -409,7 +409,7 @@ module.exports = {
               { new: true }
             );
           }
-        }
+        // }
         let finalObj = {
           ...reportObj,
           name_of_the_customers: name,
