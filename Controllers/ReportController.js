@@ -190,7 +190,7 @@ module.exports = {
           carpet_area,
         });
         // if (report == null) {
-          if (noOfReport <= 0) {
+          if (noOfReport < 0) {
             return res
               .status(400)
               .json({ error: "Please Pay for Ganarate Report" });
@@ -303,7 +303,7 @@ module.exports = {
           construction_area,
         });
         // if (report == null) {
-          if (noOfReport <= 0) {
+          if (noOfReport < 0) {
             return res
               .status(400)
               .json({ error: "Please Pay for Ganarate Report" });
