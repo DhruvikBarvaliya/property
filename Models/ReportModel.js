@@ -4,7 +4,6 @@ mongoose.pluralize(null);
 
 const ReportSchema = new Schema(
   {
-
     name_of_the_customers: { type: String },
     report_date: { type: String },
     case_ref_no: { type: String },
@@ -24,7 +23,6 @@ const ReportSchema = new Schema(
     latitude: { type: Number },
     longitude: { type: Number },
     distance: { type: Number },
-    type_of_property: { type: String },
     address: { type: String },
     carpet_area: { type: Number },
     super_built_up_area: { type: Number },
@@ -32,6 +30,10 @@ const ReportSchema = new Schema(
     construction_area: { type: Number },
     age_of_property: { type: Number },
     type: { type: String },
+    no_of_floor: { type: Number },
+    floor_of_unit: { type: Number },
+    flat_no: { type: Number },
+    house_no: { type: Number },
 
     report: { type: Object },
     is_verified: { type: Boolean, default: true },

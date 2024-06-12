@@ -54,6 +54,10 @@ module.exports = {
       construction_area,
       age_of_property,
       type,
+      no_of_floor,
+      floor_of_unit,
+      flat_no,
+      house_no,
     } = req.body;
     const currentDate = new Date();
     const reportDate = await formatDate(currentDate);
@@ -190,23 +194,23 @@ module.exports = {
           carpet_area,
         });
         // if (report == null) {
-          if (noOfReport < 0) {
-            return res
-              .status(400)
-              .json({ error: "Please Pay for Ganarate Report" });
-          }
-          const updatedUser = await UserModel.findByIdAndUpdate(
+        if (noOfReport < 0) {
+          return res
+            .status(400)
+            .json({ error: "Please Pay for Ganarate Report" });
+        }
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          user_id,
+          { no_of_report: noOfReport },
+          { new: true }
+        );
+        if (updatedUser.no_of_report <= 0) {
+          await UserModel.findByIdAndUpdate(
             user_id,
-            { no_of_report: noOfReport },
+            { is_paid: false, $unset: { subscriptions_id: "" } },
             { new: true }
           );
-          if (updatedUser.no_of_report <= 0) {
-            await UserModel.findByIdAndUpdate(
-              user_id,
-              { is_paid: false, $unset: { subscriptions_id: "" } },
-              { new: true }
-            );
-          }
+        }
         // }
 
         let building_values = top_area_rate_sum * carpet_area;
@@ -236,6 +240,9 @@ module.exports = {
           type_of_property,
           carpet_area,
           super_built_up_area,
+          no_of_floor,
+          floor_of_unit,
+          flat_no,
         });
 
         let ReportData = await reportData.save();
@@ -284,12 +291,11 @@ module.exports = {
         if (age_of_property > 5) {
           depreciation =
             (construction_cost * age_of_property * 0.9) / typeValue;
-         
-          let aa = construction_cost - depreciation
-          building_valuesS = aa +(plot_land_rate * land_area);
+
+          let aa = construction_cost - depreciation;
+          building_valuesS = aa + plot_land_rate * land_area;
         } else {
-          depreciation =
-          construction_cost + plot_land_rate * land_area;
+          depreciation = construction_cost + plot_land_rate * land_area;
           building_valuesS = depreciation;
         }
         // building_valuesS = construction_cost - depreciation;
@@ -303,25 +309,25 @@ module.exports = {
           construction_area,
         });
         // if (report == null) {
-          if (noOfReport < 0) {
-            return res
-              .status(400)
-              .json({ error: "Please Pay for Ganarate Report" });
-          }
-          const updatedUser = await UserModel.findByIdAndUpdate(
+        if (noOfReport < 0) {
+          return res
+            .status(400)
+            .json({ error: "Please Pay for Ganarate Report" });
+        }
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          user_id,
+          { no_of_report: noOfReport },
+          { new: true }
+        );
+        if (updatedUser.no_of_report <= 0) {
+          await UserModel.findByIdAndUpdate(
             user_id,
-            { no_of_report: noOfReport },
+            { is_paid: false, $unset: { subscriptions_id: "" } },
             { new: true }
           );
-          if (updatedUser.no_of_report <= 0) {
-            await UserModel.findByIdAndUpdate(
-              user_id,
-              { is_paid: false, $unset: { subscriptions_id: "" } },
-              { new: true }
-            );
-          }
+        }
         // }
-        let final_value = building_valuesS //+ plot_land_rate * land_area;
+        let final_value = building_valuesS; //+ plot_land_rate * land_area;
         amountInWords = await numberToWords(final_value);
 
         let finalObj = {
@@ -350,6 +356,7 @@ module.exports = {
           construction_area,
           age_of_property,
           type,
+          house_no,
         });
         let ReportData = await reportData.save();
 
@@ -392,23 +399,23 @@ module.exports = {
           property_land_area: land_area,
         });
         // if (report == null) {
-          if (noOfReport < 0) {
-            return res
-              .status(400)
-              .json({ error: "Please Pay for Ganarate Report" });
-          }
-          const updatedUser = await UserModel.findByIdAndUpdate(
+        if (noOfReport < 0) {
+          return res
+            .status(400)
+            .json({ error: "Please Pay for Ganarate Report" });
+        }
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          user_id,
+          { no_of_report: noOfReport },
+          { new: true }
+        );
+        if (updatedUser.no_of_report <= 0) {
+          await UserModel.findByIdAndUpdate(
             user_id,
-            { no_of_report: noOfReport },
+            { is_paid: false, $unset: { subscriptions_id: "" } },
             { new: true }
           );
-          if (updatedUser.no_of_report <= 0) {
-            await UserModel.findByIdAndUpdate(
-              user_id,
-              { is_paid: false, $unset: { subscriptions_id: "" } },
-              { new: true }
-            );
-          }
+        }
         // }
         let finalObj = {
           ...reportObj,
