@@ -58,6 +58,7 @@ module.exports = {
       floor_of_unit,
       flat_no,
       house_no,
+      loading,
     } = req.body;
     const currentDate = new Date();
     const reportDate = await formatDate(currentDate);
@@ -229,6 +230,9 @@ module.exports = {
           building_value: building_values,
           final_valuation: building_values,
           final_valuation_in_word: amountInWords,
+          carpet_area,
+          super_built_up_area,
+          loading,
         };
         const reportData = new ReportModel({
           ...finalObj,
