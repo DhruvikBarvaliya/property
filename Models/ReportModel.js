@@ -34,6 +34,7 @@ const ReportSchema = new Schema(
     floor_of_unit: { type: Number },
     flat_no: { type: Number },
     house_no: { type: Number },
+    loading: { type: Number },
 
     report: { type: Object },
     is_verified: { type: Boolean, default: true },
