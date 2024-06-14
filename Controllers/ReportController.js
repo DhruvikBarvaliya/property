@@ -247,6 +247,8 @@ module.exports = {
           no_of_floor,
           floor_of_unit,
           flat_no,
+          loading,
+
         });
 
         let ReportData = await reportData.save();
