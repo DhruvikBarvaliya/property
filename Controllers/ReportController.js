@@ -1,5 +1,6 @@
 const ReportModel = require("../Models/ReportModel");
 const PropertyModel = require("../Models/PropertyModel");
+const UnListedPropertyModel = require("../Models/UnListedPropertyModel");
 const UserModel = require("../Models/UserModel");
 const { numberToWords } = require("../Helpers/NumToWord");
 
@@ -45,6 +46,8 @@ module.exports = {
       user_id,
       latitude,
       longitude,
+      owner_name,
+      owner_address,
       address,
       distance,
       type_of_property,
@@ -59,6 +62,7 @@ module.exports = {
       flat_no,
       house_no,
       loading,
+      land_location,
     } = req.body;
     const currentDate = new Date();
     const reportDate = await formatDate(currentDate);
@@ -71,6 +75,8 @@ module.exports = {
       longitude,
       distance,
       name_of_the_customers: "-",
+      owner_name,
+      owner_address,
       report_date: reportDate,
       case_ref_no: await generateUniqueID(),
       property_address: address,
@@ -84,6 +90,7 @@ module.exports = {
       building_value: "-",
       final_valuation: "-",
       final_valuation_in_word: "-",
+      land_location,
     };
     let MaxDistance = distance || maxDistance;
 
@@ -138,6 +145,28 @@ module.exports = {
       });
 
       if (!nearestProperties.length) {
+        const unListedProperty = new UnListedPropertyModel({
+          user_id,
+          latitude,
+          longitude,
+          owner_name,
+          owner_address,
+          address,
+          distance,
+          type_of_property,
+          carpet_area,
+          super_built_up_area,
+          land_area,
+          construction_area,
+          age_of_property,
+          type,
+          no_of_floor,
+          floor_of_unit,
+          flat_no,
+          house_no,
+          loading,
+        });
+        await unListedProperty.save();
         return res.status(200).json({
           message: "No properties found within the specified range",
         });
@@ -229,6 +258,8 @@ module.exports = {
           unit_rate_considered_for_ca_bua_sba: area_per_sq_ft,
           building_value: building_values,
           final_valuation: building_values,
+          RV: building_values * 0.9,
+          DV: building_values * 0.75,
           final_valuation_in_word: amountInWords,
           carpet_area,
           super_built_up_area,
@@ -248,7 +279,6 @@ module.exports = {
           floor_of_unit,
           flat_no,
           loading,
-
         });
 
         let ReportData = await reportData.save();
@@ -349,6 +379,8 @@ module.exports = {
           building_value: building_valuesS,
           final_valuation: final_value,
           final_valuation_in_word: amountInWords,
+          RV: building_valuesS * 0.9,
+          DV: building_valuesS * 0.75,
         };
         const reportData = new ReportModel({
           ...finalObj,
@@ -435,6 +467,8 @@ module.exports = {
           building_value: 0,
           final_valuation: market_area,
           final_valuation_in_word: amountInWords,
+          RV: market_area * 0.9,
+          DV: market_area * 0.75,
         };
         const reportData = new ReportModel({
           ...finalObj,

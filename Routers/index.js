@@ -10,6 +10,7 @@ const routes = {
   SubscriptionRoute: require("./SubscriptionRoute"),
   ConfigRoute: require("./ConfigRoute"),
   ReportRoute: require("./ReportRoute"),
+  UnListedPropertyRoute: require("./UnListedPropertyRoute"),
 };
 
 router.get("/", (req, res) => {
