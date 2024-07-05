@@ -118,7 +118,8 @@ module.exports = {
     }
     let propertyTypes = [];
     if (type_of_property == "Apartment") {
-      propertyTypes.push("Residential Flat ", "Commercial Shop ", "Office ");
+      propertyTypes.push("Residential Flat ");
+      // propertyTypes.push("Residential Flat ", "Commercial Shop ", "Office ");
     } else if (type_of_property == "Independent") {
       propertyTypes.push(
         "Residential Plot ",
@@ -172,30 +173,6 @@ module.exports = {
         });
       }
 
-      // let top_area_rate = nearestProperties
-      //   .sort(
-      //     (a, b) =>
-      //       parseInt(b.area_rate_considered_per_sq_ft) -
-      //       parseInt(a.area_rate_considered_per_sq_ft)
-      //   )
-      //   .slice(0, 5);
-      // let top_area_rate_sum = top_area_rate.reduce(
-      //   (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
-      //   0
-      // );
-
-      // let top_area_rate1 = nearestProperties
-      //   .sort(
-      //     (a, b) =>
-      //       parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-      //       parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-      //   )
-      //   .slice(0, 5);
-      // let top_area_rate_sum1 = top_area_rate1.reduce(
-      //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-      //   0
-      // );
-
       let market_area;
 
       if (type_of_property == "Apartment") {
@@ -217,13 +194,6 @@ module.exports = {
           });
         }
         const area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
-        // market_area = carpet_area || super_built_up_area * area_per_sq_ft;
-        // let amountInWords = await numberToWords(market_area);
-        const report = await ReportModel.findOne({
-          type_of_property,
-          carpet_area,
-        });
-        // if (report == null) {
         if (noOfReport < 0) {
           return res
             .status(400)
@@ -241,7 +211,6 @@ module.exports = {
             { new: true }
           );
         }
-        // }
 
         let building_values = top_area_rate_sum * carpet_area;
         let amountInWords = await numberToWords(building_values);
@@ -302,8 +271,6 @@ module.exports = {
           (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
           0
         );
-        // console.log(top_area_rate1);
-        // console.log(top_area_rate_sum1);
         if (
           !age_of_property ||
           !construction_area ||
@@ -323,28 +290,23 @@ module.exports = {
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
         let depreciation;
-        let building_valuesS;
+        let building_value;
+        let final_valuation;
         if (age_of_property > 5) {
           depreciation =
             (construction_cost * age_of_property * 0.9) / typeValue;
 
-          let aa = construction_cost - depreciation;
-          building_valuesS = aa + plot_land_rate * land_area;
+          final_valuation = construction_cost - depreciation;
+          building_value = final_valuation + plot_land_rate * land_area;
         } else {
           depreciation = construction_cost + plot_land_rate * land_area;
-          building_valuesS = depreciation;
+          building_value = depreciation;
         }
-        // building_valuesS = construction_cost - depreciation;
 
         market_area = land_area * plot_land_rate + depreciation;
 
         let amountInWords = await numberToWords(market_area);
-        const report = await ReportModel.findOne({
-          type_of_property,
-          property_land_area: land_area,
-          construction_area,
-        });
-        // if (report == null) {
+
         if (noOfReport < 0) {
           return res
             .status(400)
@@ -362,8 +324,8 @@ module.exports = {
             { new: true }
           );
         }
-        // }
-        let final_value = building_valuesS; //+ plot_land_rate * land_area;
+
+        let final_value = building_value;
         amountInWords = await numberToWords(final_value);
 
         let finalObj = {
@@ -374,13 +336,12 @@ module.exports = {
           land_value: plot_land_rate * land_area,
           type_of_property: type_of_property,
           unit_rate_considered_for_land: plot_land_rate,
-          // unit_rate_considered_for_ca_bua_sba: top_area_rate_sum1,
           unit_rate_considered_for_ca_bua_sba: 0,
-          building_value: building_valuesS,
+          building_value: final_valuation,
           final_valuation: final_value,
           final_valuation_in_word: amountInWords,
-          RV: building_valuesS * 0.9,
-          DV: building_valuesS * 0.75,
+          RV: building_value * 0.9,
+          DV: building_value * 0.75,
         };
         const reportData = new ReportModel({
           ...finalObj,
@@ -432,11 +393,7 @@ module.exports = {
         market_area = land_area * average;
 
         const amountInWords = await numberToWords(market_area);
-        const report = await ReportModel.findOne({
-          type_of_property,
-          property_land_area: land_area,
-        });
-        // if (report == null) {
+
         if (noOfReport < 0) {
           return res
             .status(400)
@@ -454,7 +411,7 @@ module.exports = {
             { new: true }
           );
         }
-        // }
+
         let finalObj = {
           ...reportObj,
           name_of_the_customers: name,
