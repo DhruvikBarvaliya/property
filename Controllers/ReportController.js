@@ -212,7 +212,7 @@ module.exports = {
           );
         }
 
-        let building_values = top_area_rate_sum * carpet_area;
+        let building_values = area_per_sq_ft * carpet_area;
         let amountInWords = await numberToWords(building_values);
 
         let finalObj = {
