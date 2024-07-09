@@ -300,7 +300,9 @@ module.exports = {
           building_value = final_valuation + plot_land_rate * land_area;
         } else {
           depreciation = construction_cost + plot_land_rate * land_area;
-          building_value = depreciation;
+          // building_value = depreciation;
+          building_value = construction_cost;
+          final_valuation = construction_cost;
         }
 
         market_area = land_area * plot_land_rate + depreciation;
@@ -324,10 +326,8 @@ module.exports = {
             { new: true }
           );
         }
-
         let final_value = building_value;
         amountInWords = await numberToWords(final_value);
-
         let finalObj = {
           ...reportObj,
           name_of_the_customers: name,
