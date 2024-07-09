@@ -300,8 +300,8 @@ module.exports = {
           building_value = final_valuation + plot_land_rate * land_area;
         } else {
           depreciation = construction_cost + plot_land_rate * land_area;
-          // building_value = depreciation;
-          building_value = construction_cost;
+          building_value = depreciation;
+          // building_value = construction_cost;
           final_valuation = construction_cost;
         }
 
