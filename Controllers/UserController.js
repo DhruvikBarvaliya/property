@@ -191,7 +191,7 @@ module.exports = {
         _id: user_id,
         is_active: true,
       })
-      .select("-password -otp -forgot_otp")
+        .select("-password -otp -forgot_otp")
         .populate("subscriptions_id");
 
       // .select("-password").populate({
@@ -233,7 +233,7 @@ module.exports = {
 
     try {
       const users = await UserModel.find({ role })
-      .select("-password -otp -forgot_otp")
+        .select("-password -otp -forgot_otp")
         .limit(limit)
         .skip(skip);
       const total = await UserModel.countDocuments({ role });
