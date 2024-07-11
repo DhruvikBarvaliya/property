@@ -337,7 +337,7 @@ module.exports = {
           type_of_property: type_of_property,
           age_of_property,
           unit_rate_considered_for_land: plot_land_rate,
-          unit_rate_considered_for_ca_bua_sba: construction_area,
+          unit_rate_considered_for_ca_bua_sba: 0,
           building_value: final_valuation,
           final_valuation: final_value,
           final_valuation_in_word: amountInWords,
