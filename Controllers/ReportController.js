@@ -524,23 +524,6 @@ module.exports = {
       });
     }
   },
-  // getTotalReportCount: async (req, res) => {
-  //   try {
-
-  //     const totalReportCount = await ReportModel.sort({ createdAt: -1 }).countDocuments();
-  //     const allReport = await ReportModel.find().sort({ createdAt: -1 });
-  //       status: true,
-  //       message: "Total Report Count Retrieved Successfully",
-  //       count: totalReportCount,
-  //     });
-  //   } catch (err) {
-  //     return res.status(500).json({
-  //       status: false,
-  //       message: "Server Error",
-  //       error: err.message || err.toString(),
-  //     });
-  //   }
-  // },
   getReportById: async (req, res) => {
     try {
       const { report_id } = req.params;
