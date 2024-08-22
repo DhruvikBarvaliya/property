@@ -20,16 +20,34 @@ async function calculatePrice(years) {
   }
 }
 
-async function generateUniqueID() {
-  const prefix = "EE/VAL/SRT/LB";
-  const yearRange =
-    new Date().getFullYear() +
-    "-" +
-    (new Date().getFullYear() + 1).toString().slice(-2);
-  const month = String(new Date().getMonth() + 1).padStart(2, "0");
-  const number = String(Math.floor(Math.random() * 9000) + 1000);
+function getFinancialYear() {
+  const now = new Date();
+  const month = now.getMonth(); // 0 = January, 1 = February, ..., 11 = December
+  const year = now.getFullYear();
 
-  return `${prefix}/${yearRange}/${month}/${number}`;
+  // Determine the financial year and the corresponding start year
+  const startYear = month >= 3 ? year : year - 1; // Financial year starts in April (month index 3)
+  const endYear = startYear + 1;
+
+  // Format the financial year as `yyyy-yy`
+  const financialYear = `${startYear}-${endYear.toString().slice(-2)}`;
+
+  // Format month as `MM`
+  const formattedMonth = (month + 1).toString().padStart(2, "0"); // +1 because getMonth() is zero-indexed
+
+  return `DV/SRT/${financialYear}/${formattedMonth}`;
+}
+let number;
+async function generateUniqueID() {
+  const prefix = `${getFinancialYear()}`;
+  const latestReport = await ReportModel.findOne().sort({ createdAt: -1 });
+  const lastSlashIndex = latestReport?.case_ref_no?.lastIndexOf("/") || 0;
+  if (lastSlashIndex === 0) {
+    number = 1;
+  } else {
+    number = parseInt(latestReport.case_ref_no.slice(lastSlashIndex + 1)) + 1;
+  }
+  return `${prefix}/${number}`;
 }
 
 async function formatDate(date) {
@@ -506,6 +524,23 @@ module.exports = {
       });
     }
   },
+  // getTotalReportCount: async (req, res) => {
+  //   try {
+
+  //     const totalReportCount = await ReportModel.sort({ createdAt: -1 }).countDocuments();
+  //     const allReport = await ReportModel.find().sort({ createdAt: -1 });
+  //       status: true,
+  //       message: "Total Report Count Retrieved Successfully",
+  //       count: totalReportCount,
+  //     });
+  //   } catch (err) {
+  //     return res.status(500).json({
+  //       status: false,
+  //       message: "Server Error",
+  //       error: err.message || err.toString(),
+  //     });
+  //   }
+  // },
   getReportById: async (req, res) => {
     try {
       const { report_id } = req.params;
