@@ -9,6 +9,7 @@ const SubscriptionSchema = new Schema(
     plan_name: { type: String, trim: true },
     no_of_report: Number,
     price: Number,
+    per_report_price: Number,
     discount: Number,
     final_price: Number,
     specification: Array,

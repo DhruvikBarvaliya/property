@@ -25,13 +25,14 @@ module.exports = {
             .json({ status: false, message: `${key} is Required` });
         }
       }
-
       let final_price =
         req.body.final_price || (price * (100 - (discount || 0))) / 100;
-
+      final_price = parseInt(no_of_report * final_price);
+      let per_report_price = final_price / no_of_report;
       const subscriptionplanData = new SubscriptionModel({
         ...req.body,
         final_price,
+        per_report_price,
       });
 
       await subscriptionplanData.save();
