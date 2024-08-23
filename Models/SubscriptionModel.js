@@ -11,6 +11,7 @@ const SubscriptionSchema = new Schema(
     price: Number,
     discount: Number,
     final_price: Number,
+    specification: Array,
     status: { type: String, trim: true },
     is_active: { type: Boolean, default: true },
   },

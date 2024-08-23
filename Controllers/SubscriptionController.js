@@ -3,8 +3,21 @@ const SubscriptionModel = require("../Models/SubscriptionModel");
 module.exports = {
   addSubscriptionPlan: async (req, res) => {
     try {
-      const { plan_no, plan_name, no_of_report, price, discount } = req.body;
-      const requiredFields = { plan_no, plan_name, no_of_report, price };
+      const {
+        plan_no,
+        plan_name,
+        no_of_report,
+        price,
+        specification,
+        discount,
+      } = req.body;
+      const requiredFields = {
+        plan_no,
+        plan_name,
+        no_of_report,
+        price,
+        specification,
+      };
       for (const [key, value] of Object.entries(requiredFields)) {
         if (!value) {
           return res
