@@ -372,7 +372,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"superadmin@gmail.com\",\r\n    \"password\": \"superadmin\"\r\n}",
+							"raw": "{\r\n    \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n    \"password\": \"asd123\"\r\n}\r\n// =============== Google Login =======================\r\n// {\r\n//     \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n//     \"type\": \"google\",\r\n//     \"role\": \"INDIVIDUAL\"\r\n// }\r\n// =============== Facebook Login =======================\r\n// {\r\n//     \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n//     \"type\": \"facebook\",\r\n//     \"role\": \"BROKER\"\r\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -444,7 +444,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"yash.s@5datainc.com\",\r\n    \"otp\": 3266\r\n}",
+							"raw": "{\r\n    \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n    \"otp\": 4674\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -557,7 +557,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"role\": \"BANKER\",\r\n    \"banker_role_value\": \"UCO Bank\",\r\n    \"email\": \"yash.s@5datainc.com\",\r\n    \"name\": \"bala\",\r\n    \"phone\": \"9876543250\",\r\n    \"password\": \"asd123\"\r\n}",
+							"raw": "{\r\n    \"role\": \"BANKER\",\r\n    \"banker_role_value\": \"UCO Bank\",\r\n    \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n    \"name\": \"bala\",\r\n    \"phone\": \"9876543250\",\r\n    \"password\": \"asd123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1090,7 +1090,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"66542d10946d655518a71faa\",\r\n    \"subscriptions_id\": \"664f0ef173e61c58bf262f07\",\r\n    \"razor_pay_response\": \"Demo Data\"\r\n    // \"razor_pay_response\": [\"Demo Data\"]\r\n    // \"razor_pay_response\": {\"test\":\"data\"}\r\n}",
+							"raw": "{\r\n    \"user_id\": \"66d14a93939d8ac0517f2faf\",\r\n    \"subscriptions_id\": \"66c878c2879ce557d59da94a\",\r\n    \"razor_pay_response\": \"Demo Data\"\r\n    // \"razor_pay_response\": [\"Demo Data\"]\r\n    // \"razor_pay_response\": {\"test\":\"data\"}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2089,7 +2089,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"plan_no\": 1,\r\n    \"plan_name\": \"Per Valuation Report\",\r\n    \"no_of_report\": 1,\r\n    \"price\": 1000,\r\n    \"discount\": 10\r\n    // \"final_price\":500\r\n}",
+							"raw": "{\r\n    \"plan_no\": 1,\r\n    \"plan_name\": \"Basic Plan\",\r\n    \"no_of_report\": 1,\r\n    \"price\": 999,\r\n    \"specification\":[\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n    \"discount\": 20\r\n    // \"final_price\":500\r\n}\r\n//============================================================================================================================\r\n// {\r\n//     \"plan_no\": 2,\r\n//     \"plan_name\": \"Advance Plan\",\r\n//     \"no_of_report\": 20,\r\n//     \"price\": 999,\r\n//     \"specification\":[\"Generate 20 Report\",\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n//     \"discount\": 30\r\n//     // \"final_price\":500\r\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
