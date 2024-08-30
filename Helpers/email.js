@@ -26,8 +26,26 @@ let sendMail = async (to, otp) => {
     console.log("Email MessageId: " + info.messageId);
   } catch (error) {
     console.error("Failed to send email:", error);
-    throw new Error("Server Error");
+    // throw new Error("Server Error");
+  }
+};
+let mailSend = async (to, data) => {
+  try {
+    const mailOptions = {
+      from: user,
+      to: to,
+      subject: "Your Invoice",
+      text: "Please find attached your invoice.",
+      attachments: data.attachments,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    console.log("Email MessageId: " + info.messageId);
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    // throw new Error("Server Error");
   }
 };
 
-module.exports = { sendMail };
+module.exports = { sendMail, mailSend };

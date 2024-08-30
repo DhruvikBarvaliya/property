@@ -7,39 +7,104 @@ const { sendMail } = require("../Helpers/email");
 module.exports = {
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
-      const user = await UserModel.findOne({ email }).select(
+      const { email, password, type, role } = req.body;
+      if (!email) {
+        res.status(400).send({ status: false, message: "email is Required" });
+      }
+      let user = await UserModel.findOne({ email }).select(
         "+password +is_active +is_verified"
       );
 
-      if (!user) {
-        return res
-          .status(404)
-          .json({ status: false, message: "User Not Found" });
-      }
-      if (!user.is_active) {
-        return res
-          .status(404)
-          .json({ status: false, message: "User is Not Active" });
-      }
-      if (!user.is_verified) {
-        return res
-          .status(404)
-          .json({ status: false, message: "User is Not verified" });
-      }
+      if (type === "google") {
+        if (user !== null && user.email == email) {
+          const payload = { id: user._id, email, role: user.role };
+          let token = jsonwebtoken.sign(payload, jwt_secret_key, {
+            expiresIn: "8d",
+          });
+          return res.status(200).json({ email, token });
+        } else {
+          const obj = new UserModel({
+            email: email,
+            is_active: true,
+            is_verified: true,
+            role: role,
+          });
+          try {
+            let user = await obj.save();
+            const payload = { id: user._id, email, role: user.role };
+            let token = jsonwebtoken.sign(payload, jwt_secret_key, {
+              expiresIn: "8d",
+            });
+            return res.status(200).json({ email, token });
+          } catch (error) {
+            res.status(400).send({
+              status: false,
+              message: "Error",
+              error: error.message,
+            });
+          }
+        }
+      } else if (type === "facebook") {
+        if (user !== null && user.email == email) {
+          const payload = { id: user._id, email, role: user.role };
+          let token = jsonwebtoken.sign(payload, jwt_secret_key, {
+            expiresIn: "8d",
+          });
+          return res.status(200).json({ email, token });
+        } else {
+          const obj = new UserModel({
+            email: email,
+            is_active: true,
+            is_verified: true,
+            role: role,
+          });
+          try {
+            await obj.save();
+            return res.status(200).json({ email, token });
+          } catch (error) {
+            res.status(400).send({
+              status: false,
+              message: "Error",
+              error: error.message,
+            });
+          }
+        }
+      } else {
+        if (!user) {
+          return res
+            .status(404)
+            .json({ status: false, message: "User Not Found" });
+        }
+        if (!user.is_active) {
+          return res
+            .status(404)
+            .json({ status: false, message: "User is Not Active" });
+        }
+        if (!user.is_verified) {
+          return res
+            .status(404)
+            .json({ status: false, message: "User is Not verified" });
+        }
+        if (user.password === undefined) {
+          return res.status(404).json({
+            status: false,
+            message: "Please try with Google or Facebook Login",
+          });
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res
-          .status(401)
-          .json({ status: false, message: "Invalid Credentials" });
-      }
+        if (!isPasswordValid) {
+          return res
+            .status(401)
+            .json({ status: false, message: "Invalid Credentials" });
+        }
 
-      const payload = { id: user._id, email, role: user.role };
-      const token = jsonwebtoken.sign(payload, jwt_secret_key, {
-        expiresIn: "8d",
-      });
-      return res.status(200).json({ email, token });
+        const payload = { id: user._id, email, role: user.role };
+        const token = jsonwebtoken.sign(payload, jwt_secret_key, {
+          expiresIn: "8d",
+        });
+        return res.status(200).json({ email, token });
+      }
     } catch (err) {
       return res.status(500).json({
         status: false,
