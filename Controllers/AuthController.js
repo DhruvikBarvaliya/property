@@ -219,7 +219,7 @@ module.exports = {
   },
   getLoginAttempts: async (req, res) => {
     try {
-      const loginAttempts = await UserModel.find({}, "name login_attempts");
+      const loginAttempts = await UserModel.find({}, "email login_attempts");
       return res.status(200).json({ loginAttempts });
     } catch (err) {
       return res.status(500).json({
