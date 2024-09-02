@@ -538,4 +538,20 @@ module.exports = {
       });
     }
   },
+  getUserTypes: async (req, res) => {
+    try {
+      const userTypes = await UserModel.distinct("role");
+      return res.status(200).json({
+        status: true,
+        message: "User types retrieved successfully.",
+        userTypes,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
 };

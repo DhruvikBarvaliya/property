@@ -23,6 +23,7 @@ const ReportSchema = new Schema(
     DV: { type: Number },
 
     user_id: { type: Schema.Types.ObjectId, ref: "user" },
+    user_role: { type: String },
     latitude: { type: Number },
     longitude: { type: Number },
     distance: { type: Number },

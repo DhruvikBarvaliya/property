@@ -35,4 +35,7 @@ router.post(
   ReportController.getNearestProperty
 );
 
+router.get("/report/list/individual", authorize(), ReportController.getListOfReportGeneratedByIndividual);
+
+
 module.exports = router;

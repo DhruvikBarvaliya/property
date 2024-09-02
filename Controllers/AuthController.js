@@ -18,11 +18,13 @@ module.exports = {
         "+password +is_active +is_verified"
       );
 
-      const generateTokenAndRespond = (user) => {
+      const generateTokenAndRespond = async (user) => {
         const payload = { id: user._id, email, role: user.role };
         const token = jsonwebtoken.sign(payload, jwt_secret_key, {
           expiresIn: "8d",
         });
+        user.login_attempts = 0;
+        await user.save();
         return res.status(200).json({ email, token });
       };
 
@@ -49,16 +51,22 @@ module.exports = {
       }
 
       if (!user) {
+        user.login_attempts += 1;
+        await user.save();
         return res
           .status(404)
           .json({ status: false, message: "User not found" });
       }
       if (!user.is_active) {
+        user.login_attempts += 1;
+        await user.save();
         return res
           .status(404)
           .json({ status: false, message: "User is not active" });
       }
       if (!user.is_verified) {
+        user.login_attempts += 1;
+        await user.save();
         return res
           .status(404)
           .json({ status: false, message: "User is not verified" });
@@ -72,6 +80,8 @@ module.exports = {
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
+        user.login_attempts += 1;
+        await user.save();
         return res
           .status(401)
           .json({ status: false, message: "Invalid credentials" });
@@ -199,6 +209,18 @@ module.exports = {
         message: `Password Updated Successfully For Email: ${email}`,
         token,
       });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  getLoginAttempts: async (req, res) => {
+    try {
+      const loginAttempts = await UserModel.find({}, "name login_attempts");
+      return res.status(200).json({ loginAttempts });
     } catch (err) {
       return res.status(500).json({
         status: false,

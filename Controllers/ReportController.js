@@ -128,6 +128,7 @@ module.exports = {
     }
     let name = usarData.name;
     let noOfReport = usarData.no_of_report - 1;
+    let user_role = usarData.role;
 
     if (isNaN(lat) || isNaN(long)) {
       return res
@@ -267,6 +268,7 @@ module.exports = {
           floor_of_unit,
           flat_no,
           loading,
+          user_role,
         });
 
         let ReportData = await reportData.save();
@@ -375,6 +377,7 @@ module.exports = {
           age_of_property,
           type,
           house_no,
+          user_role,
         });
         let ReportData = await reportData.save();
 
@@ -455,6 +458,7 @@ module.exports = {
           address,
           type_of_property,
           land_area,
+          user_role,
         });
         let ReportData = await reportData.save();
 
@@ -674,6 +678,40 @@ module.exports = {
         message: "Server Error",
         id: cleanedId,
         time: time,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  getListOfReportGeneratedByIndividual: async (req, res) => {
+    try {
+      const { limit = 10, skip = 0 } = req.query;
+      const reports = await ReportModel.find({ user_role: "INDIVIDUAL" })
+        .sort({ createdAt: -1 })
+        .limit(Number(limit))
+        .skip(Number(skip));
+
+      const total = await ReportModel.find({
+        user_role: "INDIVIDUAL",
+      }).countDocuments();
+
+      if (reports.length === 0) {
+        return res.status(404).json({
+          status: false,
+          message: `No reports found for user type INDIVIDUAL`,
+        });
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "Reports retrieved successfully",
+        length: reports.length,
+        total,
+        reports,
       });
     } catch (err) {
       return res.status(500).json({

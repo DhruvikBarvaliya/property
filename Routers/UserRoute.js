@@ -52,5 +52,5 @@ router.patch(
   authorize(),
   UserController.updateNoOfPdf
 );
-
+router.get("/user/unique/types", authorize(), UserController.getUserTypes);
 module.exports = router;
