@@ -7,7 +7,10 @@ const UnListedPropertyController = require("../Controllers/UnListedPropertyContr
 // Simplify route definitions by using route chaining
 router
   .route("/unListedProperty")
-  .post(authorize([Role.SUPER_ADMIN, Role.ADMIN]), UnListedPropertyController.addUnListedProperty)
+  .post(
+    authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+    UnListedPropertyController.addUnListedProperty
+  )
   .get(
     authorize([Role.SUPER_ADMIN, Role.ADMIN]),
     UnListedPropertyController.getAllUnListedProperty
@@ -19,7 +22,10 @@ router
     authorize([Role.SUPER_ADMIN, Role.ADMIN]),
     UnListedPropertyController.getUnListedPropertyById
   )
-  .put(authorize([Role.SUPER_ADMIN, Role.ADMIN]), UnListedPropertyController.updateUnListedProperty)
+  .put(
+    authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+    UnListedPropertyController.updateUnListedProperty
+  )
   .delete(
     authorize([Role.SUPER_ADMIN, Role.ADMIN]),
     UnListedPropertyController.deleteUnListedProperty

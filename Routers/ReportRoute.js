@@ -21,7 +21,7 @@ router
 
 router
   .route("/report/byUser/:user_id")
-  .get(authorize(), ReportController.getReportByUserId);  
+  .get(authorize(), ReportController.getReportByUserId);
 
 router.put(
   "/report/:report_id/:status",
@@ -35,7 +35,10 @@ router.post(
   ReportController.getNearestProperty
 );
 
-router.get("/report/list/individual", authorize(), ReportController.getListOfReportGeneratedByIndividual);
-
+router.get(
+  "/report/list/individual",
+  authorize(),
+  ReportController.getListOfReportGeneratedByIndividual
+);
 
 module.exports = router;

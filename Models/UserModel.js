@@ -5,6 +5,8 @@ mongoose.pluralize(null);
 const roles = [
   "SUPER_ADMIN",
   "ADMIN",
+  "DATA_COLLECTOR",
+  "DATA_INTERPRETER",
   "BANKER",
   "VALUER",
   "INDIVIDUAL",

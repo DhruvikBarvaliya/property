@@ -34,9 +34,9 @@ let mailSend = async (to, data) => {
     const mailOptions = {
       from: user,
       to: to,
-      subject: "Your Invoice",
-      text: "Please find attached your invoice.",
-      attachments: data.attachments,
+      subject: "Welcome to our platform",
+      text: "Thank you for joining us!",
+      html: data,
     };
 
     const info = await transporter.sendMail(mailOptions);

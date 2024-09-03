@@ -66,15 +66,18 @@ async function convertDocxToPdf(docxPath, pdfPath) {
   console.log(path.join(__dirname, "..", "Media", "pdf"));
 
   const filePath = path.join(__dirname, "..", "Media", "pdf", `${pdfPath}.pdf`);
-  console.log("filePath >>>>>>>> ",filePath);
+  console.log("filePath >>>>>>>> ", filePath);
 
-  exec(`python C:/Users/EV/Desktop/Property/Helpers/convert.py ${docxPath} ${filePath}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
+  exec(
+    `python C:/Users/EV/Desktop/Property/Helpers/convert.py ${docxPath} ${filePath}`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`Python function output: ${stdout}`);
     }
-    console.log(`Python function output: ${stdout}`);
-  });
+  );
   // try {
   //   const response = await axios.post("https://fast-property.onrender.com/items", {
   //     docxPath,

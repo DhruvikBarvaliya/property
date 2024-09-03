@@ -19,7 +19,11 @@ module.exports = {
           } is Required`,
         });
       }
-      const user = await UserModel.findById(user_id).select("no_of_report");
+      const user = await UserModel.findById(user_id).select(
+        "email name no_of_report"
+      );
+
+      let user_name = user.name || user.email;
       if (!user) {
         return res.status(404).json({
           status: false,
@@ -73,6 +77,7 @@ module.exports = {
         invoiceNumber: id,
         invoiceDate: formattedDate,
         user_id: razorpayData.user_id,
+        user: user_name,
         subscriptions_id: razorpayData.subscriptions_id,
         razor_pay_response: razorpayData.razor_pay_response,
         plan_name: subscription.plan_name,
@@ -95,105 +100,129 @@ module.exports = {
       // Generate the HTML with dynamic content
       const generateInvoiceHtml = (data) => {
         return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Invoice</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-            .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
-            .invoice-box table { width: 100%; line-height: inherit; text-align: left; }
-            .invoice-box table td { padding: 5px; vertical-align: top; }
-            .invoice-box table tr td:nth-child(2) { text-align: right; }
-            .invoice-box table tr.top table td { padding-bottom: 20px; }
-            .invoice-box table tr.top table td.title { font-size: 45px; line-height: 45px; color: #333; }
-            .invoice-box table tr.information table td { padding-bottom: 40px; }
-            .invoice-box table tr.heading td { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; }
-            .invoice-box table tr.details td { padding-bottom: 20px; }
-            .invoice-box table tr.item td { border-bottom: 1px solid #eee; }
-            .invoice-box table tr.item.last td { border-bottom: none; }
-            .invoice-box table tr.total td:nth-child(2) { border-top: 2px solid #eee; font-weight: bold; }
-        </style>
-      </head>
-      <body>
-        <div class="invoice-box">
-            <table cellpadding="0" cellspacing="0">
-                <tr class="top">
-                    <td colspan="2">
-                        <table>
+                <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Thank You for Your Purchase!</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .container {
+                        width: 100%;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #ffffff;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    }
+                    .header {
+                        text-align: center;
+                        padding: 20px;
+                        background-color: #4CAF50;
+                        color: #ffffff;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 24px;
+                    }
+                    .content {
+                        padding: 20px;
+                    }
+                    .content h2 {
+                        font-size: 20px;
+                        color: #333333;
+                    }
+                    .content p {
+                        font-size: 16px;
+                        color: #555555;
+                    }
+                    .order-details {
+                        margin: 20px 0;
+                        border-collapse: collapse;
+                        width: 100%;
+                    }
+                    .order-details th, .order-details td {
+                        padding: 10px;
+                        border: 1px solid #dddddd;
+                        text-align: left;
+                    }
+                    .order-details th {
+                        background-color: #f2f2f2;
+                    }
+                    .footer {
+                        text-align: center;
+                        padding: 20px;
+                        background-color: #f9f9f9;
+                        color: #777777;
+                        font-size: 14px;
+                        border-bottom-left-radius: 10px;
+                        border-bottom-right-radius: 10px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Desktop Valuation</h1>
+                    </div>
+                        <h2>Thank You for Your Purchase!</h2>
+                    <div class="content">
+                        <h2>Order Confirmation</h2>
+                        <p>Hi ${data.user},</p>
+                        <p>Thank you for shopping with us! We're excited to let you know that your order has been received and is being processed. Below are the details of your purchase:</p>
+
+                        <table class="order-details">
                             <tr>
-                                <td class="title">
-                                    <img src="https://earthengineers.in/wp-content/uploads/2021/09/Logo.png" style="width: 100%; max-width: 100px;" />
-                                </td>
-                                <td>
-                                    Invoice #: ${data.invoiceNumber}<br />
-                                    Created: ${data.invoiceDate}<br />
-                                </td>
+                                <th>Plan Name</th>
+                                <td>${data.plan_name}</td>
+                            </tr>
+                            <tr>
+                                <th>No Of Report</th>
+                                <td>${data.no_of_report}</td>
+                            </tr>
+                            <tr>
+                                <th>Per Report Price</th>
+                                <td>${data.per_report_price}</td>
+                            </tr>
+                            <tr>
+                                <th>Order Date</th>
+                                <td>${data.invoiceDate}</td>
+                            </tr>
+                             <tr>
+                                <th>Payment Ref.No</th>
+                                <td>${data.razor_pay_response}</td>
+                            </tr>
+                            <tr>
+                                <th>Subscription Ref.No</th>
+                                <td>${data.subscriptions_id}</td>
+                            </tr>
+                            <tr>
+                                <th>Total</th>
+                                <td>₹${data.totalAmount}</td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
-                <tr class="information">
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <td>
-                                    ${data.company.name},<br />
-                                    ${data.company.address}
-                                </td>
-                                <td>
-                                    ${data.client.name},<br />
-                                    ${data.client.address}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr class="heading">
-                    <td>Field</td>
-                    <td>Value</td>
-                </tr>
-                <tr class="details">
-                    <td>User Id</td>
-                    <td>${data.user_id}</td>
-                </tr>
-                 <tr class="details">
-                    <td>Subscriptions Id</td>
-                    <td>${data.subscriptions_id}</td>
-                </tr>
-                 <tr class="details">
-                    <td>Razor Pay Response</td>
-                    <td>${data.razor_pay_response}</td>
-                </tr>
-                 <tr class="details">
-                    <td>Plan Name</td>
-                    <td>${data.plan_name}</td>
-                </tr>
-                 <tr class="details">
-                    <td>No Of Report</td>
-                    <td>${data.no_of_report}</td>
-                </tr>
-                 <tr class="details">
-                    <td>Per Report Price</td>
-                    <td>${data.per_report_price}</td>
-                </tr>
-                 <tr class="details">
-                    <td>Discount</td>
-                    <td>${data.discount}%</td>
-                </tr>
-                 <tr class="details">
-                    <td>Price</td>
-                    <td>${data.price}</td>
-                </tr>
-                <tr class="total">
-                    <td></td>
-                    <td>Total: ${data.totalAmount}</td>
-                </tr>
-            </table>
-        </div>
-      </body>
-      </html>
+
+                        <p>If you have any questions, feel free to contact our customer service at contactus@desktopvaluation.in / +91-9687557070.</p>
+
+                        <p>Thank you for choosing Desktop Valuation.</p>
+
+                    </div>
+                    <div class="footer">
+                        <p>&copy; 2024 Desktop Valuation. All rights reserved.</p>
+                         <p><a href="https://desktopvaluation.in/" target="_blank">Visit Our Platform</a></p>
+                    </div>
+                </div>
+            </body>
+            </html>
         `;
       };
 
@@ -211,34 +240,35 @@ module.exports = {
 
       // Generate the HTML content
       const invoiceHtml = generateInvoiceHtml(invoiceData);
+      await mailSend(user.email, invoiceHtml);
 
-      generatePdf(invoiceHtml, pdfPath)
-        .then(async () => {
-          console.log("PDF generated successfully.");
+      // generatePdf(invoiceHtml, pdfPath)
+      //   .then(async () => {
+      //     console.log("PDF generated successfully.");
 
-          // Set up the email options with PDF attachment
-          const options = {
-            attachments: [
-              {
-                filename: "invoice.pdf",
-                path: pdfPath,
-              },
-            ],
-          };
+      //     // Set up the email options with PDF attachment
+      //     const options = {
+      //       attachments: [
+      //         {
+      //           filename: "invoice.pdf",
+      //           path: pdfPath,
+      //         },
+      //       ],
+      //     };
 
-          await mailSend(user.email, options);
-          // Delete the PDF file from the system
-          fs.unlink(pdfPath, (err) => {
-            if (err) {
-              console.log("Failed to delete PDF:", err);
-            } else {
-              console.log("PDF deleted successfully.");
-            }
-          });
-        })
-        .catch((err) => {
-          console.log("Failed to generate PDF:", err);
-        });
+      //     // await mailSend(user.email, invoiceHtml);
+      //     // Delete the PDF file from the system
+      //     // fs.unlink(pdfPath, (err) => {
+      //     //   if (err) {
+      //     //     console.log("Failed to delete PDF:", err);
+      //     //   } else {
+      //     //     console.log("PDF deleted successfully.");
+      //     //   }
+      //     // });
+      //   })
+      //   .catch((err) => {
+      //     console.log("Failed to generate PDF:", err);
+      //   });
 
       return res
         .status(201)

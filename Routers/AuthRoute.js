@@ -7,7 +7,7 @@ const {
   verify,
   changePassword,
   forgotPassword,
-  getLoginAttempts
+  getLoginAttempts,
 } = require("../Controllers/AuthController");
 
 router.post("/login", login);
