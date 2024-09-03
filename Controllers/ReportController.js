@@ -585,6 +585,25 @@ module.exports = {
       });
     }
   },
+  getNoOfReportByUserId: async (req, res) => {
+    try {
+      const { user_id } = req.params;
+      const total = await ReportModel.find({
+        user_id: user_id,
+      }).countDocuments();
+      return res.status(200).json({
+        status: true,
+        message: "No of Report Retrieved Successfully",
+        total,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   updateReport: async (req, res) => {
     try {
       const { report_id } = req.params;

@@ -23,6 +23,10 @@ router
   .route("/report/byUser/:user_id")
   .get(authorize(), ReportController.getReportByUserId);
 
+router
+  .route("/report/byUser/noOf/:user_id")
+  .get(authorize(), ReportController.getNoOfReportByUserId);
+
 router.put(
   "/report/:report_id/:status",
   authorize(),
