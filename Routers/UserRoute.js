@@ -26,6 +26,7 @@ router
 
 router.get("/user/byRole/:role", authorize(), UserController.getUserByRole);
 router.get("/user/noOfUser/:date", authorize(), UserController.getNoOfUser);
+router.get("/user/check/:email", UserController.checkUserExistence);
 router.get(
   "/user/listOfModule/:user_id",
   authorize(),

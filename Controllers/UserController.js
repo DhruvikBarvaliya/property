@@ -325,6 +325,25 @@ module.exports = {
       });
     }
   },
+  checkUserExistence: async (req, res) => {
+    const { email } = req.params;
+
+    try {
+      const userExists = await UserModel.findOne({ email });
+
+      return res.status(200).json({
+        status: true,
+        message: "User existence checked successfully.",
+        exists: !!userExists,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
   updateUser: async (req, res) => {
     const { user_id } = req.params;
 
