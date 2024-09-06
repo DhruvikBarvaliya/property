@@ -563,7 +563,6 @@ module.exports = {
         user_id: user_id,
       }).countDocuments();
 
-      console.log(report);
       if (report.length == 0) {
         return res.status(404).json({
           status: false,
