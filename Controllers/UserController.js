@@ -6,7 +6,8 @@ const { sendMail } = require("../Helpers/email");
 
 module.exports = {
   addUser: async (req, res) => {
-    const { role, banker_role_value, email, name, phone, password } = req.body;
+    const { role, banker_role_value, email, name, phone, password, module } =
+      req.body;
 
     // Validate required fields
     if (!role || !email || !password) {
@@ -37,6 +38,7 @@ module.exports = {
         email,
         name,
         phone,
+        module,
         password: hashedPassword,
         otp,
       });
@@ -60,7 +62,8 @@ module.exports = {
     }
   },
   addStaff: async (req, res) => {
-    const { role, banker_role_value, email, name, phone, password } = req.body;
+    const { role, banker_role_value, email, name, phone, password, module } =
+      req.body;
 
     // Validate required fields
     if (!role || !email || !password) {
@@ -93,6 +96,7 @@ module.exports = {
         phone,
         password: hashedPassword,
         // otp,
+        module,
         is_verified: true,
         is_active: true,
       });
