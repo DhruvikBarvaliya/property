@@ -186,4 +186,57 @@ module.exports = {
       });
     }
   },
+  searchSubscription: async (req, res) => {
+    const { keyword, limit, skip } = req.query;
+
+    try {
+      const regex = new RegExp(keyword, "i");
+
+      const subscriptions = await SubscriptionModel.find({
+        $or: [
+          { plan_name: { $regex: regex } },
+          { status: { $regex: regex } },
+          // { plan_no: { $regex: regex } }, // If you want to allow numeric keyword searches
+          // { price: { $regex: regex } },
+          // { final_price: { $regex: regex } },
+        ],
+        is_active: true, // Only search for active subscriptions
+      })
+        .sort({ createdAt: -1 }) // Sort by creation date in descending order
+        .limit(parseInt(limit)) // Pagination limit
+        .skip(parseInt(skip)); // Pagination skip
+
+      const total = await SubscriptionModel.countDocuments({
+        $or: [
+          { plan_name: { $regex: regex } },
+          { status: { $regex: regex } },
+          // { plan_no: { $regex: regex } },
+          // { price: { $regex: regex } },
+          // { final_price: { $regex: regex } },
+        ],
+        is_active: true, // Count only active subscriptions
+      });
+
+      if (!subscriptions.length) {
+        return res.status(404).json({
+          status: false,
+          message: "No subscriptions found.",
+        });
+      }
+
+      return res.status(200).json({
+        status: true,
+        total,
+        length: subscriptions.length,
+        message: "Subscriptions retrieved successfully.",
+        subscriptions,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
 };

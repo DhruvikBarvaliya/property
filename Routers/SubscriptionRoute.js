@@ -9,6 +9,12 @@ router
   .post(SubscriptionController.addSubscriptionPlan)
   .get(SubscriptionController.getAllSubscriptionPlan);
 
+router.get(
+  "/subscription/search",
+  authorize(),
+  SubscriptionController.searchSubscription
+);
+
 router
   .route("/subscription/:subscription_id")
   .get(authorize(), SubscriptionController.getSubscriptionPlanById)

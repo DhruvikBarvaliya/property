@@ -18,6 +18,7 @@ router.post(
 
 router.route("/user/staff").get(authorize(), UserController.getAllStaff);
 
+router.get("/user/search", authorize(), UserController.searchUser);
 router
   .route("/user/:user_id")
   .get(authorize(), UserController.getUserById)

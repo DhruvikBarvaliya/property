@@ -15,7 +15,11 @@ router
     authorize([Role.SUPER_ADMIN, Role.ADMIN]),
     UnListedPropertyController.getAllUnListedProperty
   );
-
+router.get(
+  "/unListedProperty/search",
+  authorize([Role.SUPER_ADMIN, Role.ADMIN]),
+  UnListedPropertyController.searchUnlistedProperty
+);
 router
   .route("/unListedProperty/:unListedProperty_id")
   .get(

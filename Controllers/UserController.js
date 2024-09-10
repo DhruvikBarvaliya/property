@@ -577,4 +577,54 @@ module.exports = {
       });
     }
   },
+  searchUser: async (req, res) => {
+    const { keyword, limit, skip } = req.query;
+
+    try {
+      const users = await UserModel.find({
+        $or: [
+          { role: { $regex: keyword, $options: "i" } },
+          { banker_role_value: { $regex: keyword, $options: "i" } },
+          { email: { $regex: keyword, $options: "i" } },
+          { name: { $regex: keyword, $options: "i" } },
+          { phone: { $regex: keyword, $options: "i" } },
+          { module: { $regex: keyword, $options: "i" } },
+        ],
+      })
+        .sort({ createdAt: -1 })
+        .select("-password -otp -forgot_otp")
+        .limit(parseInt(limit))
+        .skip(parseInt(skip));
+      const total = await UserModel.countDocuments({
+        $or: [
+          { role: { $regex: keyword, $options: "i" } },
+          { banker_role_value: { $regex: keyword, $options: "i" } },
+          { email: { $regex: keyword, $options: "i" } },
+          { name: { $regex: keyword, $options: "i" } },
+          { phone: { $regex: keyword, $options: "i" } },
+          { module: { $regex: keyword, $options: "i" } },
+        ],
+      });
+
+      if (!users.length) {
+        return res
+          .status(404)
+          .json({ status: false, message: "No users found." });
+      }
+
+      return res.status(200).json({
+        status: true,
+        total,
+        length: users.length,
+        message: "Users retrieved successfully.",
+        users,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
 };

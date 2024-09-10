@@ -155,17 +155,73 @@ module.exports = {
     }
   },
 
+  // searchProperty: async (req, res) => {
+  //   try {
+  //     const properties = await PropertyModel.find({
+  //       address: {
+  //         $regex: req.params.title,
+  //         $options: "i",
+  //       },
+  //     });
+
+  //     res.status(200).json({
+  //       status: true,
+  //       message: "Property Get Successfully",
+  //       properties,
+  //     });
+  //   } catch (err) {
+  //     res.status(500).json({
+  //       status: false,
+  //       message: "Server Error",
+  //       error: err.message || err.toString(),
+  //     });
+  //   }
+  // },
   searchProperty: async (req, res) => {
     try {
+      const { limit = 10, skip = 0, keyword, latitude, longitude } = req.query;
+
+      let latitudeNumber = parseFloat(latitude);
+      let longitudeNumber = parseFloat(longitude);
+
+      let locationQuery = {};
+      if (!isNaN(latitudeNumber) && !isNaN(longitudeNumber)) {
+        locationQuery = {
+          "location.coordinates": {
+            $near: {
+              $geometry: {
+                type: "Point",
+                coordinates: [longitudeNumber, latitudeNumber],
+              },
+              $maxDistance: 10000, // Adjust the distance in meters if necessary
+            },
+          },
+        };
+      }
+
+      const regex = new RegExp(keyword, "i");
       const properties = await PropertyModel.find({
-        address: {
-          $regex: req.params.title,
-          $options: "i",
-        },
+        $or: [
+          { address: { $regex: regex } },
+          { type_of_property: { $regex: regex } },
+          // locationQuery,
+        ],
+      })
+        .limit(Number(limit))
+        .skip(Number(skip));
+
+      const total = await PropertyModel.countDocuments({
+        $or: [
+          { address: { $regex: regex } },
+          { type_of_property: { $regex: regex } },
+          // locationQuery,
+        ],
       });
 
       res.status(200).json({
         status: true,
+        total,
+        length: properties.length,
         message: "Property Get Successfully",
         properties,
       });

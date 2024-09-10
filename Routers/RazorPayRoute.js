@@ -8,6 +8,7 @@ router
   .route("/razorpay")
   .post(RazorPayController.addRazorPay)
   .get(authorize(), RazorPayController.getAllRazorPay);
+router.get("/razorpay/search", authorize(), RazorPayController.searchRazorpay);
 
 router
   .route("/razorpay/:razorpay_id")

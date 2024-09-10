@@ -17,6 +17,7 @@ router
   .route("/property")
   .post(authorize(), PropertyController.addProperty)
   .get(authorize(), PropertyController.getAllProperty);
+router.get("/property/search", authorize(), PropertyController.searchProperty);
 
 router
   .route("/property/:property_id")
@@ -34,12 +35,6 @@ router.post(
   "/property/nearest/:latitude/:longitude",
   authorize(),
   PropertyController.getNearestProperty
-);
-
-router.get(
-  "/property/search/:title",
-  authorize(),
-  PropertyController.searchProperty
 );
 
 module.exports = router;

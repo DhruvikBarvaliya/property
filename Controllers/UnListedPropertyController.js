@@ -149,6 +149,77 @@ module.exports = {
       });
     }
   },
+
+  searchUnlistedProperty: async (req, res) => {
+    const { keyword, limit, skip } = req.query;
+
+    try {
+      const regex = new RegExp(keyword, "i");
+
+      const properties = await UnListedPropertyModel.find({
+        $or: [
+          { address: { $regex: regex } },
+          { type_of_property: { $regex: regex } },
+          { type: { $regex: regex } },
+          { owner_name: { $regex: regex } },
+          { owner_address: { $regex: regex } },
+          // { flat_no: { $regex: regex } },
+          // { house_no: { $regex: regex } },
+          // { latitude: { $regex: regex } },
+          // { longitude: { $regex: regex } },
+          // { distance: { $regex: regex } },
+          // { age_of_property: { $regex: regex } },
+          // { no_of_floor: { $regex: regex } },
+          // { floor_of_unit: { $regex: regex } },
+        ],
+        is_active: true,
+      })
+        .sort({ createdAt: -1 }) // Sorting by created date in descending order
+        .limit(parseInt(limit)) // Limit for pagination
+        .skip(parseInt(skip)); // Skip for pagination
+
+      const total = await UnListedPropertyModel.countDocuments({
+        $or: [
+          { address: { $regex: regex } },
+          { type_of_property: { $regex: regex } },
+          { type: { $regex: regex } },
+          { owner_name: { $regex: regex } },
+          { owner_address: { $regex: regex } },
+          // { flat_no: { $regex: regex } },
+          // { house_no: { $regex: regex } },
+          // { latitude: { $regex: regex } },
+          // { longitude: { $regex: regex } },
+          // { distance: { $regex: regex } },
+          // { age_of_property: { $regex: regex } },
+          // { no_of_floor: { $regex: regex } },
+          // { floor_of_unit: { $regex: regex } },
+        ],
+        is_active: true,
+      });
+
+      if (!properties.length) {
+        return res.status(404).json({
+          status: false,
+          message: "No Unlisted Properties found.",
+        });
+      }
+
+      return res.status(200).json({
+        status: true,
+        total,
+        length: properties.length,
+        message: "Unlisted Properties retrieved successfully.",
+        properties,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+
   deleteUnListedProperty: async (req, res) => {
     try {
       const { unListedProperty_id } = req.params;

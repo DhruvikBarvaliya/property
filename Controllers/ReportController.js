@@ -739,4 +739,61 @@ module.exports = {
       });
     }
   },
+  searchReport: async (req, res) => {
+    const { keyword, limit, skip } = req.query;
+
+    try {
+      const regex = new RegExp(keyword, "i");
+
+      const reports = await ReportModel.find({
+        $or: [
+          { name_of_the_customers: { $regex: regex } },
+          { owner_name: { $regex: regex } },
+          { report_date: { $regex: regex } },
+          { case_ref_no: { $regex: regex } },
+          { property_address: { $regex: regex } },
+          { nearest_landmark: { $regex: regex } },
+          { type_of_property: { $regex: regex } },
+          { final_valuation_in_word: { $regex: regex } },
+        ],
+      })
+        .sort({ createdAt: -1 }) // Sort by creation date in descending order
+        .limit(parseInt(limit)) // Limit for pagination
+        .skip(parseInt(skip)); // Skip for pagination
+
+      const total = await ReportModel.countDocuments({
+        $or: [
+          { name_of_the_customers: { $regex: regex } },
+          { owner_name: { $regex: regex } },
+          { report_date: { $regex: regex } },
+          { case_ref_no: { $regex: regex } },
+          { property_address: { $regex: regex } },
+          { nearest_landmark: { $regex: regex } },
+          { type_of_property: { $regex: regex } },
+          { final_valuation_in_word: { $regex: regex } },
+        ],
+      });
+
+      if (!reports.length) {
+        return res.status(404).json({
+          status: false,
+          message: "No reports found.",
+        });
+      }
+
+      return res.status(200).json({
+        status: true,
+        total,
+        length: reports.length,
+        message: "Reports retrieved successfully.",
+        reports,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
 };

@@ -9,6 +9,7 @@ router
   .post(authorize(), ReportController.addReport)
   .get(authorize(), ReportController.getAllReport);
 
+router.get("/report/search", authorize(), ReportController.searchReport);
 router
   .route("/report/:report_id")
   .get(authorize(), ReportController.getReportById)

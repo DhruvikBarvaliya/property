@@ -415,4 +415,56 @@ module.exports = {
       });
     }
   },
+  searchRazorpay: async (req, res) => {
+    const { keyword, limit, skip } = req.query;
+  
+    try {
+      const regex = new RegExp(keyword, "i");
+  
+      const payments = await RazorPayModel.find({
+        $or: [
+          { status: { $regex: regex } },
+          { "razor_pay_response": { $regex: regex } }, // Adjust based on the actual structure of razor_pay_response
+          // { "user_id": { $regex: regex } }, // Adjust based on the actual structure of razor_pay_response
+          // { "subscriptions_id": { $regex: regex } },   // Example: search within payment or order ID
+        ],
+        is_active: true, // Only active records
+      })
+        .sort({ createdAt: -1 }) // Sort by creation date in descending order
+        .limit(parseInt(limit)) // Limit for pagination
+        .skip(parseInt(skip));  // Skip for pagination
+  
+      const total = await RazorPayModel.countDocuments({
+        $or: [
+          { status: { $regex: regex } },
+          { "razor_pay_response": { $regex: regex } }, // Same as above
+          // { "user_id": { $regex: regex } }, // Same as above
+          // { "subscriptions_id": { $regex: regex } },   // Same as above
+        ],
+        is_active: true,
+      });
+  
+      if (!payments.length) {
+        return res.status(404).json({
+          status: false,
+          message: "No Razorpay transactions found.",
+        });
+      }
+  
+      return res.status(200).json({
+        status: true,
+        total,
+        length: payments.length,
+        message: "Razorpay transactions retrieved successfully.",
+        payments,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  
 };
