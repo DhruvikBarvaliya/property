@@ -200,7 +200,7 @@ module.exports = {
       }
 
       const regex = new RegExp(keyword, "i");
-      const properties = await PropertyModel.find({
+      const allProperty = await PropertyModel.find({
         $or: [
           { address: { $regex: regex } },
           { type_of_property: { $regex: regex } },
@@ -217,13 +217,18 @@ module.exports = {
           // locationQuery,
         ],
       });
+      if (!allProperty.length) {
+        return res
+          .status(404)
+          .json({ status: false, message: "No Property found." });
+      }
 
       res.status(200).json({
         status: true,
         total,
-        length: properties.length,
+        length: allProperty.length,
         message: "Property Get Successfully",
-        properties,
+        allProperty,
       });
     } catch (err) {
       res.status(500).json({

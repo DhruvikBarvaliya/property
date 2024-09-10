@@ -156,7 +156,7 @@ module.exports = {
     try {
       const regex = new RegExp(keyword, "i");
 
-      const properties = await UnListedPropertyModel.find({
+      const allUnListedProperty = await UnListedPropertyModel.find({
         $or: [
           { address: { $regex: regex } },
           { type_of_property: { $regex: regex } },
@@ -197,7 +197,7 @@ module.exports = {
         is_active: true,
       });
 
-      if (!properties.length) {
+      if (!allUnListedProperty.length) {
         return res.status(404).json({
           status: false,
           message: "No Unlisted Properties found.",
@@ -207,9 +207,9 @@ module.exports = {
       return res.status(200).json({
         status: true,
         total,
-        length: properties.length,
+        length: allUnListedProperty.length,
         message: "Unlisted Properties retrieved successfully.",
-        properties,
+        allUnListedProperty,
       });
     } catch (err) {
       return res.status(500).json({

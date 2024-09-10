@@ -66,7 +66,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1ef5bc3b-ab72-45d0-8520-9ab0fc609f84"
+									"src": "postman-cloud:///1ef6d00a-23eb-41a0-a31a-2a2fd21582da"
 								}
 							]
 						},
@@ -103,7 +103,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1ef6abb3-d70b-4580-b165-f9a81e7c3002"
+									"src": "postman-cloud:///1ef6d00a-23eb-41a0-a31a-2a2fd21582da"
 								}
 							]
 						},
@@ -183,7 +183,7 @@
 							"variable": [
 								{
 									"key": "property_id",
-									"value": "6641b537e07a7aa6596bf987"
+									"value": "66dc22744d6f4efab50fc40d"
 								}
 							]
 						}
@@ -375,6 +375,48 @@
 								{
 									"key": "property_id",
 									"value": "662b92dead5d92e18673a3c3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Property Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/property/search?limit=20&skip=0&keyword=B/409",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"property",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "B/409"
 								}
 							]
 						}
@@ -657,7 +699,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"role\": \"BANKER\",\r\n    \"banker_role_value\": \"UCO Bank\",\r\n    \"email\": \"yash.ss@5datainc.com\",\r\n    \"name\": \"bala\",\r\n    \"phone\": \"9876543250\",\r\n    \"password\": \"asd123\",\r\n    \"module\": [\r\n        \"PROPERTY\",\r\n        \"USER\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"role\": \"PROPERTY_MANAGER\",\r\n    // \"banker_role_value\": \"UCO Bank\",\r\n    \"email\": \"propertymanager@gmail.com\",\r\n    \"name\": \"Property Manager\",\r\n    \"phone\": \"9876543250\",\r\n    \"password\": \"propertymanager\",\r\n    \"module\": [\r\n        \"PROPERTY\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -708,6 +750,48 @@
 								{
 									"key": "skip",
 									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/search?limit=20&skip=0&keyword=yash.ss@5datainc.com",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "yash.ss@5datainc.com"
 								}
 							]
 						}
@@ -1211,7 +1295,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"66d5c48fc0dcdff8b3d7d7ff\",\r\n    \"subscriptions_id\": \"66c8793d16c59963c735652e\",\r\n    \"razor_pay_response\": \"Demo Data\"\r\n    // \"razor_pay_response\": [\"Demo Data\"]\r\n    // \"razor_pay_response\": {\"test\":\"data\"}\r\n}",
+							"raw": "{\r\n    \"user_id\": \"66bf36ce7d9d6ce1ec174f15\",\r\n    \"subscriptions_id\": \"66c8795e99876cc2c8b606a3\",\r\n    \"razor_pay_response\": \"Demo Data\"\r\n    // \"razor_pay_response\": [\"Demo Data\"]\r\n    // \"razor_pay_response\": {\"test\":\"data\"}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1411,6 +1495,48 @@
 								{
 									"key": "razorpay_id",
 									"value": "662b9a17efa33f7174a19355"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Razorpay",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/razorpay/search?limit=20&skip=0&keyword=Demo",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"razorpay",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "Demo"
 								}
 							]
 						}
@@ -1852,6 +1978,48 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Search Unlisted Property",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/unListedProperty/search?limit=20&skip=0&keyword=Independent",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"unListedProperty",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "Independent"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2262,6 +2430,48 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Search Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/report/search?limit=20&skip=0&keyword=DV/SRT/2024-25/08/10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"report",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "DV/SRT/2024-25/08/10"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2485,6 +2695,48 @@
 								{
 									"key": "subscription_id",
 									"value": "664f0e8f73e61c58bf262efc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Subscription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/subscription/search?limit=20&skip=0&keyword=Plan",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"subscription",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "Plan"
 								}
 							]
 						}
