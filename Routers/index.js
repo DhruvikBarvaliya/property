@@ -11,6 +11,7 @@ const routes = {
   ConfigRoute: require("./ConfigRoute"),
   ReportRoute: require("./ReportRoute"),
   UnListedPropertyRoute: require("./UnListedPropertyRoute"),
+  FeedBackRoute: require("./FeedBackRoute"),
 };
 
 router.get("/", (req, res) => {

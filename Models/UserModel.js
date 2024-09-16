@@ -93,6 +93,7 @@ const UserSchema = new Schema(
     status: { type: String, trim: true },
     is_active: { type: Boolean, default: false },
     last_login: { type: Date },
+    subscriptions_expire: { type: Date },
   },
   { versionKey: false, timestamps: true }
 );

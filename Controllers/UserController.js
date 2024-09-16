@@ -191,7 +191,7 @@ module.exports = {
     const { user_id } = req.params;
 
     try {
-      const user = await UserModel.findOne({
+      let user = await UserModel.findOne({
         _id: user_id,
         is_active: true,
       })
@@ -214,6 +214,18 @@ module.exports = {
           status: false,
           message: `User not found with ID: ${user_id}`,
         });
+      }
+
+      if (user.subscriptions_id && new Date() > user.subscriptions_expire) {
+
+        user = await UserModel.findByIdAndUpdate(
+          user_id,
+          { is_paid: false
+            
+           },
+          { new: true }
+        );
+        // user.subscriptions_id.no_of_report = 0;
       }
 
       return res.status(200).json({

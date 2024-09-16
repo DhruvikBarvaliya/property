@@ -6,6 +6,28 @@ const { numberToWords } = require("../Helpers/NumToWord");
 
 let { maxDistance, minDistance } = require("../Config/Config");
 
+// Function to calculate the commercial shop rate
+async function calculateCommercialRate(sheetRate, currentFloor) {
+  let finalRate = 0;
+
+  switch (currentFloor) {
+    case 1:
+      finalRate = sheetRate - sheetRate * 0.35;
+      break;
+    case 2:
+      finalRate = sheetRate - sheetRate * 0.5;
+      break;
+    case 3:
+      finalRate = sheetRate - sheetRate * 0.6;
+      break;
+    default:
+      finalRate = sheetRate - sheetRate * 0.65;
+      break;
+  }
+
+  return finalRate;
+}
+
 async function calculatePrice(years) {
   if (years >= 1 && years <= 10) {
     return 1200;
@@ -145,6 +167,8 @@ module.exports = {
         "Residential House ",
         "Industrial Plot "
       );
+    } else if (type_of_property == "Commercial") {
+      propertyTypes.push("Commercial Shop ", "Office ");
     } else {
       propertyTypes.push("Agricultural Land ", "NA Land ");
     }
@@ -195,24 +219,27 @@ module.exports = {
       let market_area;
 
       if (type_of_property == "Apartment") {
-        let top_area_rate = nearestProperties
-          .toSorted(
-            (a, b) =>
-              parseInt(b.area_rate_considered_per_sq_ft) -
-              parseInt(a.area_rate_considered_per_sq_ft)
-          )
-          .slice(0, 5);
+        let top_area_rate = nearestProperties.toSorted(
+          (a, b) =>
+            parseInt(b.area_rate_considered_per_sq_ft) -
+            parseInt(a.area_rate_considered_per_sq_ft)
+        );
         let top_area_rate_sum = top_area_rate.reduce(
           (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
           0
         );
+
         if ((!carpet_area && !super_built_up_area) || !address) {
           return res.status(404).json({
             status: false,
             message: "carpet_area or super_built_up_area And address Not Found",
           });
         }
-        const area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
+        let area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
+
+        if (floor_of_unit > 14) {
+          area_per_sq_ft += 1.1 * (floor_of_unit - 1);
+        }
         if (noOfReport < 0) {
           return res
             .status(400)
@@ -244,7 +271,7 @@ module.exports = {
           type_of_property: type_of_property,
           age_of_property,
           unit_rate_considered_for_land: 0,
-          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft,
+          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft.toFixed(2),
           building_value: Math.round(building_values),
           final_valuation: Math.round(building_values),
           RV: Math.round(building_values * 0.9),
@@ -390,6 +417,103 @@ module.exports = {
           plot_land_rate,
           construction_cost,
           depreciation,
+          ...finalObj,
+        });
+      } else if (type_of_property == "Commercial") {
+        let top_area_rate = nearestProperties
+          .toSorted(
+            (a, b) =>
+              parseInt(b.area_rate_considered_per_sq_ft) -
+              parseInt(a.area_rate_considered_per_sq_ft)
+          )
+          .slice(0, 5);
+        let top_area_rate_sum = top_area_rate.reduce(
+          (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
+          0
+        );
+
+        if ((!carpet_area && !super_built_up_area) || !address) {
+          return res.status(404).json({
+            status: false,
+            message: "carpet_area or super_built_up_area And address Not Found",
+          });
+        }
+        let area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
+
+        if (floor_of_unit == 1) {
+          area_per_sq_ft *= 0.65;
+        } else if (floor_of_unit == 2) {
+          area_per_sq_ft *= 0.5;
+        } else if (floor_of_unit == 3) {
+          area_per_sq_ft *= 0.4;
+        } else if (floor_of_unit > 3) {
+          area_per_sq_ft *= 0.35;
+        }
+        if (noOfReport < 0) {
+          return res
+            .status(400)
+            .json({ error: "Please Pay for Ganarate Report" });
+        }
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          user_id,
+          { no_of_report: noOfReport },
+          { new: true }
+        );
+        if (updatedUser.no_of_report <= 0) {
+          await UserModel.findByIdAndUpdate(
+            user_id,
+            { is_paid: false, $unset: { subscriptions_id: "" } },
+            { new: true }
+          );
+        }
+
+        let building_values = area_per_sq_ft * carpet_area;
+        let amountInWords = await numberToWords(building_values);
+
+        let finalObj = {
+          ...reportObj,
+          name_of_the_customers: name,
+          property_land_area: 0,
+          built_up_area_carpet_area_super_built_up_area:
+            carpet_area || super_built_up_area,
+          land_value: 0,
+          type_of_property: type_of_property,
+          age_of_property,
+          unit_rate_considered_for_land: 0,
+          unit_rate_considered_for_ca_bua_sba: area_per_sq_ft.toFixed(2),
+          building_value: Math.round(building_values),
+          final_valuation: Math.round(building_values),
+          RV: Math.round(building_values * 0.9),
+          DV: Math.round(building_values * 0.75),
+          final_valuation_in_word: amountInWords,
+          carpet_area,
+          super_built_up_area,
+          loading,
+        };
+        const reportData = new ReportModel({
+          ...finalObj,
+          user_id,
+          latitude,
+          longitude,
+          distance,
+          address,
+          type_of_property,
+          carpet_area,
+          super_built_up_area,
+          no_of_floor,
+          floor_of_unit,
+          flat_no,
+          loading,
+          user_role,
+        });
+
+        let ReportData = await reportData.save();
+
+        res.status(200).json({
+          status: true,
+          message: "Nearest properties fetched successfully",
+          report_id: ReportData._id,
+          usarData,
           ...finalObj,
         });
       } else if (type_of_property == "Land") {
