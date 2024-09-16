@@ -12,6 +12,7 @@ const SubscriptionSchema = new Schema(
     per_report_price: Number,
     discount: Number,
     final_price: Number,
+    final_price_with_gst: Number,
     specification: Array,
     status: { type: String, trim: true },
     is_active: { type: Boolean, default: true },

@@ -45,6 +45,9 @@ module.exports = {
       });
       await razorpayData.save();
 
+      const subscriptions_expire = new Date();
+      subscriptions_expire.setMonth(subscriptions_expire.getMonth() + 1);
+
       await UserModel.findByIdAndUpdate(
         user_id,
         {
@@ -52,6 +55,7 @@ module.exports = {
           no_of_pdf: subscription.no_of_report,
           no_of_report: subscription.no_of_report,
           is_paid: true,
+          subscriptions_expire,
         },
         { new: true }
       );
@@ -417,14 +421,14 @@ module.exports = {
   },
   searchRazorpay: async (req, res) => {
     const { keyword, limit, skip } = req.query;
-  
+
     try {
       const regex = new RegExp(keyword, "i");
-  
+
       const payments = await RazorPayModel.find({
         $or: [
           { status: { $regex: regex } },
-          { "razor_pay_response": { $regex: regex } }, // Adjust based on the actual structure of razor_pay_response
+          { razor_pay_response: { $regex: regex } }, // Adjust based on the actual structure of razor_pay_response
           // { "user_id": { $regex: regex } }, // Adjust based on the actual structure of razor_pay_response
           // { "subscriptions_id": { $regex: regex } },   // Example: search within payment or order ID
         ],
@@ -432,25 +436,25 @@ module.exports = {
       })
         .sort({ createdAt: -1 }) // Sort by creation date in descending order
         .limit(parseInt(limit)) // Limit for pagination
-        .skip(parseInt(skip));  // Skip for pagination
-  
+        .skip(parseInt(skip)); // Skip for pagination
+
       const total = await RazorPayModel.countDocuments({
         $or: [
           { status: { $regex: regex } },
-          { "razor_pay_response": { $regex: regex } }, // Same as above
+          { razor_pay_response: { $regex: regex } }, // Same as above
           // { "user_id": { $regex: regex } }, // Same as above
           // { "subscriptions_id": { $regex: regex } },   // Same as above
         ],
         is_active: true,
       });
-  
+
       if (!payments.length) {
         return res.status(404).json({
           status: false,
           message: "No Razorpay transactions found.",
         });
       }
-  
+
       return res.status(200).json({
         status: true,
         total,
@@ -466,5 +470,4 @@ module.exports = {
       });
     }
   },
-  
 };
