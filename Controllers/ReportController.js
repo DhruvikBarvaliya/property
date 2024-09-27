@@ -319,9 +319,13 @@ module.exports = {
           (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
           0
         );
+        if (!construction_area) {
+          construction_area = 0;
+        }
+
         if (
           !age_of_property ||
-          !construction_area ||
+          // !construction_area ||
           !type ||
           !land_area ||
           !address
@@ -331,6 +335,7 @@ module.exports = {
             message: "Required fields not found for Independent property",
           });
         }
+
         const construction_rate = await calculatePrice(age_of_property);
 
         const plot_land_rate = top_area_rate_sum1 / top_area_rate1.length;
