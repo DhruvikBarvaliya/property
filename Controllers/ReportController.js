@@ -215,11 +215,16 @@ module.exports = {
         });
         if (!existingProperty) {
           await unListedProperty.save();
+          return res.status(200).json({
+            message: "No properties found within the specified range",
+          });
         }
-        return res.status(200).json({
-          message: "No properties found within the specified range",
-        });
-      }
+        if (nearestProperties) {
+          return res.status(200).json({
+            message: "No properties found within the specified range",
+          });
+        }
+      } 
 
       let market_area;
 
