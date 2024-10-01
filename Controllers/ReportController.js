@@ -694,11 +694,11 @@ module.exports = {
     try {
       const { user_id } = req.params;
       const { limit = 10, skip = 0 } = req.query;
-      const report = await ReportModel.find({ user_id: user_id })
+      const reports = await ReportModel.find({ user_id: user_id })
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
-      const uniqueReports = report.filter(
+      const report = reports.filter(
         (item, index, self) =>
           index === self.findIndex((t) => t.address === item.address)
       );
@@ -706,7 +706,7 @@ module.exports = {
         user_id: user_id,
       }).countDocuments();
 
-      if (report.length == 0) {
+      if (reports.length == 0) {
         return res.status(404).json({
           status: false,
           message: `Report Not Found For User ID: ${user_id}`,
@@ -715,9 +715,9 @@ module.exports = {
       return res.status(200).json({
         status: true,
         message: "Report Retrieved Successfully",
-        length: uniqueReports.length,
+        length: report.length,
         total,
-        uniqueReports,
+        report,
       });
     } catch (err) {
       return res.status(500).json({
