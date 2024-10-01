@@ -224,7 +224,7 @@ module.exports = {
             message: "No properties found within the specified range",
           });
         }
-      } 
+      }
 
       let market_area;
 
@@ -698,6 +698,10 @@ module.exports = {
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
+      const uniqueReports = report.filter(
+        (item, index, self) =>
+          index === self.findIndex((t) => t.address === item.address)
+      );
       const total = await ReportModel.find({
         user_id: user_id,
       }).countDocuments();
@@ -711,9 +715,9 @@ module.exports = {
       return res.status(200).json({
         status: true,
         message: "Report Retrieved Successfully",
-        length: report.length,
+        length: uniqueReports.length,
         total,
-        report,
+        uniqueReports,
       });
     } catch (err) {
       return res.status(500).json({
