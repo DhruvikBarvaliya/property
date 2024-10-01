@@ -210,7 +210,12 @@ module.exports = {
           house_no,
           loading,
         });
-        await unListedProperty.save();
+        const existingProperty = await UnListedPropertyModel.findOne({
+          address: address,
+        });
+        if (!existingProperty) {
+          await unListedProperty.save();
+        }
         return res.status(200).json({
           message: "No properties found within the specified range",
         });

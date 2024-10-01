@@ -4,6 +4,15 @@ const XLSX = require("xlsx");
 module.exports = {
   addProperty: async (req, res) => {
     try {
+      const propertys = await PropertyModel.findOne({
+        address: req.body.address,
+      });
+      if (propertys) {
+        return res.status(400).json({
+          status: false,
+          message: "Address already exists",
+        });
+      }
       const propertyData = new PropertyModel(req.body);
       await propertyData.save();
       res.status(201).json({ message: "Property Added Successfully" });

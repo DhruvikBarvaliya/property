@@ -29,6 +29,15 @@ module.exports = {
       //     message: `unListedProperty_${!unListedProperty_id ? "id" : "response"} is Required`,
       //   });
       // }
+      const existingProperty = await UnListedPropertyModel.findOne({
+        address: req.body.address,
+      });
+      if (existingProperty) {
+        return res.status(400).json({
+          status: false,
+          message: "Address already exists",
+        });
+      }
       const unListedPropertyData = new UnListedPropertyModel(req.body);
       await unListedPropertyData.save();
       return res
