@@ -696,12 +696,14 @@ module.exports = {
       const { limit = 10, skip = 0 } = req.query;
       const reports = await ReportModel.find({ user_id: user_id })
         .sort({ createdAt: -1 })
-        .limit(Number(limit))
-        .skip(Number(skip));
-      const report = reports.filter(
-        (item, index, self) =>
-          index === self.findIndex((t) => t.address === item.address)
-      );
+        // .limit(Number(limit))
+        // .skip(Number(skip));
+      const report = reports
+        .filter(
+          (item, index, self) =>
+        index === self.findIndex((t) => t.address === item.address)
+        )
+        .slice(Number(skip), Number(skip) + Number(limit));
       const total = await ReportModel.find({
         user_id: user_id,
       }).countDocuments();
