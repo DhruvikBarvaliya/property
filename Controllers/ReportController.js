@@ -694,16 +694,23 @@ module.exports = {
     try {
       const { user_id } = req.params;
       const { limit = 10, skip = 0 } = req.query;
-      const reports = await ReportModel.find({ user_id: user_id })
-        .sort({ createdAt: -1 })
-        // .limit(Number(limit))
-        // .skip(Number(skip));
+      const reports = await ReportModel.find({ user_id: user_id }).sort({
+        createdAt: -1,
+      });
+      // .limit(Number(limit))
+      // .skip(Number(skip));
       const report = reports
         .filter(
           (item, index, self) =>
-        index === self.findIndex((t) => t.address === item.address)
+            index === self.findIndex((t) => t.address === item.address)
         )
         .slice(Number(skip), Number(skip) + Number(limit));
+
+      const reportLen = reports.filter(
+        (item, index, self) =>
+          index === self.findIndex((t) => t.address === item.address)
+      );
+
       const total = await ReportModel.find({
         user_id: user_id,
       }).countDocuments();
@@ -718,7 +725,7 @@ module.exports = {
         status: true,
         message: "Report Retrieved Successfully",
         length: report.length,
-        total,
+        total: reportLen.length,
         report,
       });
     } catch (err) {
