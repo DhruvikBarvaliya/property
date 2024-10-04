@@ -128,7 +128,7 @@ module.exports = {
         .select("-password -otp -forgot_otp")
         .limit(limit)
         .skip(skip);
-      const total = await UserModel.countDocuments();
+      const total = await UserModel.countDocuments({ is_active: true });
 
       if (!users.length) {
         return res
@@ -164,7 +164,10 @@ module.exports = {
         .select("-password -otp -forgot_otp")
         .limit(limit)
         .skip(skip);
-      const total = await UserModel.countDocuments();
+      const total = await UserModel.countDocuments({
+        is_active: true,
+        role: { $in: ["BANKER", "VALUER"] },
+      });
 
       if (!users.length) {
         return res

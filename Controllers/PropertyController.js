@@ -51,7 +51,7 @@ module.exports = {
         ...item,
         location: {
           type: "Point",
-          coordinates: [item.longitude, item.latitude],
+          coordinates: [item.latitude, item.longitude],
         },
       }));
 
@@ -200,7 +200,7 @@ module.exports = {
             $near: {
               $geometry: {
                 type: "Point",
-                coordinates: [longitudeNumber, latitudeNumber],
+                coordinates: [latitudeNumber,longitudeNumber],
               },
               $maxDistance: 10000, // Adjust the distance in meters if necessary
             },
