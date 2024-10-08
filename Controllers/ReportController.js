@@ -233,7 +233,7 @@ module.exports = {
           (a, b) =>
             parseInt(b.area_rate_considered_per_sq_ft) -
             parseInt(a.area_rate_considered_per_sq_ft)
-        );
+        ).slice(0, 5);
         let top_area_rate_sum = top_area_rate.reduce(
           (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
           0

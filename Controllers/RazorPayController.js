@@ -52,8 +52,8 @@ module.exports = {
         user_id,
         {
           subscriptions_id,
-          no_of_pdf: subscription.no_of_report,
-          no_of_report: subscription.no_of_report,
+          no_of_pdf: user.no_of_report + subscription.no_of_report,
+          no_of_report: user.no_of_report + subscription.no_of_report,
           is_paid: true,
           subscriptions_expire,
         },
