@@ -67,12 +67,27 @@ module.exports = {
 
   getAllProperty: async (req, res) => {
     try {
-      const { limit = 10, skip = 0 } = req.query;
-      const allProperty = await PropertyModel.find({ is_active: true })
+      const { limit = 10, skip = 0, isPagination } = req.query;
+      const total = await PropertyModel.countDocuments();
+
+      let allProperty;
+      if (isPagination) {
+        allProperty = await PropertyModel.find({ is_active: true }).sort({
+          createdAt: -1,
+        });
+        return res.status(200).json({
+          status: true,
+          total,
+          length: allProperty.length,
+          message: "Property Get Successfully",
+          allProperty,
+        });
+      }
+      // const { limit = 10, skip = 0 } = req.query;
+      allProperty = await PropertyModel.find({ is_active: true })
         .sort({ createdAt: -1 })
         .limit(Number(limit))
         .skip(Number(skip));
-      const total = await PropertyModel.countDocuments();
 
       if (!allProperty.length) {
         return res
@@ -200,7 +215,7 @@ module.exports = {
             $near: {
               $geometry: {
                 type: "Point",
-                coordinates: [latitudeNumber,longitudeNumber],
+                coordinates: [latitudeNumber, longitudeNumber],
               },
               $maxDistance: 10000, // Adjust the distance in meters if necessary
             },
