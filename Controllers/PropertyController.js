@@ -71,7 +71,7 @@ module.exports = {
       const total = await PropertyModel.countDocuments();
 
       let allProperty;
-      if (isPagination) {
+      if (isPagination == "false") {
         allProperty = await PropertyModel.find({ is_active: true }).sort({
           createdAt: -1,
         });
