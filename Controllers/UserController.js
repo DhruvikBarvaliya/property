@@ -220,12 +220,9 @@ module.exports = {
       }
 
       if (user.subscriptions_id && new Date() > user.subscriptions_expire) {
-
         user = await UserModel.findByIdAndUpdate(
           user_id,
-          { is_paid: false
-            
-           },
+          { is_paid: false },
           { new: true }
         );
         // user.subscriptions_id.no_of_report = 0;
@@ -556,6 +553,7 @@ module.exports = {
         { is_active: false },
         { new: true }
       );
+      // const user = await UserModel.findByIdAndDelete(user_id);
 
       if (!user) {
         return res.status(404).json({
@@ -597,6 +595,7 @@ module.exports = {
 
     try {
       const users = await UserModel.find({
+        is_active: true,
         $or: [
           { role: { $regex: keyword, $options: "i" } },
           { banker_role_value: { $regex: keyword, $options: "i" } },
