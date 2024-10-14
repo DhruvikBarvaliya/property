@@ -11,6 +11,7 @@ module.exports = {
         return res.status(400).json({
           status: false,
           message: "Address already exists",
+          data:propertys
         });
       }
       const propertyData = new PropertyModel(req.body);
@@ -55,7 +56,21 @@ module.exports = {
         },
       }));
 
-      await PropertyModel.insertMany(properties);
+      const existingAddresses = await PropertyModel.find({
+        address: { $in: properties.map((property) => property.address) },
+      }).select('address');
+
+      const existingAddressSet = new Set(existingAddresses.map((property) => property.address));
+
+      const newProperties = properties.filter(
+        (property) => !existingAddressSet.has(property.address)
+      );
+
+      if (newProperties.length === 0) {
+        return res.status(400).json({ message: "No new properties to insert, all addresses already exist" });
+      }
+
+      await PropertyModel.insertMany(newProperties);
       res.status(200).json({ message: "Properties inserted successfully" });
     } catch (err) {
       res.status(500).json({
