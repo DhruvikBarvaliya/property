@@ -159,18 +159,31 @@ module.exports = {
     }
     let propertyTypes = [];
     if (type_of_property == "Apartment") {
-      propertyTypes.push("Residential Flat ");
+      propertyTypes.push("Residential Flat ", "Residential Flat");
       // propertyTypes.push("Residential Flat ", "Commercial Shop ", "Office ");
     } else if (type_of_property == "Independent") {
       propertyTypes.push(
         "Residential Plot ",
         "Residential House ",
-        "Industrial Plot "
+        "Industrial Plot ",
+        "Residential Plot",
+        "Residential House",
+        "Industrial Plot"
       );
     } else if (type_of_property == "Commercial") {
-      propertyTypes.push("Commercial Shop ", "Office ");
+      propertyTypes.push(
+        "Commercial Shop",
+        "Office",
+        "Commercial Shop ",
+        "Office "
+      );
     } else {
-      propertyTypes.push("Agricultural Land ", "NA Land ");
+      propertyTypes.push(
+        "Agricultural Land ",
+        "NA Land ",
+        "Agricultural Land",
+        "NA Land"
+      );
     }
 
     try {
