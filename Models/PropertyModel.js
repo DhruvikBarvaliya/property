@@ -5,7 +5,7 @@ mongoose.pluralize(null);
 const PropertySchema = new Schema(
   {
     time: { type: String },
-    type_of_property: { type: String },
+    type_of_property: { type: String, trim: true },
     address: { type: String },
     location: {
       type: { type: String, default: "Point" },

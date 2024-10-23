@@ -13,7 +13,7 @@ const ReportSchema = new Schema(
     property_land_area: { type: Number },
     built_up_area_carpet_area_super_built_up_area: { type: Number },
     land_value: { type: Number },
-    type_of_property: { type: String },
+    type_of_property: { type: String, tirm: true },
     unit_rate_considered_for_land: { type: Number },
     unit_rate_considered_for_ca_bua_sba: { type: Number },
     building_value: { type: Number },

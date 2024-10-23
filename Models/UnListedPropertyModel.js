@@ -9,7 +9,7 @@ const UnListedPropertySchema = new Schema(
     longitude: { type: Number },
     address: { type: String },
     distance: { type: Number },
-    type_of_property: { type: String },
+    type_of_property: { type: String, trim: true },
     owner_name: { type: String },
     owner_address: { type: String },
     carpet_area: { type: Number },
