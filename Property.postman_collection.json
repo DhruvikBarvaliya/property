@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"time\": \"45139.7138181713\",\r\n    \"type_of_property\": \"Residential Flat\",\r\n    \"address\": \"Flat no.202,2nd floor, C-building,Sun Valley,Govind Park Road,Nana Varachha Road ,Surat\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [\r\n            10.94987,\r\n            21.45679\r\n        ]\r\n    },\r\n    \"property_sub_classification\": \"Flat\",\r\n    \"age_of_the_property\": 7,\r\n    \"type_of_construction\": \"OLD\",\r\n    \"land_area_sq_mtr_sq_yrd\": 300,\r\n    \"land_rate_per_sq_mtr_Sq_yard\": 500,\r\n    \"construction_area_sq_ft_built_up_area\": 200,\r\n    \"area_rate_considered_per_sq_ft\": 100,\r\n    \"built_up_area\": 1000,\r\n    \"super_built_up_area\": 2000,\r\n    \"carpet_area\": 3000,\r\n    \"area_rate_considered_on\": 200,\r\n    \"construction_area_sq_ft_super_built_area\": 4000,\r\n    \"construction_area_sq_ft_row_1\": 600,\r\n    \"is_verified\": true,\r\n    \"status\": \"OK\",\r\n    \"is_active\": true\r\n}",
+							"raw": "{\r\n    \"time\": \"45139.7138181713\",\r\n    \"type_of_property\": \"Residential Flat \",\r\n    \"address\": \"ffff\",\r\n    \"location\": {\r\n        \"type\": \"Point\",\r\n        \"coordinates\": [\r\n            23.10223766258227,\r\n            74.99931776690014\r\n        ]\r\n    },\r\n    \"property_sub_classification\": \"Apartment\",\r\n    \"age_of_the_property\": 7,\r\n    \"type_of_construction\": \"OLD\",\r\n    \"land_area_sq_mtr_sq_yrd\": 300,\r\n    \"land_rate_per_sq_mtr_Sq_yard\": 500,\r\n    \"construction_area_sq_ft_built_up_area\": 200,\r\n    \"area_rate_considered_per_sq_ft\": 100,\r\n    \"built_up_area\": 1000,\r\n    \"super_built_up_area\": 2000,\r\n    \"carpet_area\": 3000,\r\n    \"area_rate_considered_on\": 200,\r\n    \"construction_area_sq_ft_super_built_area\": 4000,\r\n    \"construction_area_sq_ft_row_1\": 600,\r\n    \"is_verified\": true,\r\n    \"status\": \"OK\",\r\n    \"is_active\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,7 +103,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1ef6d00a-23eb-41a0-a31a-2a2fd21582da"
+									"src": "/C:/Users/evenm/Downloads/Upload Sheet.xlsx"
 								}
 							]
 						},
@@ -135,7 +135,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/property?limit=10&skip=0",
+							"raw": "{{url}}/property?limit=10&skip=0&isPagination=false",
 							"host": [
 								"{{url}}"
 							],
@@ -150,6 +150,10 @@
 								{
 									"key": "skip",
 									"value": "0"
+								},
+								{
+									"key": "isPagination",
+									"value": "false"
 								}
 							]
 						}
@@ -523,7 +527,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n    \"otp\": 4674\r\n}",
+							"raw": "{\r\n    \"email\": \"barvaliyadhruvik27@gmail.com\",\r\n    \"otp\": 3138\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -772,7 +776,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/user/search?limit=20&skip=0&keyword=yash.ss@5datainc.com",
+							"raw": "{{url}}/user/search?limit=20&skip=0&keyword=s",
 							"host": [
 								"{{url}}"
 							],
@@ -791,7 +795,7 @@
 								},
 								{
 									"key": "keyword",
-									"value": "yash.ss@5datainc.com"
+									"value": "s"
 								}
 							]
 						}
@@ -814,7 +818,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/user/staff?limit=2&skip=0",
+							"raw": "{{url}}/user/staff?limit=9&skip=0",
 							"host": [
 								"{{url}}"
 							],
@@ -825,7 +829,7 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "2"
+									"value": "9"
 								},
 								{
 									"key": "skip",
@@ -898,7 +902,7 @@
 							"variable": [
 								{
 									"key": "user_id",
-									"value": "6644965dc7a18c902b91ae4f"
+									"value": "66db0fda2e1de691b33f3f46"
 								}
 							]
 						}
@@ -1237,7 +1241,7 @@
 							"variable": [
 								{
 									"key": "user_id",
-									"value": "662b9673f05ddda0f4a66571"
+									"value": "6708ee63c86ef8749e86a76d"
 								}
 							]
 						}
@@ -1295,7 +1299,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"user_id\": \"66bf36ce7d9d6ce1ec174f15\",\r\n    \"subscriptions_id\": \"66c8795e99876cc2c8b606a3\",\r\n    \"razor_pay_response\": \"Demo Data\"\r\n    // \"razor_pay_response\": [\"Demo Data\"]\r\n    // \"razor_pay_response\": {\"test\":\"data\"}\r\n}",
+							"raw": "{\r\n    \"user_id\": \"671f249d750e3c3038849a48\",\r\n    \"subscriptions_id\": \"671f244b750e3c3038849a3a\",\r\n    \"razor_pay_response\": \"Demo Data\"\r\n    // \"razor_pay_response\": [\"Demo Data\"]\r\n    // \"razor_pay_response\": {\"test\":\"data\"}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2139,7 +2143,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/report/byUser/:user_id?limit=10&skip=0",
+							"raw": "{{url}}/report/byUser/:user_id?limit=2&skip=1",
 							"host": [
 								"{{url}}"
 							],
@@ -2151,17 +2155,17 @@
 							"query": [
 								{
 									"key": "limit",
-									"value": "10"
+									"value": "2"
 								},
 								{
 									"key": "skip",
-									"value": "0"
+									"value": "1"
 								}
 							],
 							"variable": [
 								{
 									"key": "user_id",
-									"value": "665425a4e8ebee17e1a09332"
+									"value": "6666a6df64d4f272426ba291"
 								}
 							]
 						}
@@ -2372,7 +2376,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": 72.78931776690014,\r\n    \"longitude\": 21.19223766258227,\r\n    \"distance\": 500,\r\n    \"owner_name\": \"dhruvik\",\r\n    \"owner_address\": \"212-sudama choke surat\",\r\n    \"address\": \"Platinum Poin SudamChoke MotaVarachha Surat\",\r\n    \"user_id\": \"66d5be3a23fca52ddd579fcf\",\r\n    \"type_of_property\": \"Apartment\",\r\n    \"carpet_area\": 783,\r\n    \"loading\": 40,\r\n    \"super_built_up_area\": 700,\r\n    \"age_of_property\": 4\r\n}\r\n/////////////////////////////////////////////////////////////\r\n// {\r\n//     \"latitude\": 72.7975538938859,\r\n//     \"longitude\": 21.20290105480793,\r\n//     \"distance\": 500,\r\n//     \"address\": \"Platinum Poin SudamChoke MotaVarachha Surat\",\r\n//     \"user_id\": \"66d5be3a23fca52ddd579fcf\",\r\n//     \"type_of_property\": \"Independent\",\r\n//     \"age_of_property\": 4,\r\n//     \"type\": \"House\",\r\n//     \"land_area\": 660,\r\n//     \"construction_area\": 1200\r\n// }\r\n/////////////////////////////////////////////////////////////\r\n// {\r\n//     \"latitude\": 71.558704,\r\n//     \"longitude\": 22.192279,\r\n//     \"distance\": 1000,\r\n//     \"address\": \"Platinum Poin SudamChoke MotaVarachha Surat\",\r\n//     \"user_id\": \"6644965dc7a18c902b91ae4f\",\r\n//     \"type_of_property\": \"Land\",\r\n//     \"land_area\": 12000,\r\n//     \"land_location\":\"City\"\r\n// }\r\n// {\r\n//     \"land_area\": 900,\r\n//     \"construction_area\": 900,\r\n//     \"age_of_property\": 2,\r\n//     \"type\": \"House\",\r\n//     \"house_no\": 4,\r\n//     \"type_of_property\": \"Independent\",\r\n//     \"latitude\": 72.8806069,\r\n//     \"longitude\": 21.2408267,\r\n//     \"distance\": 500,\r\n//     \"address\": \"Mota Varachha, Surat, Gujarat, India\",\r\n//     \"user_id\": \"6644965dc7a18c902b91ae4f\"\r\n// }\r\n// {\r\n//     \"land_area\": 1000,\r\n//     \"construction_area\": 200,\r\n//     \"age_of_property\": 1,\r\n//     \"type\": \"Villa\",\r\n//     \"type_of_property\": \"Independent\",\r\n//     \"latitude\": 72.8806069,\r\n//     \"longitude\": 21.2408267,\r\n//     \"distance\": 2000,\r\n//     \"address\": \"Mota Varachha, Surat, Gujarat, India\",\r\n//     \"user_id\": \"6644965dc7a18c902b91ae4f\"\r\n// }",
+							"raw": "{\r\n    \"latitude\":27.648742,\r\n    \"longitude\":  78.687675,\r\n    \"distance\": 2000,\r\n    \"owner_name\": \"dhruvik\",\r\n    \"owner_address\": \"aaa\",\r\n    \"address\": \"cccc\",\r\n    \"user_id\": \"66ff9191ebd9aea819f5bf54\",\r\n    \"type_of_property\": \"Apartment\",\r\n    \"carpet_area\": 783,\r\n    \"loading\": 40,\r\n    \"super_built_up_area\": 700,\r\n    \"age_of_property\": 4,\r\n    \"floor_of_unit\": 25\r\n}\r\n/////////////////////////////////////////////////////////////\r\n// {\r\n//     \"latitude\": 21.20290105480793,\r\n//     \"longitude\": 72.7975538938859,\r\n//     \"distance\": 2000,\r\n//     \"address\": \"Platinum Poin SudamChoke MotaVarachha Surat\",\r\n//     \"user_id\": \"66fbbdd2991e8a5f51b916d1\",\r\n//     \"type_of_property\": \"Independent\",\r\n//     \"age_of_property\": 4,\r\n//     \"type\": \"House\",\r\n//     \"land_area\": 660,\r\n//     \"construction_area\": 1200\r\n// }\r\n// ///////////////////////////////////////////////////////////\r\n// {\r\n//     \"latitude\": 22.192279,\r\n//     \"longitude\": 71.558704,\r\n//     \"distance\": 2000,\r\n//     \"address\": \"Platinum Poin SudamChoke MotaVarachha Surat\",\r\n//     \"user_id\": \"66fbbdd2991e8a5f51b916d1\",\r\n//     \"type_of_property\": \"Land\",\r\n//     \"land_area\": 12000,\r\n//     \"land_location\": \"City\"\r\n// }\r\n// ========================================================================================\r\n// {\r\n//     \"latitude\": 21.19223766258227,\r\n//     \"longitude\": 72.78931776690014,\r\n//     \"distance\": 2000,\r\n//     \"owner_name\": \"dhruvik\",\r\n//     \"owner_address\": \"212-sudama choke surat\",\r\n//     \"address\": \"Platinum Poin SudamChoke MotaVarachha Surat\",\r\n//     \"user_id\": \"66fbbdd2991e8a5f51b916d1\",\r\n//     \"type_of_property\": \"Commercial\",\r\n//     \"carpet_area\": 783,\r\n//     \"loading\": 40,\r\n//     \"super_built_up_area\": 700,\r\n//     \"age_of_property\": 4,\r\n//     \"floor_of_unit\": 2\r\n// }\r\n// ========================================================================================\r\n// {\r\n//     \"land_area\": 900,\r\n//     \"construction_area\": 900,\r\n//     \"age_of_property\": 2,\r\n//     \"type\": \"House\",\r\n//     \"house_no\": 4,\r\n//     \"type_of_property\": \"Independent\",\r\n//     \"latitude\": 72.8806069,\r\n//     \"longitude\": 21.2408267,\r\n//     \"distance\": 2000,\r\n//     \"address\": \"Mota Varachha, Surat, Gujarat, India\",\r\n//     \"user_id\": \"66fbbdd2991e8a5f51b916d1\"\r\n// }\r\n// {\r\n//     \"land_area\": 1000,\r\n//     \"construction_area\": 200,\r\n//     \"age_of_property\": 1,\r\n//     \"type\": \"Villa\",\r\n//     \"type_of_property\": \"Independent\",\r\n//     \"latitude\": 72.8806069,\r\n//     \"longitude\": 21.2408267,\r\n//     \"distance\": 2000,\r\n//     \"address\": \"Mota Varachha, Surat, Gujarat, India\",\r\n//     \"user_id\": \"66fbbdd2991e8a5f51b916d1\"\r\n// }\r\n//=====================================================================================================================",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2495,7 +2499,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"plan_no\": 1,\r\n    \"plan_name\": \"Basic Plan\",\r\n    \"no_of_report\": 1,\r\n    \"price\": 999,\r\n    \"specification\":[\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n    \"discount\": 20\r\n    // \"final_price\":500\r\n}\r\n//============================================================================================================================\r\n// {\r\n//     \"plan_no\": 2,\r\n//     \"plan_name\": \"Advance Plan\",\r\n//     \"no_of_report\": 20,\r\n//     \"price\": 999,\r\n//     \"specification\":[\"Generate 20 Report\",\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n//     \"discount\": 30\r\n//     // \"final_price\":500\r\n// }",
+							"raw": "{\r\n    \"plan_no\": 1,\r\n    \"plan_name\": \"Free Plan\",\r\n    \"no_of_report\": 15,\r\n    \"price\": 0,\r\n    \"specification\":[\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n    // \"discount\": 20\r\n    \"final_price\":0\r\n}\r\n//===========================================================================================================================\r\n// {\r\n//     \"plan_no\": 2,\r\n//     \"plan_name\": \"Basic Plan\",\r\n//     \"no_of_report\": 1,\r\n//     \"price\": 999,\r\n//     \"specification\":[\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n//     \"discount\": 20\r\n//     // \"final_price\":500\r\n// }\r\n//============================================================================================================================\r\n// {\r\n//     \"plan_no\": 3,\r\n//     \"plan_name\": \"Advance Plan\",\r\n//     \"no_of_report\": 20,\r\n//     \"price\": 999,\r\n//     \"specification\":[\"Generate 20 Report\",\"Estimated Fair Market Value\",\"Distress Value\",\"Realizable Value\",\"Property Coordinates\"],\r\n//     \"discount\": 30\r\n//     // \"final_price\":500\r\n// }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2737,6 +2741,276 @@
 								{
 									"key": "keyword",
 									"value": "Plan"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FeedBack",
+			"item": [
+				{
+					"name": "Add FeedBack",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"66db0fda2e1de691b33f3f46\",\r\n    \"feedbackText\": \"ok\",\r\n    \"rating\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/feedBack",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All FeedBack",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/feedBack?limit=3&skip=0",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get FeedBack By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/feedBack/:feedBack_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack",
+								":feedBack_id"
+							],
+							"variable": [
+								{
+									"key": "feedBack_id",
+									"value": "66e27813027746b72508a551"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update FeedBack By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"userId\": \"66db0fda2e1de691b33f3f46\",\r\n    \"feedbackText\": \"Not Ok\",\r\n    \"rating\": \"3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/feedBack/:feedBack_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack",
+								":feedBack_id"
+							],
+							"variable": [
+								{
+									"key": "feedBack_id",
+									"value": "66e27813027746b72508a551"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update FeedBack Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/feedBack/:feedBack_id/:status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack",
+								":feedBack_id",
+								":status"
+							],
+							"variable": [
+								{
+									"key": "feedBack_id",
+									"value": "66e27813027746b72508a551"
+								},
+								{
+									"key": "status",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete FeedBack By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/feedBack/:feedBack_id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack",
+								":feedBack_id"
+							],
+							"variable": [
+								{
+									"key": "feedBack_id",
+									"value": "66e2787e027746b72508a55e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search FeedBack",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/feedBack/search?limit=20&skip=0&keyword=ok",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"feedBack",
+								"search"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "keyword",
+									"value": "ok"
 								}
 							]
 						}

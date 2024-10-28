@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { mongo_uri } = require("../Config/Config");
 const UserModel = require("../Models/UserModel");
+const SubscriptionModel = require("../Models/SubscriptionModel");
 const bcrypt = require("bcryptjs");
 
 module.exports = async function () {
@@ -9,10 +10,36 @@ module.exports = async function () {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-
+  let planData;
   console.log("Database Successfully Connected");
   const adminExists = await UserModel.exists({ role: "SUPER_ADMIN" });
+  const subPlan = await SubscriptionModel.exists({ plan_name: "Free Plan" });
+  if (!subPlan) {
+    const defaultPlan = new SubscriptionModel({
+      plan_no: 1,
+      plan_name: "Free Plan",
+      no_of_report: 15,
+      price: 0,
+      specification: [
+        "Estimated Fair Market Value",
+        "Distress Value",
+        "Realizable Value",
+        "Property Coordinates",
+      ],
+      final_price: 0,
+    });
 
+    try {
+      planData = await defaultPlan.save();
+      console.log(
+        `Default Plan Created Successfully with Plan Name "Free Plan" and ID ${planData._id}`
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  } else {
+    planData = await SubscriptionModel.findOne({ plan_name: "Free Plan" });
+  }
   if (!adminExists) {
     const password = await bcrypt.hash("superadmin", 10);
     const userData = new UserModel({
@@ -23,6 +50,7 @@ module.exports = async function () {
       role: "SUPER_ADMIN",
       name: "super",
       phone: "9998867024",
+      subscriptions_id: planData._id,
       module: ["user", "staff", "Property", "Unlisted_Property"],
       // module: [
       //   "PROPERTY",

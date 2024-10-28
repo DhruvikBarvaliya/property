@@ -1,5 +1,6 @@
 const { jwt_secret_key } = require("../Config/Config");
 const UserModel = require("../Models/UserModel");
+const SubscriptionModel = require("../Models/SubscriptionModel");
 const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../Helpers/email");
@@ -163,11 +164,30 @@ module.exports = {
           .status(404)
           .json({ status: false, message: `Invalid OTP or User Not Found` });
       }
-
+      let subscription;
+      const subscriptions_expire = new Date();
+      subscriptions_expire.setMonth(subscriptions_expire.getMonth() + 1);
+      if (user.is_new) {
+        const subscriptions_expire = new Date();
+        subscriptions_expire.setMonth(subscriptions_expire.getMonth() + 1);
+        subscription = await SubscriptionModel.findOne({
+          plan_name: "Free Plan",
+        });
+      }      
       await UserModel.updateOne(
         { email },
-        { $set: { is_verified: true, is_active: true } }
+        {
+          $set: {
+        is_verified: true,
+        is_active: true,
+        is_new: false,
+        subscriptions_id: subscription ? subscription._id : user.subscriptions_id,
+        is_paid: true,
+        subscriptions_expire,
+          },
+        }
       );
+
       const payload = { id: user._id, email, role: user.role };
       let token = jsonwebtoken.sign(payload, jwt_secret_key, {
         expiresIn: "8d",
