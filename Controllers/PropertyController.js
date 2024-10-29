@@ -11,7 +11,7 @@ module.exports = {
         return res.status(400).json({
           status: false,
           message: "Address already exists",
-          data:propertys
+          data: propertys,
         });
       }
       const propertyData = new PropertyModel(req.body);
@@ -33,41 +33,43 @@ module.exports = {
 
     try {
       const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
+      const sheetNames = workbook.SheetNames;
 
-      // === If we added one row as hader ===
+      let allProperties = [];
 
-      // delete sheet[XLSX.utils.encode_cell({ r: 0, c: 0 })];
+      sheetNames.forEach((sheetName) => {
+        const sheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sheet);
 
-      // // Update the range of cells after deleting the first row
-      // sheet["!ref"] = XLSX.utils.encode_range(
-      //   { c: 0, r: 1 },
-      //   XLSX.utils.decode_range(sheet["!ref"]).e
-      // );
+        const properties = data.map((item) => ({
+          ...item,
+          location: {
+            type: "Point",
+            coordinates: [item.latitude, item.longitude],
+          },
+        }));
 
-      const data = XLSX.utils.sheet_to_json(sheet);
-
-      const properties = data.map((item) => ({
-        ...item,
-        location: {
-          type: "Point",
-          coordinates: [item.latitude, item.longitude],
-        },
-      }));
+        allProperties = allProperties.concat(properties);
+      });
 
       const existingAddresses = await PropertyModel.find({
-        address: { $in: properties.map((property) => property.address) },
-      }).select('address');
+        address: { $in: allProperties.map((property) => property.address) },
+      }).select("address");
 
-      const existingAddressSet = new Set(existingAddresses.map((property) => property.address));
+      const existingAddressSet = new Set(
+        existingAddresses.map((property) => property.address)
+      );
 
-      const newProperties = properties.filter(
+      const newProperties = allProperties.filter(
         (property) => !existingAddressSet.has(property.address)
       );
 
       if (newProperties.length === 0) {
-        return res.status(400).json({ message: "No new properties to insert, all addresses already exist" });
+        return res
+          .status(400)
+          .json({
+            message: "No new properties to insert, all addresses already exist",
+          });
       }
 
       await PropertyModel.insertMany(newProperties);
