@@ -35,44 +35,45 @@ module.exports = {
       const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
       const sheetNames = workbook.SheetNames;
 
-      let allProperties = [];
-
-      sheetNames.forEach((sheetName) => {
+      // let allProperties = [];
+      let properties;
+      sheetNames.forEach(async (sheetName) => {
         const sheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(sheet);
 
-        const properties = data.map((item) => ({
+        properties = data.map((item) => ({
           ...item,
           location: {
             type: "Point",
             coordinates: [item.latitude, item.longitude],
           },
         }));
+        await PropertyModel.insertMany(properties);
 
-        allProperties = allProperties.concat(properties);
+        // allProperties = allProperties.concat(properties);
       });
 
-      const existingAddresses = await PropertyModel.find({
-        address: { $in: allProperties.map((property) => property.address) },
-      }).select("address");
+      // const existingAddresses = await PropertyModel.find({
+      //   address: { $in: allProperties.map((property) => property.address) },
+      // }).select("address");
 
-      const existingAddressSet = new Set(
-        existingAddresses.map((property) => property.address)
-      );
+      // const existingAddressSet = new Set(
+      //   existingAddresses.map((property) => property.address)
+      // );
 
-      const newProperties = allProperties.filter(
-        (property) => !existingAddressSet.has(property.address)
-      );
+      // const newProperties = allProperties.filter(
+      //   (property) => !existingAddressSet.has(property.address)
+      // );
 
-      if (newProperties.length === 0) {
-        return res
-          .status(400)
-          .json({
-            message: "No new properties to insert, all addresses already exist",
-          });
-      }
+      // if (newProperties.length === 0) {
+      //   return res
+      //     .status(400)
+      //     .json({
+      //       message: "No new properties to insert, all addresses already exist",
+      //     });
+      // }
 
-      await PropertyModel.insertMany(newProperties);
+      // await PropertyModel.insertMany(properties);
       res.status(200).json({ message: "Properties inserted successfully" });
     } catch (err) {
       res.status(500).json({

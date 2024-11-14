@@ -4,8 +4,9 @@
   "description": "Property Web App",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node  app.js",
+    "dev": "nodemon app.js",
+    "test": "node --max-old-space-size=8192 app.js"
   },
   "keywords": [
     "real estate",
@@ -22,6 +23,7 @@
     "cors": "^2.8.5",
     "docxtemplater": "^3.47.1",
     "dotenv": "^11.0.0",
+    "exceljs": "^4.4.0",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.10.4",
@@ -30,6 +32,7 @@
     "pdfkit": "^0.15.0",
     "pizzip": "^3.1.7",
     "puppeteer": "^23.2.0",
+    "stream": "^0.0.3",
     "uuid": "^10.0.0",
     "xlsx": "^0.18.5"
   },
