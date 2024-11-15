@@ -3,7 +3,8 @@ const router = express.Router();
 const authorize = require("../Middleware/auth");
 const PropertyController = require("../Controllers/PropertyController");
 const multer = require("multer");
-const upload = multer({ storage: multer.memoryStorage() });
+// const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ dest: "uploads/" });
 
 // Simplify route definitions by grouping similar routes
 router.post(

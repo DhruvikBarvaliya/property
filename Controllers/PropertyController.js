@@ -1,5 +1,7 @@
 const PropertyModel = require("../Models/PropertyModel");
 const XLSX = require("xlsx");
+const ExcelJS = require("exceljs");
+const fs = require("fs");
 
 module.exports = {
   addProperty: async (req, res) => {
@@ -31,50 +33,98 @@ module.exports = {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    // try {
+    //   const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    //   const sheetNames = workbook.SheetNames;
+
+    //   let allProperties = [];
+    //   let properties;
+    //   sheetNames.forEach(async (sheetName) => {
+    //     const sheet = workbook.Sheets[sheetName];
+    //     const data = XLSX.utils.sheet_to_json(sheet);
+
+    //     properties = data.map((item) => ({
+    //       ...item,
+    //       location: {
+    //         type: "Point",
+    //         coordinates: [item.latitude, item.longitude],
+    //       },
+    //     }));
+
+    //     allProperties = allProperties.concat(properties);
+    //   });
+
+    //   const existingAddresses = await PropertyModel.find({
+    //     address: { $in: allProperties.map((property) => property.address) },
+    //   }).select("address");
+
+    //   const existingAddressSet = new Set(
+    //     existingAddresses.map((property) => property.address)
+    //   );
+
+    //   const newProperties = allProperties.filter(
+    //     (property) => !existingAddressSet.has(property.address)
+    //   );
+
+    //   if (newProperties.length === 0) {
+    //     return res.status(400).json({
+    //       message: "No new properties to insert, all addresses already exist",
+    //     });
+    //   }
+
+    //   await PropertyModel.insertMany(properties);
+    //   res.status(200).json({ message: "Properties inserted successfully" });
+    // } catch (err) {
+    //   res.status(500).json({
+    //     error: "An error occurred while inserting data",
+    //     details: err.message,
+    //   });
+    // }
     try {
-      const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-      const sheetNames = workbook.SheetNames;
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.readFile(req.file.path);
 
-      // let allProperties = [];
-      let properties;
-      sheetNames.forEach(async (sheetName) => {
-        const sheet = workbook.Sheets[sheetName];
-        const data = XLSX.utils.sheet_to_json(sheet);
+      const batchSize = 10000;
+      let batchData = [];
 
-        properties = data.map((item) => ({
-          ...item,
-          location: {
-            type: "Point",
-            coordinates: [item.latitude, item.longitude],
-          },
-        }));
-        await PropertyModel.insertMany(properties);
+      workbook.eachSheet((worksheet) => {
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber === 1) return; // Skip header row
 
-        // allProperties = allProperties.concat(properties);
+          const rowData = {
+            address: row.getCell(1).value,
+            type_of_property: row.getCell(2).value,
+            location: {
+              type: "Point",
+              coordinates: [row.getCell(3).value, row.getCell(4).value],
+            },
+            land_area_sq_mtr_sq_yrd: row.getCell(5).value,
+            land_rate_per_sq_mtr_Sq_yard: row.getCell(6).value,
+            construction_area_sq_ft_built_up_area: row.getCell(7).value,
+            area_rate_considered_per_sq_ft: row.getCell(8).value,
+          };
+
+          batchData.push(rowData);
+
+          // If batchData reaches batchSize, insert into MongoDB
+          if (batchData.length === batchSize) {
+            PropertyModel.insertMany(batchData).catch((error) =>
+              console.error("Batch insert error:", error)
+            );
+            batchData = []; // Clear batchData for next batch
+          }
+        });
       });
 
-      // const existingAddresses = await PropertyModel.find({
-      //   address: { $in: allProperties.map((property) => property.address) },
-      // }).select("address");
+      // Insert remaining rows in final batch
+      if (batchData.length > 0) {
+        await PropertyModel.insertMany(batchData).catch((error) =>
+          console.error("Final batch insert error:", error)
+        );
+      }
 
-      // const existingAddressSet = new Set(
-      //   existingAddresses.map((property) => property.address)
-      // );
-
-      // const newProperties = allProperties.filter(
-      //   (property) => !existingAddressSet.has(property.address)
-      // );
-
-      // if (newProperties.length === 0) {
-      //   return res
-      //     .status(400)
-      //     .json({
-      //       message: "No new properties to insert, all addresses already exist",
-      //     });
-      // }
-
-      // await PropertyModel.insertMany(properties);
-      res.status(200).json({ message: "Properties inserted successfully" });
+      fs.unlinkSync(req.file.path); // Delete the uploaded file after processing
+      res.json({ message: "File data uploaded to MongoDB successfully" });
     } catch (err) {
       res.status(500).json({
         error: "An error occurred while inserting data",

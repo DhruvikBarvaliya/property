@@ -4,9 +4,8 @@
   "description": "Property Web App",
   "main": "app.js",
   "scripts": {
-    "start": "node  app.js",
-    "dev": "nodemon app.js",
-    "test": "node --max-old-space-size=8192 app.js"
+    "start": "node --max-old-space-size=8192 app.js",
+    "dev": "nodemon --max-old-space-size=8192 app.js"
   },
   "keywords": [
     "real estate",
