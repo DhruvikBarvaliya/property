@@ -10,7 +10,7 @@ database();
 
 // Middleware setup
 app.use(cors({
-  origin: '*', // or specify the allowed origin(s)
+  origin: ['*',"https://desktopvaluation.in/","https://admin.desktopvaluation.in/"], // or specify the allowed origin(s)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
