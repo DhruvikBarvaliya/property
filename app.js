@@ -9,24 +9,12 @@ const database = require("./Config/Database");
 database();
 
 // Middleware setup
-app.use(
-  cors({
-    origin: "*", // or specify the allowed origin(s)
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors());
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "200mb" }));
 app.use(express.urlencoded({ limit: "200mb", extended: true }));
-// Manually set CORS headers for all routes
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Allow all domains
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); // Allow specific methods
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow specific headers
-  next(); // Pass control to the next middleware
-});
+
 // Root route
 app.get("/", (req, res) => {
   res.send(`Welcome To Property Portal, Currently You are in ${env} Mode`);
