@@ -22,7 +22,7 @@ module.exports = {
       const generateTokenAndRespond = async (user) => {
         const payload = { id: user._id, email, role: user.role };
         const token = jsonwebtoken.sign(payload, jwt_secret_key, {
-          expiresIn: "8d",
+          expiresIn: "24h",
         });
         user.login_attempts = 0;
         await user.save();

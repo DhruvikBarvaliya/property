@@ -51,7 +51,15 @@ module.exports = async function () {
       name: "super",
       phone: "9998867024",
       subscriptions_id: planData._id,
-      module: ["user", "staff", "Property", "Unlisted_Property"],
+      module: [
+        "User",
+        "Staff",
+        "Property",
+        "Add Property",
+        "Edit Property",
+        "Delete Property",
+        "Unlisted Property",
+      ],
       // module: [
       //   "PROPERTY",
       //   "USER",

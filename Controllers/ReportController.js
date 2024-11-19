@@ -242,13 +242,21 @@ module.exports = {
       let market_area;
 
       if (type_of_property == "Apartment") {
-        let top_area_rate = nearestProperties
-          .toSorted(
-            (a, b) =>
-              parseInt(b.area_rate_considered_per_sq_ft) -
-              parseInt(a.area_rate_considered_per_sq_ft)
-          )
-          .slice(0, 5);
+        // let top_area_rate = nearestProperties
+        //   .toSorted(
+        //     (a, b) =>
+        //       parseInt(b.area_rate_considered_per_sq_ft) -
+        //       parseInt(a.area_rate_considered_per_sq_ft)
+        //   )
+        //   .slice(0, 5);
+        let uniqueRates = [
+          ...new Set(
+            nearestProperties.map((property) =>
+              parseInt(property.area_rate_considered_per_sq_ft)
+            )
+          ),
+        ];
+        let top_area_rate = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
         let top_area_rate_sum = top_area_rate.reduce(
           (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
           0
@@ -333,15 +341,27 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Independent") {
-        let top_area_rate1 = nearestProperties
-          .toSorted(
-            (a, b) =>
-              parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-              parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-          )
-          .slice(0, 5);
+        // let top_area_rate1 = nearestProperties
+        //   .toSorted(
+        //     (a, b) =>
+        //       parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+        //       parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+        //   )
+        //   .slice(0, 5);
+        // let top_area_rate_sum1 = top_area_rate1.reduce(
+        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+        //   0
+        // );
+        let uniqueRates = [
+          ...new Set(
+            nearestProperties.map((property) =>
+              parseInt(property.land_rate_per_sq_mtr_Sq_yard)
+            )
+          ),
+        ];
+        let top_area_rate1 = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
         let top_area_rate_sum1 = top_area_rate1.reduce(
-          (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+          (acc, rate) => acc + rate,
           0
         );
         if (!construction_area) {
@@ -450,15 +470,19 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Commercial") {
-        let top_area_rate = nearestProperties
-          .toSorted(
-            (a, b) =>
-              parseInt(b.area_rate_considered_per_sq_ft) -
-              parseInt(a.area_rate_considered_per_sq_ft)
-          )
-          .slice(0, 5);
+        let uniqueRates = [
+          ...new Set(
+            nearestProperties.map((property) =>
+              parseInt(property.area_rate_considered_per_sq_ft)
+            )
+          ),
+        ];
+
+        let top_area_rate = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
+        console.log(top_area_rate);
+
         let top_area_rate_sum = top_area_rate.reduce(
-          (acc, obj) => acc + parseInt(obj.area_rate_considered_per_sq_ft),
+          (acc, rate) => acc + rate,
           0
         );
 
@@ -547,15 +571,27 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Land") {
-        let top_area_rate1 = nearestProperties
-          .toSorted(
-            (a, b) =>
-              parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-              parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-          )
-          .slice(0, 5);
+        // let top_area_rate1 = nearestProperties
+        //   .toSorted(
+        //     (a, b) =>
+        //       parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
+        //       parseInt(a.land_rate_per_sq_mtr_Sq_yard)
+        //   )
+        //   .slice(0, 5);
+        // let top_area_rate_sum1 = top_area_rate1.reduce(
+        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+        //   0
+        // );
+        let uniqueRates = [
+          ...new Set(
+            nearestProperties.map((property) =>
+              parseInt(property.land_rate_per_sq_mtr_Sq_yard)
+            )
+          ),
+        ];
+        let top_area_rate1 = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
         let top_area_rate_sum1 = top_area_rate1.reduce(
-          (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
+          (acc, rate) => acc + rate,
           0
         );
         if (!land_area) {
