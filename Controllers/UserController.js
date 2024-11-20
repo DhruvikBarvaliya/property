@@ -219,7 +219,7 @@ module.exports = {
         });
       }
 
-      if (user.subscriptions_id && new Date() < user.subscriptions_expire) {
+      if (user.subscriptions_id && new Date() > user.subscriptions_expire) {
         user = await UserModel.findByIdAndUpdate(
           user_id,
           { is_paid: false },
