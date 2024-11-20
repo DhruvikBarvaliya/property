@@ -9,7 +9,12 @@ const database = require("./Config/Database");
 database();
 
 // Middleware setup
-app.use(cors());
+let corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "200mb" }));
