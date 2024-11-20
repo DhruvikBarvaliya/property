@@ -43,6 +43,31 @@ module.exports = {
 
         try {
           const savedUser = await newUser.save();
+          let subscription;
+          const subscriptions_expire = new Date();
+
+          if (savedUser.is_new) {
+            const subscriptions_expire = new Date();
+            subscriptions_expire.setMonth(subscriptions_expire.getMonth() + 1);
+            subscription = await SubscriptionModel.findOne({
+              plan_name: "Free Plan",
+            });
+          }
+          await UserModel.updateOne(
+            { email },
+            {
+              $set: {
+                is_verified: true,
+                is_active: true,
+                is_new: false,
+                is_paid: true,
+                subscriptions_id: subscription
+                  ? subscription._id
+                  : savedUser.subscriptions_id,
+                subscriptions_expire,
+              },
+            }
+          );
           return generateTokenAndRespond(savedUser);
         } catch (error) {
           return res

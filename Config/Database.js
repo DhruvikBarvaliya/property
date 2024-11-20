@@ -41,6 +41,8 @@ module.exports = async function () {
     planData = await SubscriptionModel.findOne({ plan_name: "Free Plan" });
   }
   if (!adminExists) {
+    const subscriptions_expire = new Date();
+
     const password = await bcrypt.hash("superadmin", 10);
     const userData = new UserModel({
       email: "superadmin@gmail.com",
@@ -52,6 +54,9 @@ module.exports = async function () {
       name: "super",
       phone: "9998867024",
       subscriptions_id: planData._id,
+      subscriptions_expire: subscriptions_expire.setMonth(
+        subscriptions_expire.getMonth() + 1
+      ),
       module: [
         "User",
         "Staff",
