@@ -44,11 +44,13 @@ module.exports = {
         try {
           const savedUser = await newUser.save();
           let subscription;
-          const subscriptions_expire = new Date();
+          let subscriptions_expire = new Date();
 
           if (savedUser.is_new) {
-            const subscriptions_expire = new Date();
-            subscriptions_expire.setMonth(subscriptions_expire.getMonth() + 1);
+            subscriptions_expire = subscriptions_expire.setMonth(
+              subscriptions_expire.getMonth() + 1
+            );
+
             subscription = await SubscriptionModel.findOne({
               plan_name: "Free Plan",
             });
