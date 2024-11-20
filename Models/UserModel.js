@@ -85,7 +85,7 @@ const UserSchema = new Schema(
     module: { type: Array },
     otp: { type: Number },
     forgot_otp: { type: Number },
-    is_paid: { type: Boolean, default: false },
+    is_paid: { type: Boolean, default: true },
     no_of_report: { type: Number, default: 15 },
     login_attempts: { type: Number, default: 0 },
     no_of_pdf: { type: Number, default: 15 },
