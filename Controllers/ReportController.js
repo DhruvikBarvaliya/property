@@ -262,7 +262,6 @@ module.exports = {
           (acc, rate) => acc + rate,
           0
         );
-        console.log(top_area_rate_sum);
 
         if ((!carpet_area && !super_built_up_area) || !address) {
           return res.status(404).json({
@@ -285,10 +284,8 @@ module.exports = {
           { no_of_report: noOfReport },
           { new: true }
         );
-        console.log(updatedUser.no_of_report);
 
         if (updatedUser.no_of_report <= 0) {
-          console.log("inside if");
 
           await UserModel.findByIdAndUpdate(
             user_id,
@@ -485,7 +482,6 @@ module.exports = {
         ];
 
         let top_area_rate = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
-        console.log(top_area_rate);
 
         let top_area_rate_sum = top_area_rate.reduce(
           (acc, rate) => acc + rate,
