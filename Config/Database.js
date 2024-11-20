@@ -47,6 +47,7 @@ module.exports = async function () {
       password: password,
       is_verified: true,
       is_active: true,
+      is_paid: true,
       role: "SUPER_ADMIN",
       name: "super",
       phone: "9998867024",

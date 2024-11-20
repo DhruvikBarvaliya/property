@@ -173,17 +173,19 @@ module.exports = {
         subscription = await SubscriptionModel.findOne({
           plan_name: "Free Plan",
         });
-      }      
+      }
       await UserModel.updateOne(
         { email },
         {
           $set: {
-        is_verified: true,
-        is_active: true,
-        is_new: false,
-        subscriptions_id: subscription ? subscription._id : user.subscriptions_id,
-        is_paid: true,
-        subscriptions_expire,
+            is_verified: true,
+            is_active: true,
+            is_new: false,
+            is_paid: true,
+            subscriptions_id: subscription
+              ? subscription._id
+              : user.subscriptions_id,
+            subscriptions_expire,
           },
         }
       );
