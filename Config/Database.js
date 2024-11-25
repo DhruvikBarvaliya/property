@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
-const { mongo_uri } = require("../Config/Config");
+let { mongo_uri } = require("../Config/Config");
 const UserModel = require("../Models/UserModel");
 const SubscriptionModel = require("../Models/SubscriptionModel");
 const bcrypt = require("bcryptjs");
 
 module.exports = async function () {
+  mongo_uri = "mongodb://Admin:Admin@82.112.236.63:27017/Property?authSource=Property";
   mongoose.set("strictQuery", false);
   await mongoose.connect(mongo_uri, {
     useNewUrlParser: true,

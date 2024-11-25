@@ -1,9 +1,17 @@
 const { jwt_secret_key } = require("../Config/Config");
 const UserModel = require("../Models/UserModel");
 const SubscriptionModel = require("../Models/SubscriptionModel");
+
 const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { sendMail } = require("../Helpers/email");
+const ConfigModel = require("../Models/ConfigModel");
+const FeedBackModel = require("../Models/FeedBackModel");
+const PropertyModel = require("../Models/PropertyModel");
+const RazorPayModel = require("../Models/RazorPayModel");
+const ReportModel = require("../Models/ReportModel");
+const SubscriptionHistoryModel = require("../Models/SubscriptionHistoryModel");
+const UnListedPropertyModel = require("../Models/UnListedPropertyModel");
 
 module.exports = {
   login: async (req, res) => {
@@ -270,6 +278,29 @@ module.exports = {
     try {
       const loginAttempts = await UserModel.find({}, "email login_attempts");
       return res.status(200).json({ loginAttempts });
+    } catch (err) {
+      return res.status(500).json({
+        status: false,
+        message: "Server Error",
+        error: err.message || err.toString(),
+      });
+    }
+  },
+  clearAllData: async (req, res) => {
+    try {
+      await UserModel.deleteMany({ role: { $ne: "SUPER_ADMIN" } });
+      await SubscriptionModel.deleteMany({ plan_name: { $ne: "Free Plan" } });
+      await ConfigModel.deleteMany({});
+      await FeedBackModel.deleteMany({});
+      await PropertyModel.deleteMany({});
+      await RazorPayModel.deleteMany({});
+      await ReportModel.deleteMany({});
+      await SubscriptionHistoryModel.deleteMany({});
+      await UnListedPropertyModel.deleteMany({});
+      return res.status(200).json({
+        status: true,
+        message: "All data cleared successfully",
+      });
     } catch (err) {
       return res.status(500).json({
         status: false,
