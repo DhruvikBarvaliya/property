@@ -10,4 +10,7 @@ module.exports = {
   maxDistance: process.env.MAX_DISTANCE,
   minDistance: process.env.MIN_DISTANCE,
   convertApi: process.env.CONVERT_API,
+  db_user: process.env.DB_USER,
+  db_password: process.env.DB_PASSWORD,
+  db_ip: process.env.DB_IP,
 };

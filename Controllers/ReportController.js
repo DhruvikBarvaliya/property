@@ -6,28 +6,6 @@ const { numberToWords } = require("../Helpers/NumToWord");
 
 let { maxDistance, minDistance } = require("../Config/Config");
 
-// Function to calculate the commercial shop rate
-async function calculateCommercialRate(sheetRate, currentFloor) {
-  let finalRate = 0;
-
-  switch (currentFloor) {
-    case 1:
-      finalRate = sheetRate - sheetRate * 0.35;
-      break;
-    case 2:
-      finalRate = sheetRate - sheetRate * 0.5;
-      break;
-    case 3:
-      finalRate = sheetRate - sheetRate * 0.6;
-      break;
-    default:
-      finalRate = sheetRate - sheetRate * 0.65;
-      break;
-  }
-
-  return finalRate;
-}
-
 async function calculatePrice(years) {
   if (years >= 1 && years <= 10) {
     return 1200;
@@ -242,26 +220,26 @@ module.exports = {
       let market_area;
 
       if (type_of_property == "Apartment") {
-        // let top_area_rate = nearestProperties
-        //   .toSorted(
-        //     (a, b) =>
-        //       parseInt(b.area_rate_considered_per_sq_ft) -
-        //       parseInt(a.area_rate_considered_per_sq_ft)
-        //   )
-        //   .slice(0, 5);
-        let uniqueRates = [
-          ...new Set(
-            nearestProperties.map((property) =>
-              parseInt(property.area_rate_considered_per_sq_ft)
-            )
-          ),
-        ];
-        let top_area_rate = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
+        let uniqueNearestProperties = [];
+        let seenAddresses = new Set();
 
-        let top_area_rate_sum = top_area_rate.reduce(
-          (acc, rate) => acc + rate,
-          0
-        );
+        for (let property of nearestProperties) {
+          if (!seenAddresses.has(property.area_rate_considered_per_sq_ft)) {
+            uniqueNearestProperties.push(property);
+            seenAddresses.add(property.area_rate_considered_per_sq_ft);
+          }
+          if (uniqueNearestProperties.length >= 5) break;
+        }
+
+        let totalRate = 0;
+        seenAddresses.forEach((rate) => {
+          totalRate += parseInt(rate);
+        });
+        let area_per_sq_ft = totalRate / seenAddresses.size;
+
+        console.log("Unique Nearest Properties Top 5", uniqueNearestProperties);
+        console.log("Top 5 Rate", seenAddresses);
+        console.log("Average Rate:", area_per_sq_ft);
 
         if ((!carpet_area && !super_built_up_area) || !address) {
           return res.status(404).json({
@@ -269,7 +247,6 @@ module.exports = {
             message: "carpet_area or super_built_up_area And address Not Found",
           });
         }
-        let area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
 
         if (floor_of_unit > 14) {
           area_per_sq_ft += 1.1 * (floor_of_unit - 1);
@@ -286,7 +263,6 @@ module.exports = {
         );
 
         if (updatedUser.no_of_report <= 0) {
-
           await UserModel.findByIdAndUpdate(
             user_id,
             { is_paid: false, $unset: { subscriptions_id: "" } },
@@ -344,29 +320,27 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Independent") {
-        // let top_area_rate1 = nearestProperties
-        //   .toSorted(
-        //     (a, b) =>
-        //       parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-        //       parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        //   )
-        //   .slice(0, 5);
-        // let top_area_rate_sum1 = top_area_rate1.reduce(
-        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-        //   0
-        // );
-        let uniqueRates = [
-          ...new Set(
-            nearestProperties.map((property) =>
-              parseInt(property.land_rate_per_sq_mtr_Sq_yard)
-            )
-          ),
-        ];
-        let top_area_rate1 = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
-        let top_area_rate_sum1 = top_area_rate1.reduce(
-          (acc, rate) => acc + rate,
-          0
-        );
+        let uniqueNearestProperties = [];
+        let seenAddresses = new Set();
+
+        for (let property of nearestProperties) {
+          if (!seenAddresses.has(property.land_rate_per_sq_mtr_Sq_yard)) {
+            uniqueNearestProperties.push(property);
+            seenAddresses.add(property.land_rate_per_sq_mtr_Sq_yard);
+          }
+          if (uniqueNearestProperties.length >= 5) break;
+        }
+
+        let totalRate = 0;
+        seenAddresses.forEach((rate) => {
+          totalRate += parseInt(rate);
+        });
+        let plot_land_rate = totalRate / seenAddresses.size;
+
+        console.log("Unique Nearest Properties Top 5", uniqueNearestProperties);
+        console.log("Top 5 Rate", seenAddresses);
+        console.log("Average Rate:", plot_land_rate);
+
         if (!construction_area) {
           construction_area = 0;
         }
@@ -385,8 +359,6 @@ module.exports = {
         }
 
         const construction_rate = await calculatePrice(age_of_property);
-
-        const plot_land_rate = top_area_rate_sum1 / top_area_rate1.length;
 
         const construction_cost = construction_area * construction_rate;
         const typeValue = type == "House" ? 60 : 50;
@@ -473,20 +445,26 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Commercial") {
-        let uniqueRates = [
-          ...new Set(
-            nearestProperties.map((property) =>
-              parseInt(property.area_rate_considered_per_sq_ft)
-            )
-          ),
-        ];
+        let uniqueNearestProperties = [];
+        let seenAddresses = new Set();
 
-        let top_area_rate = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
+        for (let property of nearestProperties) {
+          if (!seenAddresses.has(property.area_rate_considered_per_sq_ft)) {
+            uniqueNearestProperties.push(property);
+            seenAddresses.add(property.area_rate_considered_per_sq_ft);
+          }
+          if (uniqueNearestProperties.length >= 5) break;
+        }
 
-        let top_area_rate_sum = top_area_rate.reduce(
-          (acc, rate) => acc + rate,
-          0
-        );
+        let totalRate = 0;
+        seenAddresses.forEach((rate) => {
+          totalRate += parseInt(rate);
+        });
+        let area_per_sq_ft = totalRate / seenAddresses.size;
+
+        console.log("Unique Nearest Properties Top 5", uniqueNearestProperties);
+        console.log("Top 5 Rate", seenAddresses);
+        console.log("Average Rate:", area_per_sq_ft);
 
         if ((!carpet_area && !super_built_up_area) || !address) {
           return res.status(404).json({
@@ -494,7 +472,6 @@ module.exports = {
             message: "carpet_area or super_built_up_area And address Not Found",
           });
         }
-        let area_per_sq_ft = top_area_rate_sum / top_area_rate.length;
 
         if (floor_of_unit == 1) {
           area_per_sq_ft *= 0.65;
@@ -573,36 +550,32 @@ module.exports = {
           ...finalObj,
         });
       } else if (type_of_property == "Land") {
-        // let top_area_rate1 = nearestProperties
-        //   .toSorted(
-        //     (a, b) =>
-        //       parseInt(b.land_rate_per_sq_mtr_Sq_yard) -
-        //       parseInt(a.land_rate_per_sq_mtr_Sq_yard)
-        //   )
-        //   .slice(0, 5);
-        // let top_area_rate_sum1 = top_area_rate1.reduce(
-        //   (acc, obj) => acc + parseInt(obj.land_rate_per_sq_mtr_Sq_yard),
-        //   0
-        // );
-        let uniqueRates = [
-          ...new Set(
-            nearestProperties.map((property) =>
-              parseInt(property.land_rate_per_sq_mtr_Sq_yard)
-            )
-          ),
-        ];
-        let top_area_rate1 = uniqueRates.toSorted((a, b) => b - a).slice(0, 5);
-        let top_area_rate_sum1 = top_area_rate1.reduce(
-          (acc, rate) => acc + rate,
-          0
-        );
+        let uniqueNearestProperties = [];
+        let seenAddresses = new Set();
+
+        for (let property of nearestProperties) {
+          if (!seenAddresses.has(property.land_rate_per_sq_mtr_Sq_yard)) {
+            uniqueNearestProperties.push(property);
+            seenAddresses.add(property.land_rate_per_sq_mtr_Sq_yard);
+          }
+          if (uniqueNearestProperties.length >= 5) break;
+        }
+
+        let totalRate = 0;
+        seenAddresses.forEach((rate) => {
+          totalRate += parseInt(rate);
+        });
+        let average = totalRate / seenAddresses.size;
+
+        console.log("Unique Nearest Properties Top 5", uniqueNearestProperties);
+        console.log("Top 5 Rate", seenAddresses);
+        console.log("Average Rate:", average);
+
         if (!land_area) {
           return res
             .status(404)
             .json({ status: false, message: "land_area Not Found" });
         }
-
-        const average = top_area_rate_sum1 / top_area_rate1.length;
 
         market_area = land_area * average;
 
