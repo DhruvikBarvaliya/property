@@ -2,6 +2,7 @@ const PropertyModel = require("../Models/PropertyModel");
 const XLSX = require("xlsx");
 const ExcelJS = require("exceljs");
 const fs = require("fs");
+const { Worker } = require('worker_threads');
 
 module.exports = {
   addProperty: async (req, res) => {
@@ -32,102 +33,36 @@ module.exports = {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-
-    // try {
-    //   const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-    //   const sheetNames = workbook.SheetNames;
-
-    //   let allProperties = [];
-    //   let properties;
-    //   sheetNames.forEach(async (sheetName) => {
-    //     const sheet = workbook.Sheets[sheetName];
-    //     const data = XLSX.utils.sheet_to_json(sheet);
-
-    //     properties = data.map((item) => ({
-    //       ...item,
-    //       location: {
-    //         type: "Point",
-    //         coordinates: [item.latitude, item.longitude],
-    //       },
-    //     }));
-
-    //     allProperties = allProperties.concat(properties);
-    //   });
-
-    //   const existingAddresses = await PropertyModel.find({
-    //     address: { $in: allProperties.map((property) => property.address) },
-    //   }).select("address");
-
-    //   const existingAddressSet = new Set(
-    //     existingAddresses.map((property) => property.address)
-    //   );
-
-    //   const newProperties = allProperties.filter(
-    //     (property) => !existingAddressSet.has(property.address)
-    //   );
-
-    //   if (newProperties.length === 0) {
-    //     return res.status(400).json({
-    //       message: "No new properties to insert, all addresses already exist",
-    //     });
-    //   }
-
-    //   await PropertyModel.insertMany(properties);
-    //   res.status(200).json({ message: "Properties inserted successfully" });
-    // } catch (err) {
-    //   res.status(500).json({
-    //     error: "An error occurred while inserting data",
-    //     details: err.message,
-    //   });
-    // }
+  
     try {
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.readFile(req.file.path);
-
-      const batchSize = 10000;
-      let batchData = [];
-
-      workbook.eachSheet((worksheet) => {
-        worksheet.eachRow((row, rowNumber) => {
-          if (rowNumber === 1) return; // Skip header row
-
-          const rowData = {
-            address: row.getCell(1).value,
-            type_of_property: row.getCell(2).value,
-            location: {
-              type: "Point",
-              coordinates: [row.getCell(3).value, row.getCell(4).value],
-            },
-            land_area_sq_mtr_sq_yrd: row.getCell(5).value,
-            land_rate_per_sq_mtr_Sq_yard: row.getCell(6).value,
-            construction_area_sq_ft_built_up_area: row.getCell(7).value,
-            area_rate_considered_per_sq_ft: row.getCell(8).value,
-          };
-
-          batchData.push(rowData);
-
-          // If batchData reaches batchSize, insert into MongoDB
-          if (batchData.length === batchSize) {
-            PropertyModel.insertMany(batchData).catch((error) =>
-              console.error("Batch insert error:", error)
-            );
-            batchData = []; // Clear batchData for next batch
-          }
-        });
+      const filePath = req.file.path;
+  
+      // Respond immediately that the file is being uploaded in the background
+      res.json({ message: "File data is uploading in the background" });
+  
+      // Create a new worker to process the file asynchronously
+      const worker = new Worker('./worker.js', {
+        workerData: { filePath }
       });
-
-      // Insert remaining rows in final batch
-      if (batchData.length > 0) {
-        await PropertyModel.insertMany(batchData).catch((error) =>
-          console.error("Final batch insert error:", error)
-        );
-      }
-
-      fs.unlinkSync(req.file.path); // Delete the uploaded file after processing
-      res.json({ message: "File data uploaded to MongoDB successfully" });
+  
+      worker.on('message', (msg) => {
+        console.log('Worker message:', msg);
+      });
+  
+      worker.on('error', (err) => {
+        console.error('Worker error:', err);
+      });
+  
+      worker.on('exit', (code) => {
+        if (code !== 0) {
+          console.error(`Worker stopped with exit code ${code}`);
+        }
+      });
+  
     } catch (err) {
+      console.error("Error:", err);
       res.status(500).json({
-        error: "An error occurred while inserting data",
+        error: "An error occurred while processing the file",
         details: err.message,
       });
     }
