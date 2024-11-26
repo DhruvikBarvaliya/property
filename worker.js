@@ -81,8 +81,7 @@ const processFile = async (filePath) => {
             ],
           },
           land_rate_per_sq_mtr_Sq_yard: row.getCell(5).value,
-          construction_area_sq_ft_built_up_area: row.getCell(6).value,
-          area_rate_considered_per_sq_ft: row.getCell(7).value,
+          area_rate_considered_per_sq_ft: row.getCell(6).value,
         };
 
         batchData.push(rowData);
