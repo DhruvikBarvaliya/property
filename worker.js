@@ -12,8 +12,8 @@ console.log("Database Successfully Connected In Worker", mongo_uri);
 mongoose.set("strictQuery", false);
 mongoose
   .connect(mongo_uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Connected to MongoDB");

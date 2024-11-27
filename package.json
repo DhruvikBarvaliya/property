@@ -4,8 +4,8 @@
   "description": "Property Web App",
   "main": "app.js",
   "scripts": {
-    "start": "node --max-old-space-size=8192 app.js",
-    "dev": "nodemon --max-old-space-size=8192 app.js"
+    "start": "node --max-old-space-size=8192 --trace-deprecation --trace-warnings app.js",
+    "dev": "nodemon --max-old-space-size=8192 --trace-deprecation --trace-warnings app.js"
   },
   "keywords": [
     "real estate",

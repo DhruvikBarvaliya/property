@@ -8,8 +8,8 @@ module.exports = async function () {
   mongo_uri = `mongodb://${db_user}:${db_password}@${db_ip}:27017/Property?authSource=Property`;
   mongoose.set("strictQuery", false);
   await mongoose.connect(mongo_uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   });
   let planData;
   console.log("Database Successfully Connected");
