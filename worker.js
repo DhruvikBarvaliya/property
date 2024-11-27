@@ -9,6 +9,7 @@ mongo_uri = `mongodb://${db_user}:${db_password}@${db_ip}:27017/Property?authSou
 console.log("Database Successfully Connected In Worker", mongo_uri);
 
 // Connect to MongoDB
+mongoose.set("strictQuery", false);
 mongoose
   .connect(mongo_uri, {
     useNewUrlParser: true,
