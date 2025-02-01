@@ -28,6 +28,7 @@ module.exports = async function () {
         "Property Coordinates",
       ],
       final_price: 0,
+      is_active: false,
     });
 
     try {
