@@ -4,6 +4,7 @@ const authorize = require("../Middleware/auth");
 const RazorPayController = require("../Controllers/RazorPayController");
 
 // Simplify route definitions by using route chaining
+router.post("/create-order", RazorPayController.createRazorPayOrder);
 router
   .route("/razorpay")
   .post(RazorPayController.addRazorPay)

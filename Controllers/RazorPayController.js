@@ -7,7 +7,31 @@ const path = require("path");
 const puppeteer = require("puppeteer");
 const { v4: uuidv4 } = require("uuid");
 let fs = require("fs");
+const { razorpay_key_id, razorpay_key_secret } = require("../Config/Config");
+const Razorpay = require("razorpay");
+const razorpay = new Razorpay({
+  key_id: razorpay_key_id,
+  key_secret: razorpay_key_secret,
+});
 module.exports = {
+  createRazorPayOrder: async (req, res) => {
+    try {
+      const { amount, currency = "INR", receipt } = req.body;
+
+      const options = {
+        amount: amount * 100, // amount in paisa
+        currency,
+        receipt: receipt || "receipt_" + Date.now(),
+        payment_capture: 1, // auto capture
+      };
+
+      const order = await razorpay.orders.create(options);
+      return res.status(200).json(order);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Something went wrong" });
+    }
+  },
   addRazorPay: async (req, res) => {
     try {
       const { user_id, razor_pay_response, subscriptions_id } = req.body;
