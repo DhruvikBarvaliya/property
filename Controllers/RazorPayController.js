@@ -22,7 +22,7 @@ module.exports = {
         amount: amount * 100, // amount in paisa
         currency,
         receipt: receipt || "receipt_" + Date.now(),
-        payment_capture: 1, // auto capture
+        payment_capture: "1", // auto capture
       };
 
       const order = await razorpay.orders.create(options);
